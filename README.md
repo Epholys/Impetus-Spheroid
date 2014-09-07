@@ -3,12 +3,10 @@
 
 ### TODO
 
+* Makefile : avoid double recursive behavior
+
 * Engine
-	* Utility
-  		* Vector2
-		*Time
 	* ECS
-		* Entity
-		* Component
+		* All the Components
 
 * Everything else !
