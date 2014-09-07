@@ -1,13 +1,13 @@
 
 CC = g++
-IDIR = ../../
+IDIR = ../../include/
 CFLAGS = -std=c++1y -Wall -Wextra -pedantic
 IFLAGS = -I$(IDIR)
 OPTFLAGS := -O2
 BUGFLAGS := 
 
 TARGETDIR = ../
-OBJECTS = main.o
+OBJECTS = ComponentBase.o
 
 empty :=
 space := $(empty) $(empty)
