@@ -16,6 +16,7 @@ namespace eg
 			Collidable = 1 << 4,
 			Target = 1 << 5,
 			Projectile = 1 << 6,
+			CategoryCount = 1 << 7,
 		};
 	} 
 } // namespace eg

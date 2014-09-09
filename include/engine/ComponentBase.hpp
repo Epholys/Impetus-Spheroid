@@ -2,6 +2,8 @@
 #define EG_COMPONENTBASE_HPP
 
 
+#include <memory>
+
 #include "engine/Time.hpp"
 #include "engine/ComponentCategory.hpp"
 
@@ -21,7 +23,8 @@ namespace eg
 	{
 	public:
 		ComponentBase();
-		
+		virtual ~ComponentBase();
+			
 		void update(Time dt);
 		void pause(Time t);
 		bool isPaused() const;
@@ -29,7 +32,7 @@ namespace eg
 		virtual Component::Category getCategory() const =0;
 		
 	private:
-		Time pauseCounter;
+		Time pauseCounter_;
 	};
 
 } // namespace eg

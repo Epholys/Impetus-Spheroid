@@ -1,20 +1,20 @@
 //-----------------------------------------------------------------------------
 // *** Constructors: ***
 template<typename T>
-Vector2<T>::Vector2<T>()
+Vector2<T>::Vector2()
 	: sf::Vector2<T>()
 {
 }
 
 template<typename T>
-Vector2<T>::Vector2<T>(T X, T Y)
+Vector2<T>::Vector2(T X, T Y)
 	: sf::Vector2<T>(X, Y)
 {
 }
 
 template<typename T>
 template<typename U>
-Vector2<T>::Vector2<T>(const Vector2<U>& vector)
+Vector2<T>::Vector2(const Vector2<U>& vector)
 	: sf::Vector2<T>(vector)
 {
 }
@@ -26,5 +26,5 @@ Vector2<T>::Vector2<T>(const Vector2<U>& vector)
 template<typename T>
 T Vector2<T>::dotProduct(const Vector2<T>& vector) const
 {
-	return x * vector.x + y * vector.y;
+	return sf::Vector2<T>::x * vector.x + sf::Vector2<T>::y * vector.y;
 }

@@ -5,7 +5,11 @@ namespace eg
 {
 
 	ComponentBase::ComponentBase()
-		: pauseCounter(Time::Zero)
+		: pauseCounter_(Time::Zero)
+	{
+	}
+
+	ComponentBase::~ComponentBase()
 	{
 	}
 
@@ -16,18 +20,22 @@ namespace eg
 	{
 		if(isPaused())
 		{
-			pauseCounter -= dt;
+			pauseCounter_ -= dt;
+			if (pauseCounter_ < Time::Zero)
+			{
+				pauseCounter_ = Time::Zero;
+			}
 		}
 	}
 
 	void ComponentBase::pause(Time t)
 	{
-		pauseCounter = t;
+		pauseCounter_ += t;
 	}
 
 	bool ComponentBase::isPaused() const
 	{
-		return pauseCounter > Time::Zero;
+		return pauseCounter_ > Time::Zero;
 	}
 
 } // namespace eg
