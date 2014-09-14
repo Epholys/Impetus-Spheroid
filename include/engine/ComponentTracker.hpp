@@ -20,7 +20,7 @@ namespace eg
 	class Target : public ComponentBase
 	{
 	public:
-		Target()
+		Target();
 
 		virtual Component::Category getCategory() const;
 	};
@@ -30,14 +30,14 @@ namespace eg
 	class Projectile : public ComponentBase
 	{
 	public:
-		Projectile()
+		Projectile();
 		
 		void touchTarget();
 
 		virtual Component::Category getCategory() const;
 
 	private:
-		bool hasTouchedTarget_();
+		bool hasTouchedTarget_;
 	};
 
 

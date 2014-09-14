@@ -8,7 +8,7 @@ BUGFLAGS :=
 
 TARGETDIR = ../
 OBJECTS =	ComponentBase.o ComponentBasic.o ComponentPhysic.o \
-			ComponentTracker.o
+			ComponentTracker.o PhysicEngine.o
 
 empty :=
 space := $(empty) $(empty)

@@ -2,6 +2,8 @@
 #define EG_ENTITY_HPP
 
 
+#include <limits>
+
 namespace eg
 {
 	/* In an Entity/Component System, the Entity is simply a number.
@@ -9,6 +11,7 @@ namespace eg
 	 * */
 
 	typedef unsigned int Entity;
+	Entity maxNEntities = std::numeric_limits<unsigned int>::max();
 
 } // namespace eg
 

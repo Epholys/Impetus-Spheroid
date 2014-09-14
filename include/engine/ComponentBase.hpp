@@ -22,6 +22,9 @@ namespace eg
 	class ComponentBase
 	{
 	public:
+		typedef std::shared_ptr<ComponentBase> SPtr;
+
+	public:
 		ComponentBase();
 		virtual ~ComponentBase();
 			
