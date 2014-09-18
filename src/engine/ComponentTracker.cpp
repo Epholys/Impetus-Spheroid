@@ -25,12 +25,17 @@ namespace eg
 
 	void Projectile::touchTarget()
 	{
-		return hasTouchedTarget_ = true;
+		hasTouchedTarget_ = true;
+	}
+
+	bool Projectile::hasTouchedTarget() const
+	{
+		return hasTouchedTarget_;
 	}
 
 	Component::Category Projectile::getCategory() const
 	{
-		return Component::Projectile
+		return Component::Projectile;
 	}
 
 

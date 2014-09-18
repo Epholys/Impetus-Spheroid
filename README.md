@@ -5,8 +5,14 @@
 
 * Makefile : avoid double recursive behavior
 
+* ECS
+  * Separate PhysicEngine from the ecs system
+  	* new namespace
+	* new folder
+	* change PhysicEngine's names
+	* etc...
+
 * Engine
-	* ECS
-		* All the Components
+  * See ECS
 
 * Everything else !

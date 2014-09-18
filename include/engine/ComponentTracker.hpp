@@ -33,6 +33,7 @@ namespace eg
 		Projectile();
 		
 		void touchTarget();
+		bool hasTouchedTarget() const;
 
 		virtual Component::Category getCategory() const;
 
