@@ -6,7 +6,9 @@ namespace ecs
 {
 	namespace Component
 	{
-		enum Category : unsigned int
+		typedef unsigned int CategoryMask;
+
+		enum Category : CategoryMask
 		{
 			None = 0,
 			Position = 1,

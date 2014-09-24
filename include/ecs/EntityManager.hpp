@@ -16,7 +16,9 @@ namespace ecs
 {
 	
 	/* This EntityManager is the link beetween the Entities, the Components, and
-	 * the rest of the program. 
+	 * the rest of the program.
+	 *
+	 * NOTE : An 'object' is an Entity with all its Components.
 	 *
 	 * TODO: Maybe try to optimise instead of copying everything.
 	 *
@@ -30,10 +32,16 @@ namespace ecs
 	class EntityManager
 	{
 	public:
+		typedef std::map<Component::Category,
+		                  ComponentBase::SPtr> componentTable;
+
+		typedef std::map<Entity, componentTable> objectTable;
+
+	public:
 		EntityManager();
 		
 //-----------------------------------------------------------------------------
-// *** ECS: ***
+// *** Entity: ***
 
 		/* Add an entity to entityComponents_
 		 *
@@ -41,7 +49,16 @@ namespace ecs
 		 * */
 		Entity addEntity();
 
-		
+
+		/* Remove ent and all its Components from entityComponents_
+		 *
+		 * If ent doesn't exist, does nothing.
+		 * */
+		void removeEntity(Entity ent);
+
+//-----------------------------------------------------------------------------
+// *** Components: ***
+
 		/* Constructs Comp with Args.
 		 *
 		 * If ent doesn't exist, does nothing.
@@ -97,11 +114,8 @@ namespace ecs
 		 * If ent doesn't exists or doesn't have any Components, returns an
 		 * empty std::map.
 		 * */
-		std::map<Component::Category, ComponentBase::SPtr>
-		getAllComponents(Entity ent);
-
-		const std::map<Component::Category, ComponentBase::SPtr>
-		getAllComponents(Entity ent) const;
+		componentTable getAllComponents(Entity ent);
+		const componentTable getAllComponents(Entity ent) const;
 
 
 		/* Pauses ent's Component of category cat for dt.
@@ -123,6 +137,20 @@ namespace ecs
 		// Pauses ALL Components for dt.
 		void pauseAllComponents(Time dt);
 
+//-----------------------------------------------------------------------------
+// *** Objects: ***
+		
+		/* Gets a table of all Entities and Component with all the Component
+		 * choosen by mask. Fot example, get the table of all entities, with
+		 * their associated Components, which have a Position and a Velocity.
+		 *
+		 * Only the desired Components are in the table.
+		 *
+		 * If there isn't any entities with all Components of mask, return a
+		 * empty objectTable.
+		 * */
+		objectTable getObjectTable(Component::CategoryMask mask);
+
 
 	private:
 		// Verify if ent exists in entityComponents_.
@@ -138,9 +166,9 @@ namespace ecs
 	private:
 		Entity entityCount_;
 
-		std::map<Entity, std::map<Component::Category,
-		                          ComponentBase::SPtr>>
-			entityComponents_;
+		objectTable entityComponents_;
+
+		std::map<Entity, Component::CategoryMask> entityMasks_;
 
 		
 	};

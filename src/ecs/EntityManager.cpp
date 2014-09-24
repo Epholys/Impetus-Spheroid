@@ -13,8 +13,8 @@ namespace ecs
 	}
 
 //-----------------------------------------------------------------------------
-// *** ECS: ***
-// ** Helper: **
+// *** Helpers: ***
+
 	bool EntityManager::entityExists(Entity ent) const
 	{
 		return entityComponents_.count(ent) > 0;
@@ -30,7 +30,10 @@ namespace ecs
 		return false;
 	}
 
-// ** Entity: **
+
+//-----------------------------------------------------------------------------
+// *** Entity: ***
+
 	Entity EntityManager::addEntity()
 	{
 		if(entityCount_ == maxNEntities-1)
@@ -44,16 +47,29 @@ namespace ecs
 			entityComponents_.emplace(entityCount_,
 			                          std::map<Component::Category, 
 			                                   ComponentBase::SPtr>());
+			entityMasks_.emplace(entityCount_, 0);
 			return entityCount_;
 		}
 	}
 
-// ** Components: **
+	void EntityManager::removeEntity(Entity ent)
+	{
+		if(entityExists(ent))
+		{
+			entityComponents_.erase(ent);
+			entityMasks_.erase(ent);
+		}
+	}
+
+//-----------------------------------------------------------------------------
+// *** Components: ***
+
 	void EntityManager::addComponent(Entity ent, ComponentBase::SPtr comp)
 	{
 		if(entityExists(ent))
 		{
 			entityComponents_[ent].emplace(comp->getCategory(), comp);
+			entityMasks_[ent] = entityMasks_[ent] | comp->getCategory();
 		}
 	}
 
@@ -65,6 +81,7 @@ namespace ecs
 			for(auto pComp : comps)
 			{
 				entityComponents_[ent].emplace(pComp->getCategory(), pComp);
+				entityMasks_[ent] = entityMasks_[ent] | pComp->getCategory();
 			}
 		}
 	}
@@ -75,6 +92,7 @@ namespace ecs
 		if(componentExists(ent, cat))
 		{
 			entityComponents_[ent].erase(cat);
+			entityMasks_[ent] = entityMasks_[ent] - (entityMasks_[ent] & cat);
 		} 
 	}
 
@@ -83,6 +101,7 @@ namespace ecs
 		if(entityExists(ent))
 		{
 			entityComponents_[ent].clear();
+			entityMasks_[ent] = 0;
 		}
 	}
 
@@ -107,24 +126,24 @@ namespace ecs
 	}
 
 
-	std::map<Component::Category, ComponentBase::SPtr>
+	EntityManager::componentTable
 	EntityManager::getAllComponents(Entity ent)
 	{
 		if(entityExists(ent))
 		{
 			return entityComponents_[ent];
 		}
-		return std::map<Component::Category, ComponentBase::SPtr>();
+		return componentTable();
 	}
 
-	const std::map<Component::Category, ComponentBase::SPtr>
+	const EntityManager::componentTable
 	EntityManager::getAllComponents(Entity ent) const
 	{
 		if(entityExists(ent))
 		{
 			return entityComponents_.at(ent);
 		}
-		return std::map<Component::Category, ComponentBase::SPtr>();
+		return componentTable();
 	}
 
 
@@ -169,5 +188,36 @@ namespace ecs
 		}
 	}
 
+
+//-----------------------------------------------------------------------------
+// *** Objects: ***
+
+	EntityManager::objectTable
+	EntityManager::getObjectTable(Component::CategoryMask mask)
+	{
+		EntityManager::objectTable objects;
+		for(auto& epair : entityComponents_)
+		{
+			if(entityMasks_[epair.first] & mask)
+			{
+				EntityManager::componentTable comps;
+ 
+				for(Component::CategoryMask cat = 0;
+				    cat != Component::CategoryCount;
+				    cat = cat << 1)
+				{
+					if(cat & mask)
+					{
+						Component::Category strictCat = Component::Category(cat);
+						comps[strictCat]=epair.second[strictCat];
+					}
+				}
+
+				objects[epair.first] = comps;
+			}
+		}
+
+		return objects;
+	}
 
 } // namespace ecs
