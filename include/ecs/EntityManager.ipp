@@ -1,6 +1,6 @@
 
 template<typename Comp, typename... Arguments>
-void PhysicEngine::addComponent(Entity ent, Arguments... args)
+void EntityManager::addComponent(Entity ent, Arguments... args)
 {
 	if(entityExists(ent))
 	{

@@ -1,43 +1,36 @@
-#ifndef EG_PHYSICENGINE_HPP
-#define EG_PHYSICENGINE_HPP
+#ifndef ECS_PHYSICENGINE_HPP
+#define ECS_PHYSICENGINE_HPP
 
 
 #include <memory>
 #include <vector>
 #include <map>
 
-#include "engine/Time.hpp"
-#include "engine/Entity.hpp"
-#include "engine/ComponentBasic.hpp"
-#include "engine/ComponentPhysic.hpp"
-#include "engine/ComponentTracker.hpp"
+#include "utility/Time.hpp"
+#include "ecs/Entity.hpp"
+#include "ecs/ComponentBasic.hpp"
+#include "ecs/ComponentPhysic.hpp"
+#include "ecs/ComponentTracker.hpp"
 
-namespace eg
+namespace ecs
 {
 	
-	/* This physics engine is a mix beetween an ECS and a traditionnal physic
-	 * egine which uses speculative contacts for its semi-continuous collision
-	 * engine.
+	/* This EntityManager is the link beetween the Entities, the Components, and
+	 * the rest of the program. 
 	 *
-	 * TODO: Maybe refactor everything to have several smalls classes instead of
-	 * this behemoth.
 	 * TODO: Maybe try to optimise instead of copying everything.
 	 *
 	 * For more information about a Entity/Component System, see:
 	 * http://entity-systems.wikidot.com/
-	 *
-	 * For more informations about this engine, see:
-	 * http://www.wildbunny.co.uk/blog/2011/04/06/physics-engines-for-dummies/
-	 * http://www.wildbunny.co.uk/blog/2011/03/25/speculative-contacts-an-continuous-collision-engine-approach-part-1/
 	 * */
 
 //-----------------------------------------------------------------------------
 
 
-	class PhysicEngine
+	class EntityManager
 	{
 	public:
-		PhysicEngine();
+		EntityManager();
 		
 //-----------------------------------------------------------------------------
 // *** ECS: ***
@@ -152,9 +145,9 @@ namespace eg
 		
 	};
 
-	#include "engine/PhysicEngine.ipp"
+	#include "ecs/EntityManager.ipp"
 	
-} // namespace eg
+} // namespace ecs
 
 
-#endif // EG_PHYSICENGINE_HPP
+#endif // ECS_PHYSICENGINE_HPP

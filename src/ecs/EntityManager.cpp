@@ -1,12 +1,12 @@
 #include <stdexcept>
 
-#include "engine/PhysicEngine.hpp"
+#include "ecs/EntityManager.hpp"
 
 
-namespace eg
+namespace ecs
 {
 // *** Constructor: ***
-	PhysicEngine::PhysicEngine()
+	EntityManager::EntityManager()
 		: entityCount_(0)
 		, entityComponents_()
 	{
@@ -15,12 +15,12 @@ namespace eg
 //-----------------------------------------------------------------------------
 // *** ECS: ***
 // ** Helper: **
-	bool PhysicEngine::entityExists(Entity ent) const
+	bool EntityManager::entityExists(Entity ent) const
 	{
 		return entityComponents_.count(ent) > 0;
 	}
 
-	bool PhysicEngine::componentExists(Entity ent, Component::Category cat) const
+	bool EntityManager::componentExists(Entity ent, Component::Category cat) const
 	{
 		if(entityExists(ent))
 		{
@@ -31,12 +31,12 @@ namespace eg
 	}
 
 // ** Entity: **
-	Entity PhysicEngine::addEntity()
+	Entity EntityManager::addEntity()
 	{
 		if(entityCount_ == maxNEntities-1)
 		{
 			throw std::runtime_error
-				("PhysicEngine::addEntity(): max number of entities reached");
+				("EntityManager::addEntity(): max number of entities reached");
 		}
 		else
 		{
@@ -49,7 +49,7 @@ namespace eg
 	}
 
 // ** Components: **
-	void PhysicEngine::addComponent(Entity ent, ComponentBase::SPtr comp)
+	void EntityManager::addComponent(Entity ent, ComponentBase::SPtr comp)
 	{
 		if(entityExists(ent))
 		{
@@ -57,7 +57,7 @@ namespace eg
 		}
 	}
 
-	void PhysicEngine::addComponents(Entity ent,
+	void EntityManager::addComponents(Entity ent,
 	                                 const std::vector<ComponentBase::SPtr>& comps)
 	{
 		if(entityExists(ent))
@@ -70,7 +70,7 @@ namespace eg
 	}
 
 
-	void PhysicEngine::removeComponent(Entity ent, Component::Category cat)
+	void EntityManager::removeComponent(Entity ent, Component::Category cat)
 	{
 		if(componentExists(ent, cat))
 		{
@@ -78,7 +78,7 @@ namespace eg
 		} 
 	}
 
-	void PhysicEngine::removeAllComponents(Entity ent)
+	void EntityManager::removeAllComponents(Entity ent)
 	{
 		if(entityExists(ent))
 		{
@@ -87,7 +87,7 @@ namespace eg
 	}
 
 
-	ComponentBase::SPtr PhysicEngine::getComponent(Entity ent, Component::Category cat)
+	ComponentBase::SPtr EntityManager::getComponent(Entity ent, Component::Category cat)
 	{
 		if(componentExists(ent, cat))
 		{
@@ -96,7 +96,7 @@ namespace eg
 		return ComponentBase::SPtr(nullptr);
 	}
 
-	const ComponentBase::SPtr PhysicEngine::getComponent(Entity ent,
+	const ComponentBase::SPtr EntityManager::getComponent(Entity ent,
 	                                                     Component::Category cat) const
 	{
 		if(componentExists(ent, cat))
@@ -108,7 +108,7 @@ namespace eg
 
 
 	std::map<Component::Category, ComponentBase::SPtr>
-	PhysicEngine::getAllComponents(Entity ent)
+	EntityManager::getAllComponents(Entity ent)
 	{
 		if(entityExists(ent))
 		{
@@ -118,7 +118,7 @@ namespace eg
 	}
 
 	const std::map<Component::Category, ComponentBase::SPtr>
-	PhysicEngine::getAllComponents(Entity ent) const
+	EntityManager::getAllComponents(Entity ent) const
 	{
 		if(entityExists(ent))
 		{
@@ -128,7 +128,7 @@ namespace eg
 	}
 
 
-	void PhysicEngine::pauseComponent(Entity ent, Component::Category cat, Time dt)
+	void EntityManager::pauseComponent(Entity ent, Component::Category cat, Time dt)
 	{
 		if(componentExists(ent, cat))
 		{
@@ -136,7 +136,7 @@ namespace eg
 		}
 	}
 
-	void PhysicEngine::pauseAllComponents(Entity ent, Time dt)
+	void EntityManager::pauseAllComponents(Entity ent, Time dt)
 	{
 		if(entityExists(ent))
 		{
@@ -147,7 +147,7 @@ namespace eg
 		}
 	}
 
-	void PhysicEngine::pauseAllComponents(Component::Category cat, Time dt)
+	void EntityManager::pauseAllComponents(Component::Category cat, Time dt)
 	{
 		for(const auto& entPair : entityComponents_)
 		{
@@ -158,7 +158,7 @@ namespace eg
 		}
 	}
 
-	void PhysicEngine::pauseAllComponents(Time dt)
+	void EntityManager::pauseAllComponents(Time dt)
 	{
 		for(const auto& entPair : entityComponents_)
 		{
@@ -170,4 +170,4 @@ namespace eg
 	}
 
 
-} // namespace eg
+} // namespace ecs

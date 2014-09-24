@@ -1,8 +1,8 @@
-#ifndef EG_COMPONENTCATEGORY_HPP
-#define EG_COMPONENTCATEGORY_HPP
+#ifndef ECS_COMPONENTCATEGORY_HPP
+#define ECS_COMPONENTCATEGORY_HPP
 
 
-namespace eg
+namespace ecs
 {
 	namespace Component
 	{
@@ -19,8 +19,8 @@ namespace eg
 			CategoryCount = 1 << 7,
 		};
 	} 
-} // namespace eg
+} // namespace ecs
 
 
 
-#endif // EG_COMPONENTCATEGORY_HPP
+#endif // ECS_COMPONENTCATEGORY_HPP

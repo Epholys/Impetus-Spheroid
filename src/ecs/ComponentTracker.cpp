@@ -1,7 +1,7 @@
-#include "engine/ComponentTracker.hpp"
+#include "ecs/ComponentTracker.hpp"
 
 
-namespace eg
+namespace ecs
 {
 
 	// *** Target: ***
@@ -39,4 +39,4 @@ namespace eg
 	}
 
 
-} // namespace eg
+} // namespace ecs

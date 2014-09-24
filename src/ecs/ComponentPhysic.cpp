@@ -1,7 +1,7 @@
-#include "engine/ComponentPhysic.hpp"
+#include "ecs/ComponentPhysic.hpp"
 
 
-namespace eg
+namespace ecs
 {
 
 	// *** Mass: ***
@@ -62,4 +62,4 @@ namespace eg
 	}
 
 
-} // namespace eg
+} // namespace ecs

@@ -1,7 +1,7 @@
-#include "engine/ComponentBase.hpp"
+#include "ecs/ComponentBase.hpp"
 
 
-namespace eg
+namespace ecs
 {
 
 	ComponentBase::ComponentBase()
@@ -38,4 +38,4 @@ namespace eg
 		return pauseCounter_ > Time::Zero;
 	}
 
-} // namespace eg
+} // namespace ecs

@@ -1,11 +1,11 @@
-#ifndef EG_COMPONENTPHYSIC_HPP
-#define EG_COMPONENTPHYSIC_HPP
+#ifndef ECS_COMPONENTPHYSIC_HPP
+#define ECS_COMPONENTPHYSIC_HPP
 
 
-#include "Vector2.hpp"
-#include "ComponentBase.hpp"
+#include "utility/Vector2.hpp"
+#include "ecs/ComponentBase.hpp"
 
-namespace eg
+namespace ecs
 {
 
 	/* Here are all the Components about physics. That includes:
@@ -80,7 +80,7 @@ namespace eg
 
 	
 
-} // namespace eg
+} // namespace ecs
 
 
-#endif // EG_COMPONENTPHYSIC_HPP
+#endif // ECS_COMPONENTPHYSIC_HPP

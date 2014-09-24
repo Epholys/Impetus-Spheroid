@@ -1,7 +1,7 @@
-#include "engine/ComponentBasic.hpp"
+#include "ecs/ComponentBasic.hpp"
 
 
-namespace eg
+namespace ecs
 {
 	// *** Position: ***
 
@@ -28,4 +28,4 @@ namespace eg
 		return Component::Velocity;
 	}
 
-} // namespace eg
+} // namespace ecs

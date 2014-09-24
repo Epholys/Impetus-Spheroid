@@ -1,10 +1,10 @@
-#ifndef EG_COMPONENTTRACKER_HPP
-#define EG_COMPONENTTRACKER_HPP
+#ifndef ECS_COMPONENTTRACKER_HPP
+#define ECS_COMPONENTTRACKER_HPP
 
 
-#include "ComponentBase.hpp"
+#include "ecs/ComponentBase.hpp"
 
-namespace eg
+namespace ecs
 {
 
 	/* Here are the two Components which tracks the collisions: Projectile and
@@ -42,7 +42,7 @@ namespace eg
 	};
 
 
-} // namespace eg
+} // namespace ecs
 
 
-#endif // EG_COMPONENTTRACKER_HPP
+#endif // ECS_COMPONENTTRACKER_HPP

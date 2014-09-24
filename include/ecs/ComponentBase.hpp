@@ -1,13 +1,13 @@
-#ifndef EG_COMPONENTBASE_HPP
-#define EG_COMPONENTBASE_HPP
+#ifndef ECS_COMPONENTBASE_HPP
+#define ECS_COMPONENTBASE_HPP
 
 
 #include <memory>
 
-#include "engine/Time.hpp"
-#include "engine/ComponentCategory.hpp"
+#include "utility/Time.hpp"
+#include "ecs/ComponentCategory.hpp"
 
-namespace eg
+namespace ecs
 {
 
 	/* The base class for all the components of the Entity/Component System, to
@@ -38,6 +38,6 @@ namespace eg
 		Time pauseCounter_;
 	};
 
-} // namespace eg
+} // namespace ecs
 
-#endif // EG_COMPONENTBASE_HPP
+#endif // ECS_COMPONENTBASE_HPP

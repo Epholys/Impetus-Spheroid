@@ -1,11 +1,11 @@
-#ifndef EG_COMPONENTBASIC_HPP
-#define EG_COMPONENTBASIC_HPP
+#ifndef ECS_COMPONENTBASIC_HPP
+#define ECS_COMPONENTBASIC_HPP
 
 
-#include "Vector2.hpp"
-#include "ComponentBase.hpp"
+#include "utility/Vector2.hpp"
+#include "ecs/ComponentBase.hpp"
 
-namespace eg
+namespace ecs
 {
 
 	/* Here are the two basics Components : Position and Velocity 
@@ -40,7 +40,7 @@ namespace eg
 		Vector2f velocity_;
 	};
 
-} // namespace eg
+} // namespace ecs
 
 
-#endif // EG_COMPONENTBASIC_HPP
+#endif // ECS_COMPONENTBASIC_HPP
