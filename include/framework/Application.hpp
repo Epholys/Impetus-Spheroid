@@ -5,6 +5,8 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include "ecs/EntityManager.hpp"
+
 /* The main object: the framework for everything else
  * 
  * Manages the sf::RenderWindow and some basic sf::Events.
@@ -25,6 +27,7 @@ private:
 
 private:
 	sf::RenderWindow window_;
+	ecs::EntityManager ecs_;
 };
 
 
