@@ -1,5 +1,5 @@
-#ifndef ECS_PHYSICENGINE_HPP
-#define ECS_PHYSICENGINE_HPP
+#ifndef ECS_ENTITYMANAGER_HPP
+#define ECS_ENTITYMANAGER_HPP
 
 
 #include <memory>
@@ -21,6 +21,7 @@ namespace ecs
 	 * NOTE : An 'object' is an Entity with all its Components.
 	 *
 	 * TODO: Maybe try to optimise instead of copying everything.
+	 * TODO: Replace all the std::map by some custom Table class.
 	 *
 	 * For more information about a Entity/Component System, see:
 	 * http://entity-systems.wikidot.com/
@@ -178,4 +179,4 @@ namespace ecs
 } // namespace ecs
 
 
-#endif // ECS_PHYSICENGINE_HPP
+#endif // ECS_ENTITYMANAGER_HPP

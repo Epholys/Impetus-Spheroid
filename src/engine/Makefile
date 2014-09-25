@@ -7,8 +7,7 @@ OPTFLAGS := -O2
 BUGFLAGS := 
 
 TARGETDIR = ../
-OBJECTS =	ComponentBase.o ComponentBasic.o ComponentPhysic.o \
-			ComponentTracker.o EntityManager.o Entity.o
+OBJECTS = PhysicEngine.o
 
 empty :=
 space := $(empty) $(empty)

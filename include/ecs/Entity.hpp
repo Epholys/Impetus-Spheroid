@@ -11,7 +11,7 @@ namespace ecs
 	 * */
 
 	typedef unsigned int Entity;
-	Entity maxNEntities = std::numeric_limits<unsigned int>::max();
+	extern Entity maxNEntities;
 
 } // namespace ecs
 

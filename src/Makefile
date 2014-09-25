@@ -1,4 +1,4 @@
-DIRS = ecs framework
+DIRS = ecs framework engine
 
 all :
 	for d in $(DIRS); do $(MAKE) -C $$d; done

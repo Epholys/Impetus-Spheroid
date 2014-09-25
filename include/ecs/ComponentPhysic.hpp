@@ -22,12 +22,9 @@ namespace ecs
 	class Mass : public ComponentBase
 	{
 	public:
-		explicit Mass(float mass);
+		explicit Mass();
 
 		virtual Component::Category getCategory() const;
-
-	public:
-		float mass_;
 	};
 
 //-----------------------------------------------------------------------------

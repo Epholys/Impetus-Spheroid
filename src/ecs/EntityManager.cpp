@@ -202,7 +202,7 @@ namespace ecs
 			{
 				EntityManager::componentTable comps;
  
-				for(Component::CategoryMask cat = 0;
+				for(Component::CategoryMask cat = 1;
 				    cat != Component::CategoryCount;
 				    cat = cat << 1)
 				{

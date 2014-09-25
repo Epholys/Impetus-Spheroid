@@ -6,8 +6,7 @@ namespace ecs
 
 	// *** Mass: ***
 
-	Mass::Mass(float mass)
-		: mass_(mass)
+	Mass::Mass()
 	{
 	}
 
