@@ -11,7 +11,9 @@ Application::Application()
 	          "Impetus Spheroid",
 	          sf::Style::Titlebar | sf::Style::Close,
 	          sf::ContextSettings(0, 0, 4))
+	, ecs_()
 {
+	window_.setKeyRepeatEnabled(false);
 }
 
 
@@ -46,6 +48,10 @@ void Application::handleInput()
 		{
 			window_.close();
 		}
+		// else if (event.type == sf::Event::KeyPressed)
+		// {
+
+		// }
 	}
 }
 
