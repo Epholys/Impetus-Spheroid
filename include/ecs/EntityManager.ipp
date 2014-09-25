@@ -1,4 +1,5 @@
 
+
 template<typename Comp, typename... Arguments>
 void EntityManager::addComponent(Entity ent, Arguments... args)
 {
@@ -6,5 +7,7 @@ void EntityManager::addComponent(Entity ent, Arguments... args)
 	{
 		auto spComp = std::make_shared<Comp>(args...);
 		entityComponents_[ent].emplace(spComp->getCategory(), spComp);
+		entityMasks_[ent] = entityMasks_[ent] | spComp->getCategory();
 	}
 }
+

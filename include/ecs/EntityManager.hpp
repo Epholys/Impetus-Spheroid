@@ -1,6 +1,7 @@
 #ifndef ECS_ENTITYMANAGER_HPP
 #define ECS_ENTITYMANAGER_HPP
 
+#include <iostream>
 
 #include <memory>
 #include <vector>

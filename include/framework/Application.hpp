@@ -2,10 +2,14 @@
 #define APPLICATION_HPP
 
 
+#include <vector>
+
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "ecs/EntityManager.hpp"
+#include "engine/PhysicEngine.hpp"
+#include "Ball.hpp"
 
 /* The main object: the framework for everything else
  * 
@@ -28,6 +32,9 @@ private:
 private:
 	sf::RenderWindow window_;
 	ecs::EntityManager ecs_;
+	eg::PhysicEngine engine_;
+
+	std::vector<std::unique_ptr<Ball>> balls_;
 };
 
 

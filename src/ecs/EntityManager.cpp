@@ -56,6 +56,7 @@ namespace ecs
 	{
 		if(entityExists(ent))
 		{
+
 			entityComponents_.erase(ent);
 			entityMasks_.erase(ent);
 		}

@@ -12,6 +12,8 @@ Application::Application()
 	          sf::Style::Titlebar | sf::Style::Close,
 	          sf::ContextSettings(0, 0, 4))
 	, ecs_()
+	, engine_(ecs_)
+	, balls_()
 {
 	window_.setKeyRepeatEnabled(false);
 }
@@ -52,16 +54,33 @@ void Application::handleInput()
 		// {
 
 		// }
+		else if (event.type == sf::Event::MouseButtonPressed &&
+		         event.mouseButton.button == sf::Mouse::Left)			
+		{
+			balls_.push_back(std::unique_ptr<Ball>
+			                 (new Ball(ecs_,
+			                           Vector2f(event.mouseButton.x,
+			                                    event.mouseButton.y),
+			                           10.f)));
+		}
 	}
 }
 
-void Application::update(sf::Time)
+void Application::update(sf::Time dt)
 {
-	
+	engine_.update(dt);
+	for (auto& ball : balls_)
+	{
+		ball->update(dt);
+	}	
 }
 
 void Application::render()
 {
 	window_.clear();
+	for (const auto& ball : balls_)
+	{
+		window_.draw(*ball);
+	}
 	window_.display();
 }
