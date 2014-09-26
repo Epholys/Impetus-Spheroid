@@ -4,6 +4,7 @@
 
 #include "utility/Time.hpp"
 #include "utility/Vector2.hpp"
+#include "utility/utility.hpp"
 #include "ecs/EntityManager.hpp"
 
 
@@ -30,13 +31,6 @@ namespace eg
 		void update(Time dt);
 
 	private:
-		/* Just to have a shorter name that
-		 * std::dynamic_pointer_cast<...>()
-		 * */
-		template<typename Child>
-		std::shared_ptr<Child> dynCast(const ecs::ComponentBase::SPtr& pParent);
-			
-
 		/* Apply gravity */
 		void updateGravity(Time dt);
 
@@ -48,8 +42,6 @@ namespace eg
 
 		Vector2f gravityVect_;
 	};
-
-#include "engine/PhysicEngine.ipp"
 
 } // namespace eg
 

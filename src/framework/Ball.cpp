@@ -1,6 +1,7 @@
 #include <cassert>
 
 #include "framework/Ball.hpp"
+#include "utility/utility.hpp"
 
 
 Ball::Ball(ecs::EntityManager& entm, Vector2f position, float radius)
@@ -25,8 +26,8 @@ Ball::~Ball()
 
 void Ball::update(Time)
 {
-	auto nudePos = ecs_.getComponent(label_, ecs::Component::Position);
-	auto pointPos = std::dynamic_pointer_cast<ecs::Position>(nudePos);
+	auto pointPos = dynCast<ecs::Position>
+		(ecs_.getComponent(label_, ecs::Component::Position));
 	assert(pointPos);
 	auto position = pointPos->position_;
 	ball_.setPosition(position.x, position.y);
@@ -37,3 +38,7 @@ void Ball::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	target.draw(ball_, states);
 }
 
+ecs::Entity Ball::getLabel() const
+{
+	return label_;
+}

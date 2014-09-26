@@ -1,3 +1,4 @@
+
 #include <SFML/Window/Event.hpp>
 
 #include "framework/Application.hpp"
@@ -13,9 +14,11 @@ Application::Application()
 	          sf::ContextSettings(0, 0, 4))
 	, ecs_()
 	, engine_(ecs_)
+	, deltaMouse_()
 	, balls_()
 {
 	window_.setKeyRepeatEnabled(false);
+	window_.setVerticalSyncEnabled(false);
 }
 
 
@@ -44,6 +47,7 @@ void Application::run()
 void Application::handleInput()
 {
 	sf::Event event;
+
 	while (window_.pollEvent(event))
 	{
 		if (event.type == sf::Event::Closed)
@@ -57,11 +61,18 @@ void Application::handleInput()
 		else if (event.type == sf::Event::MouseButtonPressed &&
 		         event.mouseButton.button == sf::Mouse::Left)			
 		{
-			balls_.push_back(std::unique_ptr<Ball>
-			                 (new Ball(ecs_,
-			                           Vector2f(event.mouseButton.x,
-			                                    event.mouseButton.y),
-			                           10.f)));
+			deltaMouse_ = Vector2f(event.mouseButton.x, event.mouseButton.y);
+		}
+		else if (event.type == sf::Event::MouseButtonReleased &&
+		         event.mouseButton.button == sf::Mouse::Left)
+		{
+			std::unique_ptr<Ball> pBall	(new Ball(ecs_, deltaMouse_, 10.f));
+			deltaMouse_ -= Vector2f(event.mouseButton.x, event.mouseButton.y);
+			auto entBall = pBall->getLabel();
+			auto velComp = dynCast<ecs::Velocity>
+				(ecs_.getComponent(entBall, ecs::Component::Velocity));
+			velComp->velocity_ -= 3.f * deltaMouse_;			
+			balls_.push_back(std::move(pBall));
 		}
 	}
 }

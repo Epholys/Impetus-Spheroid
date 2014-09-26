@@ -20,6 +20,8 @@ public:
 	void update(Time dt);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+	ecs::Entity getLabel() const;
+
 private:
 	ecs::EntityManager& ecs_;
 	ecs::Entity label_;

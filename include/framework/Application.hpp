@@ -34,6 +34,8 @@ private:
 	ecs::EntityManager ecs_;
 	eg::PhysicEngine engine_;
 
+	Vector2f deltaMouse_;
+
 	std::vector<std::unique_ptr<Ball>> balls_;
 };
 
