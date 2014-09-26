@@ -15,14 +15,17 @@ space := $(empty) $(empty)
 all : executable
 
 executable :
-	for d in $(DIRS); do $(MAKE) -C $$d; done
+	for d in $(DIRS); do $(MAKE) $@ -C $$d; done
 	$(CC) $(BUGFLAGS) $(CFLAGS) $(OPTFLAGS) $(OBJECTS) -o $(TARGET) $(LFLAGS)
 
-% :
-	for d in $(DIRS); do $(MAKE) -C $$d $@; done
+clean :
+	for d in $(DIRS); do $(MAKE) $@ -C $$d; done
 
 debug : OPTFLAGS :=
 debug : BUGFLAGS := -g -Og
 debug : TARGET += .debug
 debug : TARGET := $(subst $(space),,$(TARGET))
-debug : executable
+debug :
+	for d in $(DIRS); do $(MAKE) $@ -C $$d; done
+	$(CC) $(BUGFLAGS) $(CFLAGS) $(OPTFLAGS) $(OBJECTS) -o $(TARGET) $(LFLAGS)
+
