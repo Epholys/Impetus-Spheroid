@@ -100,7 +100,9 @@ namespace ecs
 		void removeAllComponents(Entity ent);
 
 
-		/* (const) Getter for the component of category cat of ent.
+		/* (const) Getter for the Component of category cat of ent.
+		 *
+		 * Doesn't return the Component if it is paused.
 		 *
 		 * If ent doesn't exists or ent doesn't have a Component of category
 		 * cat, returns a nullptr.
@@ -110,6 +112,8 @@ namespace ecs
 
 
 		/* (const) Getter for the std::map of Components of ent.
+		 *
+		 * Doesn't return the Components if they are paused.
 		 *
 		 * If ent doesn't exists or doesn't have any Components, returns an
 		 * empty std::map.
@@ -152,6 +156,11 @@ namespace ecs
 		objectTable getObjectTable(Component::CategoryMask mask);
 
 
+//-----------------------------------------------------------------------------
+// *** Pause Mechanics: ***
+		void update(Time dt);
+		
+
 	private:
 		// Verify if ent exists in entityComponents_.
 		bool entityExists(Entity ent) const;
@@ -161,6 +170,13 @@ namespace ecs
 		 * If ent doesn't exist, return false.
 		 * */
 		bool componentExists(Entity ent, Component::Category cat) const;
+
+		/* Verify if ent has a Component of category cat and if this Component
+		 * isn't paused.
+		 *
+		 * If ent or the Component doesn't exist, return false.
+		 * */
+		bool componentIsActive(Entity ent, Component::Category cat) const;
 
 
 	private:
