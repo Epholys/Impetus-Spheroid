@@ -30,6 +30,16 @@ namespace ecs
 		return false;
 	}
 
+	bool EntityManager::componentIsActive(Entity ent, Component::Category cat) const
+	{
+		if(componentExists(ent, cat))
+		{
+			return !(entityComponents_.at(ent).at(cat)->isPaused());
+		}
+
+		return false;
+	}
+	
 
 //-----------------------------------------------------------------------------
 // *** Entity: ***
@@ -109,7 +119,7 @@ namespace ecs
 
 	ComponentBase::SPtr EntityManager::getComponent(Entity ent, Component::Category cat)
 	{
-		if(componentExists(ent, cat))
+		if(componentIsActive(ent, cat))
 		{
 			return entityComponents_[ent][cat];
 		}
@@ -119,7 +129,7 @@ namespace ecs
 	const ComponentBase::SPtr EntityManager::getComponent(Entity ent,
 	                                                     Component::Category cat) const
 	{
-		if(componentExists(ent, cat))
+		if(componentIsActive(ent, cat))
 		{
 			return entityComponents_.at(ent).at(cat);
 		}
@@ -130,21 +140,35 @@ namespace ecs
 	EntityManager::componentTable
 	EntityManager::getAllComponents(Entity ent)
 	{
+		componentTable table;
 		if(entityExists(ent))
 		{
-			return entityComponents_[ent];
+			for(auto& componentPair : entityComponents_[ent])
+			{
+				if(!(componentPair.second->isPaused()))
+				{
+					table.insert(componentPair);
+				}
+			}
 		}
-		return componentTable();
+		return table;
 	}
 
 	const EntityManager::componentTable
 	EntityManager::getAllComponents(Entity ent) const
 	{
+		componentTable table;
 		if(entityExists(ent))
 		{
-			return entityComponents_.at(ent);
+			for(const auto& componentPair : entityComponents_.at(ent))
+			{
+				if(!(componentPair.second->isPaused()))
+				{
+					table.insert(componentPair);
+				}
+			}
 		}
-		return componentTable();
+		return table;
 	}
 
 
@@ -193,6 +217,10 @@ namespace ecs
 //-----------------------------------------------------------------------------
 // *** Objects: ***
 
+	// Yeah, I know, it's disgusting.
+	//
+	// TODO: Refactoring
+	// 
 	EntityManager::objectTable
 	EntityManager::getObjectTable(Component::CategoryMask mask)
 	{
@@ -210,7 +238,10 @@ namespace ecs
 					if(cat & mask)
 					{
 						Component::Category strictCat = Component::Category(cat);
-						comps[strictCat]=epair.second[strictCat];
+						if(!(epair.second[strictCat]->isPaused()))
+						{
+							comps[strictCat]=epair.second[strictCat];
+						}
 					}
 				}
 
@@ -220,5 +251,19 @@ namespace ecs
 
 		return objects;
 	}
+
+//-----------------------------------------------------------------------------
+// *** Pause Mechanics: ***
+	void EntityManager::update(Time dt)
+	{
+		for(auto& entityPair : entityComponents_)
+		{
+			for(auto& componentPair : entityPair.second)
+			{
+				componentPair.second->update(dt);
+			}
+		}
+	}
+
 
 } // namespace ecs
