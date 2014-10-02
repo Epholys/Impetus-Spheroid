@@ -28,9 +28,11 @@ void Ball::update(Time)
 {
 	auto pointPos = dynCast<ecs::Position>
 		(ecs_.getComponent(label_, ecs::Component::Position));
-	assert(pointPos);
-	auto position = pointPos->position_;
-	ball_.setPosition(position.x, position.y);
+	if(pointPos)
+	{
+		auto position = pointPos->position_;
+		ball_.setPosition(position.x, position.y);
+	}
 }
 
 void Ball::draw(sf::RenderTarget& target, sf::RenderStates states) const

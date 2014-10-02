@@ -30,8 +30,11 @@ namespace eg
 		{
 			auto velComp = dynCast<ecs::Velocity>
 				(massicPair.second[ecs::Component::Velocity]);
-				
-			velComp->velocity_ += gravityVect_ * dt.asSeconds();
+			
+			if(velComp)
+			{
+				velComp->velocity_ += gravityVect_ * dt.asSeconds();
+			}
 		}
 	}
 
@@ -47,7 +50,10 @@ namespace eg
 			auto velComp = dynCast<ecs::Velocity>
 				(moveablePair.second[ecs::Component::Velocity]);
 
-			posComp->position_ += velComp->velocity_ * dt.asSeconds();
+			if (posComp && velComp)
+			{
+				posComp->position_ += velComp->velocity_ * dt.asSeconds();
+			}
 		}
 	}
 
