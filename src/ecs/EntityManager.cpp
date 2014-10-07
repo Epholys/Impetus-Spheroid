@@ -217,20 +217,36 @@ namespace ecs
 //-----------------------------------------------------------------------------
 // *** Objects: ***
 
-	// Yeah, I know, it's disgusting.
-	//
-	// TODO: Refactoring
-	// 
+	/* Yeah, I know, it's disgusting.
+	 *
+	 * The main difficulty here is all the checkings ; we must check:
+	 * - if an Entity has the good Components
+	 * - if one Component is paused (if so, objects MUST NOT contains this
+	 * Entity and its Components)
+	 * - if comps is empty (if so, an empty std::map MUST NOT be inserted into
+	 * the objectTable. Else, the PhysicEngine will iterate over empty maps and
+	 * create nullptr when trying to access a Component::SPtr that doesn't
+	 * exist).
+	 * 
+	 * TODO: Refactoring
+	 * */ 
+
 	EntityManager::objectTable
 	EntityManager::getObjectTable(Component::CategoryMask mask)
 	{
 		EntityManager::objectTable objects;
+
+		// For each entity epair.first ...
 		for(auto& epair : entityComponents_)
 		{
-			if(entityMasks_[epair.first] & mask)
+
+			// ... check if it has the good components ...
+			if((entityMasks_[epair.first] & mask) == mask)
 			{
+
 				EntityManager::componentTable comps;
- 
+
+				// ... and get all the components desired.
 				for(Component::CategoryMask cat = 1;
 				    cat != Component::CategoryCount;
 				    cat = cat << 1)
@@ -242,10 +258,19 @@ namespace ecs
 						{
 							comps[strictCat]=epair.second[strictCat];
 						}
+						else
+						{
+							// If one Component is paused, aborts.
+							comps = EntityManager::componentTable();
+							break;
+						}
 					}
 				}
-
-				objects[epair.first] = comps;
+				
+				if(!comps.empty())
+				{
+					objects[epair.first] = comps;
+				}
 			}
 		}
 
@@ -267,3 +292,20 @@ namespace ecs
 
 
 } // namespace ecs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

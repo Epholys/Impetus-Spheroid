@@ -59,7 +59,7 @@ void Application::handleInput()
 			switch (event.key.code)
 			{
 			case sf::Keyboard::P:
-				ecs_.pauseAllComponents(sf::seconds(2));
+				ecs_.pauseAllComponents(ecs::Component::Velocity, sf::seconds(2));
 				break;
 
 			default:

@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "framework/Assertion.hpp"
 #include "engine/PhysicEngine.hpp"
 
 
@@ -30,11 +31,9 @@ namespace eg
 		{
 			auto velComp = dynCast<ecs::Velocity>
 				(massicPair.second[ecs::Component::Velocity]);
-			
-			if(velComp)
-			{
-				velComp->velocity_ += gravityVect_ * dt.asSeconds();
-			}
+			assert(velComp);
+
+			velComp->velocity_ += gravityVect_ * dt.asSeconds();
 		}
 	}
 
@@ -46,14 +45,13 @@ namespace eg
 		{
 			auto posComp = dynCast<ecs::Position>
 				(moveablePair.second[ecs::Component::Position]);
+			assert(posComp);
 
 			auto velComp = dynCast<ecs::Velocity>
 				(moveablePair.second[ecs::Component::Velocity]);
+			assert(velComp);
 
-			if (posComp && velComp)
-			{
-				posComp->position_ += velComp->velocity_ * dt.asSeconds();
-			}
+			posComp->position_ += velComp->velocity_ * dt.asSeconds();
 		}
 	}
 

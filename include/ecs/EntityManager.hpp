@@ -147,10 +147,12 @@ namespace ecs
 // *** Objects: ***
 		
 		/* Gets a table of all Entities and Component with all the Component
-		 * choosen by mask. Fot example, get the table of all entities, with
-		 * their associated Components, which have a Position and a Velocity.
+		 * choosen by mask.
+		 * For example, get the table of all entities, with their associated
+		 * Components, which have a Position and a Velocity. 
 		 *
 		 * Only the desired Components are in the table.
+		 * If a Component asked is paused, the Entity associated isn't given.
 		 *
 		 * If there isn't any entities with all Components of mask, return a
 		 * empty objectTable.

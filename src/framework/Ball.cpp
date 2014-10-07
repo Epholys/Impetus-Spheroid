@@ -1,5 +1,5 @@
-#include <cassert>
 
+#include "framework/Assertion.hpp"
 #include "framework/Ball.hpp"
 #include "utility/utility.hpp"
 
@@ -28,11 +28,9 @@ void Ball::update(Time)
 {
 	auto pointPos = dynCast<ecs::Position>
 		(ecs_.getComponent(label_, ecs::Component::Position));
-	if(pointPos)
-	{
-		auto position = pointPos->position_;
-		ball_.setPosition(position.x, position.y);
-	}
+	assert(pointPos);
+	auto position = pointPos->position_;
+	ball_.setPosition(position.x, position.y);
 }
 
 void Ball::draw(sf::RenderTarget& target, sf::RenderStates states) const
