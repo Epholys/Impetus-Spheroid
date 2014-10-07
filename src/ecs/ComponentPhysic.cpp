@@ -6,7 +6,8 @@ namespace ecs
 
 	// *** Mass: ***
 
-	Mass::Mass()
+	Mass::Mass(float mass)
+		: mass_(mass)
 	{
 	}
 
@@ -18,8 +19,8 @@ namespace ecs
 //-----------------------------------------------------------------------------
 	// *** Solid: ***
 
-	Solid::Solid(float rest)
-		: restitution_(0)
+	Solid::Solid(float invMass, float rest)
+		: invMass_ (invMass), restitution_(0)
 	{
 		if (rest <= 0)
 		{

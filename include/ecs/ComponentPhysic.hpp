@@ -22,9 +22,11 @@ namespace ecs
 	class Mass : public ComponentBase
 	{
 	public:
-		explicit Mass();
+		explicit Mass(float mass);
 
 		virtual Component::Category getCategory() const;
+
+		float mass_;
 	};
 
 //-----------------------------------------------------------------------------
@@ -34,11 +36,12 @@ namespace ecs
 	public:
 		/* pre-condidition : rest must be positive or equals to 0.
 		 * If not, it will be set to 0. */
-		explicit Solid(float rest);
+		explicit Solid(float invMass, float rest);
 
 		virtual Component::Category getCategory() const;
 
 	public:
+		float invMass_;
 		float restitution_;
 	};
 

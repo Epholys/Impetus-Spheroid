@@ -4,12 +4,12 @@
 #include "utility/utility.hpp"
 
 
-Ball::Ball(ecs::EntityManager& entm, Vector2f position, float radius)
+Ball::Ball(ecs::EntityManager& entm, Vector2f position, float radius, float mass)
 	: ecs_(entm)
 	, label_(0)
 	, ball_(radius)
 {
-	label_ = ecs::createBall(entm, position, radius);
+	label_ = ecs::createBall(entm, position, radius, mass);
 
 	ball_.setFillColor(sf::Color::Red);
 	auto ballRect = ball_.getLocalBounds();

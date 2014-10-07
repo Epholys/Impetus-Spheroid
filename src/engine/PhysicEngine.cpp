@@ -33,7 +33,11 @@ namespace eg
 				(massicPair.second[ecs::Component::Velocity]);
 			assert(velComp);
 
-			velComp->velocity_ += gravityVect_ * dt.asSeconds();
+			auto massComp = dynCast<ecs::Mass>
+				(massicPair.second[ecs::Component::Mass]);
+			assert(massComp);
+
+			velComp->velocity_ += massComp->mass_ * gravityVect_ * dt.asSeconds();
 		}
 	}
 

@@ -16,6 +16,8 @@ Application::Application()
 	, engine_(ecs_)
 	, deltaMouse_()
 	, balls_()
+	, ballMass_(1.f)
+	, ballRadius_(10.f)
 {
 	window_.setKeyRepeatEnabled(false);
 	window_.setVerticalSyncEnabled(false);
@@ -61,6 +63,16 @@ void Application::handleInput()
 			case sf::Keyboard::P:
 				ecs_.pauseAllComponents(ecs::Component::Velocity, sf::seconds(2));
 				break;
+				
+			case sf::Keyboard::Add:
+				ballMass_ *= 2.f;
+				ballRadius_ *= 1.5f;
+				break;
+
+			case sf::Keyboard::Subtract:
+				ballMass_ /= 2.f;
+				ballRadius_ /= 1.5f;
+				break;
 
 			default:
 				break;
@@ -74,7 +86,7 @@ void Application::handleInput()
 		else if (event.type == sf::Event::MouseButtonReleased &&
 		         event.mouseButton.button == sf::Mouse::Left)
 		{
-			std::unique_ptr<Ball> pBall	(new Ball(ecs_, deltaMouse_, 10.f));
+			std::unique_ptr<Ball> pBall	(new Ball(ecs_, deltaMouse_, ballRadius_, ballMass_));
 			deltaMouse_ -= Vector2f(event.mouseButton.x, event.mouseButton.y);
 			auto entBall = pBall->getLabel();
 			auto velComp = dynCast<ecs::Velocity>

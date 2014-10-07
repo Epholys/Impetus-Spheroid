@@ -36,7 +36,10 @@ private:
 
 	Vector2f deltaMouse_;
 
+	// Temporaries attributes to test PhysicEngine and EntityManager
 	std::vector<std::unique_ptr<Ball>> balls_;
+	float ballMass_;
+	float ballRadius_;
 };
 
 

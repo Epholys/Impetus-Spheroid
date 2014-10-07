@@ -14,7 +14,7 @@
 class Ball : public sf::Drawable
 {
 public:
-	Ball(ecs::EntityManager& entm, Vector2f position, float radius);
+	Ball(ecs::EntityManager& entm, Vector2f position, float radius, float massg);
 	virtual ~Ball();
 
 	void update(Time dt);
