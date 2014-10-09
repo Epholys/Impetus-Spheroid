@@ -22,7 +22,7 @@ clean :
 	for d in $(DIRS); do $(MAKE) $@ -C $$d; done
 
 debug : OPTFLAGS :=
-debug : BUGFLAGS := -g -Og
+debug : BUGFLAGS := -g
 debug : TARGET += .debug
 debug : TARGET := $(subst $(space),,$(TARGET))
 debug :

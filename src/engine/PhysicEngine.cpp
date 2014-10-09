@@ -12,6 +12,7 @@ namespace eg
 	PhysicEngine::PhysicEngine(ecs::EntityManager& ecs)
 		: ecs_(ecs)
 		, contacts_()
+		, precision_(2)
 		, gravityVect_(0.f, 1000.f)
 	{
 	}
@@ -20,10 +21,15 @@ namespace eg
 // *** updates functions ***
 	void PhysicEngine::update(Time dt)
 	{
-		updateGravity(dt);
-		updateMovement(dt);
+		generateContacts(ecs_.getObjectTable(ecs::Component::Position | ecs::Component::Collidable));
+		for(unsigned int i=0; i<precision_; ++i)
+		{
+			handleCollisions(dt);
+		}
 
-		handleCollisions(dt);
+		updateGravity(dt);
+
+		updateMovement(dt);
 	}
 
 	void PhysicEngine::updateGravity(Time dt)
@@ -50,8 +56,47 @@ namespace eg
 
 	void PhysicEngine::handleCollisions(Time dt)
 	{
-		auto objectTable = ecs_.getObjectTable(ecs::Component::Position | ecs::Component::Collidable);
-		generateContacts(objectTable);		
+		for(auto& contactPair : contacts_)
+		{
+			auto entityPair = contactPair.first;
+
+			auto vel1 = ecs_.getComponent(entityPair.first, ecs::Component::Velocity);
+			auto vel2 = ecs_.getComponent(entityPair.second, ecs::Component::Velocity);
+			auto sol1 = ecs_.getComponent(entityPair.first, ecs::Component::Solid);
+			auto sol2 = ecs_.getComponent(entityPair.second, ecs::Component::Solid);
+
+			if(vel1 && vel2 && sol1 && sol2)
+			{
+				auto contactNormal = contactPair.second.normal_;
+				auto contactDistance = contactPair.second.distance_;
+				auto contactImpulse = contactPair.second.impulse_;
+
+				auto firstVelComp = dynCast<ecs::Velocity>(vel1);
+				auto secondVelComp = dynCast<ecs::Velocity>(vel2);
+				auto firstSolidComp = dynCast<ecs::Solid>(sol1);
+				auto secondSolidComp = dynCast<ecs::Solid>(sol2);
+				assert(firstVelComp);
+				assert(secondVelComp);
+				assert(firstSolidComp);
+				assert(secondSolidComp);
+
+				Vector2f relativeVelocity = secondVelComp->velocity_ - firstVelComp->velocity_;
+				float relativeNormalVelocity = relativeVelocity.dotProduct(contactNormal);
+
+				float remove = relativeNormalVelocity + contactDistance / dt.asSeconds();
+
+				float impulse = remove / (firstSolidComp->invMass_ + secondSolidComp->invMass_);
+
+				float newImpulse = std::min(impulse + contactImpulse, 0.f);
+
+				float change = newImpulse - contactImpulse;
+
+				contactPair.second.impulse_ = newImpulse;
+
+				firstVelComp->velocity_ += change * contactNormal * firstSolidComp->invMass_;
+				secondVelComp->velocity_ -= change * contactNormal * secondSolidComp->invMass_;
+			}
+		}
 	}
 
 	void PhysicEngine::generateContacts
@@ -63,8 +108,8 @@ namespace eg
 			for(auto secondIt = firstIt ; secondIt!=collidables.end() ; ++secondIt)
 			{
 				
-				// Disgusting hack to jump over the cas when firstIt == secondIt
-				if(firstIt!=secondIt)
+				// Disgusting hack to jump over the case where firstIt == secondIt
+				if(firstIt != secondIt)
 				{
 				
 					auto firstPosComp = dynCast<ecs::Position>
@@ -87,13 +132,16 @@ namespace eg
 
 					contact.normal_ = Vector2f(secondPosComp->position_.x - firstPosComp->position_.x,
 					                           secondPosComp->position_.y - firstPosComp->position_.y);
-					contact.normal_.normalize();
 
 					contact.distance_ =
 						std::sqrt(std::pow(contact.normal_.x, 2) +
 						          std::pow(contact.normal_.y, 2)) -
 						firstCollComp->radius_ - 
 						secondCollComp->radius_;
+
+					contact.normal_.normalize();
+
+					contact.impulse_ = 0.f;
 
 
 					contacts_.emplace(std::pair<ecs::Entity, ecs::Entity>(firstIt->first, secondIt->first),

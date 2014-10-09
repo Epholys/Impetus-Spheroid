@@ -8,6 +8,7 @@ struct Contact
 {
 	Vector2f normal_;
 	float distance_;
+	float impulse_;
 };
 
 

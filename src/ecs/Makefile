@@ -19,7 +19,7 @@ all : executable
 executable : $(OBJECTS)
 
 debug : OPTFLAGS :=
-debug : BUGFLAGS := -g -Og
+debug : BUGFLAGS := -g
 debug : TARGET += .debug
 debug : TARGET := $(subst $(space),,$(TARGET))
 debug : executable

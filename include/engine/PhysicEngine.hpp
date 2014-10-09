@@ -57,6 +57,7 @@ namespace eg
 		ecs::EntityManager& ecs_;
 
 		contactTable contacts_;
+		unsigned int precision_;
 
 		Vector2f gravityVect_;
 	};

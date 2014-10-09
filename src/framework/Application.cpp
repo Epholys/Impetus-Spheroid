@@ -30,14 +30,13 @@ Application::Application()
 void Application::run()
 {
 	sf::Clock clock;
-	sf::Time elapsedTime = sf::Time::Zero;
 	while (window_.isOpen())
 	{
 		handleInput();
-		
-		elapsedTime = clock.restart();
+
+		sf::Time elapsedTime = clock.restart();
+
 		update(elapsedTime);
-		
 		render();
 	}
 }
