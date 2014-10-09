@@ -104,24 +104,24 @@ namespace ecs
 
 		/* (const) Getter for the Component of category cat of ent.
 		 *
-		 * Doesn't return the Component if it is paused.
+		 * Return a paused Component if flag is true
 		 *
 		 * If ent doesn't exists or ent doesn't have a Component of category
 		 * cat, returns a nullptr.
 		 * */
-		ComponentBase::SPtr getComponent(Entity ent, Component::Category cat);
-		const ComponentBase::SPtr getComponent(Entity ent, Component::Category cat) const;
+		ComponentBase::SPtr getComponent(Entity ent, Component::Category cat, bool flag = false);
+		const ComponentBase::SPtr getComponent(Entity ent, Component::Category cat, bool flag = false) const;
 
 
 		/* (const) Getter for the std::map of Components of ent.
 		 *
-		 * Doesn't return the Components if they are paused.
+		 * Returns the pause Components if flag is true
 		 *
 		 * If ent doesn't exists or doesn't have any Components, returns an
 		 * empty std::map.
 		 * */
-		componentTable getAllComponents(Entity ent);
-		const componentTable getAllComponents(Entity ent) const;
+		componentTable getAllComponents(Entity ent, bool flag = false);
+		const componentTable getAllComponents(Entity ent, bool flag = false) const;
 
 
 		/* Pauses ent's Component of category cat for dt.
@@ -152,12 +152,13 @@ namespace ecs
 		 * Components, which have a Position and a Velocity. 
 		 *
 		 * Only the desired Components are in the table.
-		 * If a Component asked is paused, the Entity associated isn't given.
+		 * If a Component asked is paused, the Entity associated is given if
+		 * flag is true.
 		 *
 		 * If there isn't any entities with all Components of mask, return a
 		 * empty objectTable.
 		 * */
-		objectTable getObjectTable(Component::CategoryMask mask);
+		objectTable getObjectTable(Component::CategoryMask mask, bool flag = false);
 
 
 //-----------------------------------------------------------------------------

@@ -117,9 +117,9 @@ namespace ecs
 	}
 
 
-	ComponentBase::SPtr EntityManager::getComponent(Entity ent, Component::Category cat)
+	ComponentBase::SPtr EntityManager::getComponent(Entity ent, Component::Category cat, bool flag)
 	{
-		if(componentIsActive(ent, cat))
+		if(componentIsActive(ent, cat) || flag)
 		{
 			return entityComponents_[ent][cat];
 		}
@@ -127,9 +127,10 @@ namespace ecs
 	}
 
 	const ComponentBase::SPtr EntityManager::getComponent(Entity ent,
-	                                                     Component::Category cat) const
+	                                                      Component::Category cat,
+	                                                      bool flag) const
 	{
-		if(componentIsActive(ent, cat))
+		if(componentIsActive(ent, cat) || flag)
 		{
 			return entityComponents_.at(ent).at(cat);
 		}
@@ -138,14 +139,14 @@ namespace ecs
 
 
 	EntityManager::componentTable
-	EntityManager::getAllComponents(Entity ent)
+	EntityManager::getAllComponents(Entity ent, bool flag)
 	{
 		componentTable table;
 		if(entityExists(ent))
 		{
 			for(auto& componentPair : entityComponents_[ent])
 			{
-				if(!(componentPair.second->isPaused()))
+				if(!(componentPair.second->isPaused()) && flag)
 				{
 					table.insert(componentPair);
 				}
@@ -155,14 +156,14 @@ namespace ecs
 	}
 
 	const EntityManager::componentTable
-	EntityManager::getAllComponents(Entity ent) const
+	EntityManager::getAllComponents(Entity ent, bool flag) const
 	{
 		componentTable table;
 		if(entityExists(ent))
 		{
 			for(const auto& componentPair : entityComponents_.at(ent))
 			{
-				if(!(componentPair.second->isPaused()))
+				if(!(componentPair.second->isPaused()) && flag)
 				{
 					table.insert(componentPair);
 				}
@@ -232,7 +233,7 @@ namespace ecs
 	 * */ 
 
 	EntityManager::objectTable
-	EntityManager::getObjectTable(Component::CategoryMask mask)
+	EntityManager::getObjectTable(Component::CategoryMask mask, bool flag)
 	{
 		EntityManager::objectTable objects;
 
@@ -254,7 +255,7 @@ namespace ecs
 					if(cat & mask)
 					{
 						Component::Category strictCat = Component::Category(cat);
-						if(!(epair.second[strictCat]->isPaused()))
+						if(!(epair.second[strictCat]->isPaused()) || flag)
 						{
 							comps[strictCat]=epair.second[strictCat];
 						}

@@ -12,7 +12,7 @@ namespace eg
 	PhysicEngine::PhysicEngine(ecs::EntityManager& ecs)
 		: ecs_(ecs)
 		, contacts_()
-		, precision_(2)
+		, precision_(1)
 		, gravityVect_(0.f, 1000.f)
 	{
 	}
@@ -65,20 +65,32 @@ namespace eg
 			auto sol1 = ecs_.getComponent(entityPair.first, ecs::Component::Solid);
 			auto sol2 = ecs_.getComponent(entityPair.second, ecs::Component::Solid);
 
-			if(vel1 && vel2 && sol1 && sol2)
+			if(sol1 && sol2)
 			{
 				auto contactNormal = contactPair.second.normal_;
 				auto contactDistance = contactPair.second.distance_;
 				auto contactImpulse = contactPair.second.impulse_;
 
-				auto firstVelComp = dynCast<ecs::Velocity>(vel1);
-				auto secondVelComp = dynCast<ecs::Velocity>(vel2);
 				auto firstSolidComp = dynCast<ecs::Solid>(sol1);
 				auto secondSolidComp = dynCast<ecs::Solid>(sol2);
-				assert(firstVelComp);
-				assert(secondVelComp);
 				assert(firstSolidComp);
 				assert(secondSolidComp);
+
+				auto firstVelComp = dynCast<ecs::Velocity>(vel1);
+				auto secondVelComp = dynCast<ecs::Velocity>(vel2);
+				/* If the Velocity Component is paused, create a still and
+				 * unmovable object (i.e. a object with null velocity and
+				 * infinite mass */
+				if(!firstVelComp)
+				{
+					firstVelComp = std::make_shared<ecs::Velocity>(Vector2f(0.f,0.f));
+					firstSolidComp = std::make_shared<ecs::Solid>(0.f, 1.f);
+				}
+				if(!secondVelComp)
+				{
+					secondVelComp = std::make_shared<ecs::Velocity>(Vector2f(0.f,0.f));
+					secondSolidComp = std::make_shared<ecs::Solid>(0.f, 1.f);
+				}
 
 				Vector2f relativeVelocity = secondVelComp->velocity_ - firstVelComp->velocity_;
 				float relativeNormalVelocity = relativeVelocity.dotProduct(contactNormal);
