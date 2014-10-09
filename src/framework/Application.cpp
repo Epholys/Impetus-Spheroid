@@ -1,6 +1,7 @@
 
 #include <SFML/Window/Event.hpp>
 
+#include "framework/Assertion.hpp"
 #include "framework/Application.hpp"
 
 
@@ -100,10 +101,37 @@ void Application::update(sf::Time dt)
 {
 	ecs_.update(dt);
 	engine_.update(dt);
+	
+	auto it = balls_.begin();
+	while(it != balls_.end())
+	{
+		auto ballPos = ecs_.getComponent((*(it))->getLabel(), ecs::Component::Position);
+		if(ballPos)
+		{
+			auto ballPosComp = dynCast<ecs::Position>(ballPos);
+			assert(ballPosComp);
+			
+			sf::Vector2f windowSize(window_.getSize());
+			float ballXPos = ballPosComp->position_.x;
+			float ballYPos = ballPosComp->position_.y;
+			if(ballXPos < -ballRadius_ ||
+			   ballXPos > windowSize.x + ballRadius_ ||
+			   ballYPos > windowSize.y + ballRadius_)
+			{
+				balls_.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+		}
+	}
+
 	for (auto& ball : balls_)
 	{
 		ball->update(dt);
-	}	
+	}
+	
 }
 
 void Application::render()

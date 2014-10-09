@@ -93,8 +93,8 @@ namespace eg
 
 				contactPair.second.impulse_ = newImpulse;
 
-				firstVelComp->velocity_ += change * contactNormal * firstSolidComp->invMass_;
-				secondVelComp->velocity_ -= change * contactNormal * secondSolidComp->invMass_;
+				firstVelComp->velocity_ += change * contactNormal * firstSolidComp->invMass_ * firstSolidComp->restitution_;
+				secondVelComp->velocity_ -= change * contactNormal * secondSolidComp->invMass_ * secondSolidComp->restitution_;
 			}
 		}
 	}
