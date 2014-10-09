@@ -2,6 +2,8 @@
 #define UT_VECTOR2_HPP
 
 
+#include <cmath>
+
 #include <SFML/System/Vector2.hpp>
 
 
@@ -25,6 +27,7 @@ public:
 	explicit Vector2(const Vector2<U>& vector);
 
 	T dotProduct(const Vector2& vector) const;
+	void normalize();
 };
 	
 #include "utility/Vector2.ipp"

@@ -28,3 +28,14 @@ T Vector2<T>::dotProduct(const Vector2<T>& vector) const
 {
 	return sf::Vector2<T>::x * vector.x + sf::Vector2<T>::y * vector.y;
 }
+
+template<typename T>
+void Vector2<T>::normalize()
+{  
+	T x = sf::Vector2<T>::x;
+	T y = sf::Vector2<T>::y;
+		
+	float norm = std::sqrt(x*x + y*y);
+	x /= norm;
+	y /= norm;
+}
