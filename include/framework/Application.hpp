@@ -6,6 +6,7 @@
 
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/ConvexShape.hpp>
 
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
@@ -40,6 +41,9 @@ private:
 	std::vector<std::unique_ptr<Ball>> balls_;
 	float ballMass_;
 	float ballRadius_;
+	sf::Color ballColor_;
+	
+	sf::ConvexShape deltaMouseLine_;
 };
 
 

@@ -42,14 +42,7 @@ namespace eg
 				(massicPair.second[ecs::Component::Velocity]);
 			assert(velComp);
 
-			auto massComp = dynCast<ecs::Mass>
-				(massicPair.second[ecs::Component::Mass]);
-			assert(massComp);
-
-			/* I know this isn't scientifically correct, but for this game this
-			is exactely what is needed
-			*/
-			velComp->velocity_ += massComp->mass_ * gravityVect_ * dt.asSeconds();
+			velComp->velocity_ += gravityVect_ * dt.asSeconds();
 		}
 	}
 

@@ -19,9 +19,20 @@ Application::Application()
 	, balls_()
 	, ballMass_(1.f)
 	, ballRadius_(10.f)
+	, ballColor_(sf::Color::Red)
+	, deltaMouseLine_()
 {
 	window_.setKeyRepeatEnabled(false);
 	window_.setVerticalSyncEnabled(false);
+
+	deltaMouseLine_.setPointCount(4);
+	deltaMouseLine_.setPoint(0, sf::Vector2f(0,0));
+	deltaMouseLine_.setPoint(1, sf::Vector2f(0,0));
+	deltaMouseLine_.setPoint(2, sf::Vector2f(0,0));
+	deltaMouseLine_.setPoint(3, sf::Vector2f(0,0));
+	deltaMouseLine_.setOutlineThickness(1);
+	deltaMouseLine_.setOutlineColor(sf::Color::Transparent);
+	deltaMouseLine_.setFillColor(sf::Color::Transparent);
 }
 
 
@@ -74,6 +85,9 @@ void Application::handleInput()
 				ballRadius_ /= 1.5f;
 				break;
 
+			case sf::Keyboard::G:
+				ballColor_ = (ballColor_ == sf::Color::Green) ? sf::Color::Red : sf::Color::Green;
+
 			default:
 				break;
 			}
@@ -82,18 +96,35 @@ void Application::handleInput()
 		         event.mouseButton.button == sf::Mouse::Left)			
 		{
 			deltaMouse_ = Vector2f(event.mouseButton.x, event.mouseButton.y);
+
+			deltaMouseLine_.setPoint(0, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+			deltaMouseLine_.setPoint(1, sf::Vector2f(event.mouseButton.x+1, event.mouseButton.y));
+			deltaMouseLine_.setPoint(2, sf::Vector2f(event.mouseButton.x+1, event.mouseButton.y+1));
+			deltaMouseLine_.setPoint(3, sf::Vector2f(event.mouseButton.x+1, event.mouseButton.y+1));
+			deltaMouseLine_.setOutlineColor(sf::Color::White);
 		}
 		else if (event.type == sf::Event::MouseButtonReleased &&
 		         event.mouseButton.button == sf::Mouse::Left)
 		{
-			std::unique_ptr<Ball> pBall	(new Ball(ecs_, deltaMouse_, ballRadius_, ballMass_));
+			std::unique_ptr<Ball> pBall	(new Ball(ecs_, deltaMouse_, ballRadius_, ballMass_, ballColor_));
 			deltaMouse_ -= Vector2f(event.mouseButton.x, event.mouseButton.y);
 			auto entBall = pBall->getLabel();
 			auto velComp = dynCast<ecs::Velocity>
 				(ecs_.getComponent(entBall, ecs::Component::Velocity));
-			velComp->velocity_ -= 3.f * deltaMouse_;			
+			velComp->velocity_ -= 3.f * deltaMouse_ / ballMass_;
 			balls_.push_back(std::move(pBall));
+
+			deltaMouseLine_.setOutlineColor(sf::Color::Transparent);
+			deltaMouseLine_.setFillColor(sf::Color::Transparent);
 		}
+	}
+
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		auto mousePos = sf::Vector2f(sf::Mouse::getPosition(window_));
+		deltaMouseLine_.setPoint(2, sf::Vector2f(mousePos.x, mousePos.y));
+		deltaMouseLine_.setPoint(3, sf::Vector2f(mousePos.x+1, mousePos.y+1));
 	}
 }
 
@@ -131,7 +162,6 @@ void Application::update(sf::Time dt)
 	{
 		ball->update(dt);
 	}
-	
 }
 
 void Application::render()
@@ -141,5 +171,6 @@ void Application::render()
 	{
 		window_.draw(*ball);
 	}
+	window_.draw(deltaMouseLine_);
 	window_.display();
 }
