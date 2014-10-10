@@ -21,6 +21,7 @@ namespace eg
 	 *
 	 * TODO: Add some cache system not to search at each frame all entities with
 	 * X or Y Component.
+	 * TODO: Optimize (if necessary)
 	 * 
 	 * More information physic engine and speculative contacts: 
 	 * http://www.wildbunny.co.uk/blog/2011/03/25/speculative-contacts-an-continuous-collision-engine-approach-part-1/
@@ -45,9 +46,19 @@ namespace eg
 		/* Apply gravity */
 		void updateGravity(Time dt);
 
-		/* Generate all the Contacts of Collidable Entities of ecs_ */
+
+		/* Resolves all collisions */
 		void handleCollisions(Time dt);
-		void generateContacts(const ecs::EntityManager::objectTable& collidables);
+
+		/* Generate all the Contacts of Collidable Entities of ecs_ */
+		void generateAllContacts(const ecs::EntityManager::objectTable& collidables);
+		/* Returns the Contact beetween two spheres */
+		Contact generateSphereContact(Vector2f firstPos, float firstRadius,
+		                              Vector2f secondPos, float secondRadius);
+		/* Returns the Contact beetween a sphere and a straight rectangle */
+		Contact generateMixedContact(Vector2f spherePos, float sphereRadius,
+		                             Vector2f rectPos, Vector2f rectSize);
+		
 
 		/* Apply movements */
 		void updateMovement(Time dt);

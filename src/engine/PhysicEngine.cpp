@@ -1,4 +1,4 @@
-#include <iostream>
+#include <iterator>
 
 #include "framework/Assertion.hpp"
 #include "engine/PhysicEngine.hpp"
@@ -21,9 +21,9 @@ namespace eg
 // *** updates functions ***
 	void PhysicEngine::update(Time dt)
 	{
-		generateContacts(ecs_.getObjectTable(ecs::Component::Position | ecs::Component::Collidable));
 		for(unsigned int i=0; i<precision_; ++i)
 		{
+			generateAllContacts(ecs_.getObjectTable(ecs::Component::Position | ecs::Component::Collidable));
 			handleCollisions(dt);
 		}
 
@@ -71,7 +71,7 @@ namespace eg
 
 				auto firstVelComp = dynCast<ecs::Velocity>(vel1);
 				auto secondVelComp = dynCast<ecs::Velocity>(vel2);
-				/* If the Velocity Component is paused, create a still and
+				/* If the Velocity Component is paused, create a motionless and
 				 * unmovable object (i.e. a object with null velocity and
 				 * infinite mass */
 				if(!firstVelComp)
@@ -104,58 +104,143 @@ namespace eg
 		}
 	}
 
-	void PhysicEngine::generateContacts
+	void PhysicEngine::generateAllContacts
 	(const ecs::EntityManager::objectTable& collidables)
 	{
 		contacts_.clear();
+
 		for(auto firstIt = collidables.begin() ; firstIt!=collidables.end() ; ++firstIt)
 		{
 			for(auto secondIt = firstIt ; secondIt!=collidables.end() ; ++secondIt)
-			{
-				
-				// Disgusting hack to jump over the case where firstIt == secondIt
-				if(firstIt != secondIt)
+			{	
+				// Disgusting hack to jump over the cazse where firstIt == secondIt
+				if (firstIt == secondIt)
 				{
-				
-					auto firstPosComp = dynCast<ecs::Position>
-						(firstIt->second.at(ecs::Component::Position));
-					auto firstCollComp = dynCast<ecs::CollidableSphere>
-						(firstIt->second.at(ecs::Component::Collidable));
+					++secondIt;
+					if(secondIt==collidables.end())
+						break;
+				}
 
-					auto secondPosComp = dynCast<ecs::Position>
-						(secondIt->second.at(ecs::Component::Position));
-					auto secondCollComp = dynCast<ecs::CollidableSphere>
-						(secondIt->second.at(ecs::Component::Collidable));
+				auto firstPosComp = dynCast<ecs::Position>
+					(firstIt->second.at(ecs::Component::Position));
+				auto secondPosComp = dynCast<ecs::Position>
+					(secondIt->second.at(ecs::Component::Position));
 
-					assert(firstPosComp);
-					assert(firstCollComp);
-					assert(secondPosComp);
-					assert(secondCollComp);
+				assert(firstPosComp);
+				assert(secondPosComp);
 
 
-					Contact contact;
+				auto firstCollSphere = dynCast<ecs::CollidableSphere>
+					(firstIt->second.at(ecs::Component::Collidable));
+				auto secondCollSphere = dynCast<ecs::CollidableSphere>
+					(secondIt->second.at(ecs::Component::Collidable));
+				auto firstCollRect = dynCast<ecs::CollidableRect>
+					(firstIt->second.at(ecs::Component::Collidable));
+				auto secondCollRect = dynCast<ecs::CollidableRect>
+					(secondIt->second.at(ecs::Component::Collidable));
 
-					contact.normal_ = Vector2f(secondPosComp->position_.x - firstPosComp->position_.x,
-					                           secondPosComp->position_.y - firstPosComp->position_.y);
+				Contact contact;
+				bool contactGenerated = false;
 
-					contact.distance_ =
-						std::sqrt(std::pow(contact.normal_.x, 2) +
-						          std::pow(contact.normal_.y, 2)) -
-						firstCollComp->radius_ - 
-						secondCollComp->radius_;
+				if(firstCollSphere && secondCollSphere)
+				{
+					contact =  generateSphereContact(firstPosComp->position_,
+					                                 firstCollSphere->radius_,
+					                                 secondPosComp->position_,
+					                                 secondCollSphere->radius_);
+					contactGenerated = true;
+						                                       
+				}
+				else if((firstCollRect && secondCollSphere)
+				        || (firstCollSphere && secondCollRect))
+				{
+					if(firstCollRect)
+					{
+						contact = generateMixedContact(secondPosComp->position_,
+						                               secondCollSphere->radius_,
+						                               firstPosComp->position_,
+						                               firstCollRect->size_);
+					}
 
-					contact.normal_.normalize();
+					else
+					{
+						contact = generateMixedContact(firstPosComp->position_,
+						                               firstCollSphere->radius_,
+						                               secondPosComp->position_,
+						                               secondCollRect->size_);
+						contact.normal_ *= -1.f;
+					}
 
-					contact.impulse_ = 0.f;
+					contactGenerated = true;
+				}
+				else
+				{
+					// Do nothing
+				}
 
-
-					contacts_.emplace(std::pair<ecs::Entity, ecs::Entity>(firstIt->first, secondIt->first),
+				/* If contact.normal_ is the null vector and can't be
+				 * normalized, transform it into a arbitrary vector. 
+				 * */
+				if(!contact.normal_.normalize())
+				{
+					contact.normal_ = Vector2f(0.f, 1.f);
+				}
+					
+				if(contactGenerated)
+				{
+					contacts_.emplace(std::make_pair(firstIt->first, secondIt->first),
 					                  contact);
 				}
 			}
 		}
 	}
 
+
+	Contact PhysicEngine::generateSphereContact(Vector2f firstPos, float firstRadius,
+	                                            Vector2f secondPos, float secondRadius)
+	{
+		Contact contact;
+
+		contact.normal_ = Vector2f(secondPos.x - firstPos.x,
+		                           secondPos.y - firstPos.y);
+
+		contact.distance_ = (std::sqrt(std::pow(contact.normal_.x, 2)
+		                               + std::pow(contact.normal_.y, 2))
+		                     - firstRadius
+		                     - secondRadius);
+		
+		return contact;
+	}
+
+	Contact PhysicEngine::generateMixedContact(Vector2f spherePos, float sphereRadius,
+	                                           Vector2f rectPos, Vector2f rectSize)
+	{
+		Contact contact;
+
+		Vector2f gap (spherePos.x - rectPos.x, spherePos.y - rectPos.y);
+
+		bool insideX = !(std::max(std::abs(gap.x) - rectSize.x / 2.f, 0.f));
+		bool insideY = !(std::max(std::abs(gap.y) - rectSize.y / 2.f, 0.f));
+
+		float xFactor = std::signbit(gap.x) ? -1 : 1;
+		float yFactor = std::signbit(gap.y) ? -1 : 1;
+
+		gap = Vector2f(gap.x - xFactor * rectSize.x / 2.f,
+		               gap.y - yFactor * rectSize.y / 2.f);
+
+		if(insideX)
+			gap.x = 0.f;
+		if(insideY)
+			gap.y = 0.f;
+		
+		contact.normal_ = gap;
+
+		contact.distance_ = (std::sqrt(std::pow(gap.x, 2) + std::pow(gap.y, 2))
+		                     - sphereRadius);
+
+		return contact;
+	}
+		
 
 	void PhysicEngine::updateMovement(Time dt)
 	{

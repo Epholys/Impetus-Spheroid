@@ -3,45 +3,44 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "framework/Assertion.hpp"
-#include "framework/Ball.hpp"
+#include "framework/Rectangle.hpp"
 #include "utility/utility.hpp"
 
-
-Ball::Ball(ecs::EntityManager& entm, Vector2f position, float radius, float mass, sf::Color color)
+Rectangle::Rectangle(ecs::EntityManager& entm, Vector2f position, Vector2f size, sf::Color color)
 	: ecs_(entm)
 	, label_(0)
-	, ball_(radius)
+	, rect_(size)
 {
-	label_ = ecs::createBall(entm, position, radius, mass);
+	label_ = ecs::createRect(entm, position, size);
 
-	ball_.setFillColor(color);
-	auto ballRect = ball_.getLocalBounds();
-	ball_.setOrigin(ballRect.left + ballRect.width / 2.f,
-	                ballRect.top + ballRect.height / 2.f);
+	rect_.setFillColor(color);
+	auto rectBounds = rect_.getLocalBounds();
+	rect_.setOrigin(rectBounds.left + rectBounds.width / 2.f,
+	                rectBounds.top + rectBounds.height / 2.f);
+
+	update();
 }
 
-
-Ball::~Ball()
+Rectangle::~Rectangle()
 {
 	ecs_.removeEntity(label_);
 }
 
-
-void Ball::update(Time)
+void Rectangle::update(Time)
 {
 	auto pointPos = dynCast<ecs::Position>
 		(ecs_.getComponent(label_, ecs::Component::Position));
 	assert(pointPos);
 	auto position = pointPos->position_;
-	ball_.setPosition(position.x, position.y);
+	rect_.setPosition(position.x, position.y);
 }
 
-void Ball::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Rectangle::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	target.draw(ball_, states);
+	target.draw(rect_, states);
 }
 
-ecs::Entity Ball::getLabel() const
+ecs::Entity Rectangle::getLabel() const
 {
 	return label_;
 }
@@ -49,3 +48,4 @@ ecs::Entity Ball::getLabel() const
 ///////////////////////////////////////////////////////////////////////////////
 // TEMPORARY TEST CLASS
 ///////////////////////////////////////////////////////////////////////////////
+

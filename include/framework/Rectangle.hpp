@@ -2,9 +2,8 @@
 // TEMPORARY TEST CLASS
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef BALL_HPP
-#define BALL_HPP
-
+#ifndef RECTANGLE_HPP
+#define RECTANGLE_HPP
 
 #include <SFML/Graphics.hpp>
 
@@ -12,13 +11,13 @@
 #include "ecs/EntityManager.hpp"
 #include "ecs/Archetype.hpp"
 
-class Ball : public sf::Drawable
+class Rectangle : public sf::Drawable
 {
 public:
-	Ball(ecs::EntityManager& entm, Vector2f position, float radius, float mass, sf::Color color);
-	virtual ~Ball();
+	Rectangle(ecs::EntityManager& entm, Vector2f position, Vector2f size, sf::Color color);
+	virtual ~Rectangle();
 
-	void update(Time dt);
+	void update(Time dt = Time::Zero);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	ecs::Entity getLabel() const;
@@ -26,12 +25,12 @@ public:
 private:
 	ecs::EntityManager& ecs_;
 	ecs::Entity label_;
-
-	sf::CircleShape ball_;
+	
+	sf::RectangleShape rect_;
 };
 
 
-#endif // BALL_HPP
+#endif // RECTANGLE_HPP
 
 ///////////////////////////////////////////////////////////////////////////////
 // TEMPORARY TEST CLASS

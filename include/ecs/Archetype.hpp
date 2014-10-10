@@ -18,6 +18,10 @@ namespace ecs
 	                  Vector2f position,
 	                  float radius,
 	                  float mass);
+	
+	Entity createRect(EntityManager& ecs,
+	                  Vector2f position,
+	                  Vector2f size);
 
 } // namespace ecs
 

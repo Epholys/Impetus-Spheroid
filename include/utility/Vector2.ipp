@@ -1,3 +1,5 @@
+
+
 //-----------------------------------------------------------------------------
 // *** Constructors: ***
 template<typename T>
@@ -30,15 +32,20 @@ T Vector2<T>::dotProduct(const Vector2<T>& vector) const
 }
 
 template<typename T>
-void Vector2<T>::normalize()
+bool Vector2<T>::normalize()
 {  
 	T x = sf::Vector2<T>::x;
 	T y = sf::Vector2<T>::y;
 		
 	float norm = std::sqrt(x*x + y*y);
 
-	sf::Vector2<T>::x /= norm;
-	sf::Vector2<T>::y /= norm;
+	if(norm != 0.f)
+	{
+		sf::Vector2<T>::x /= norm;
+		sf::Vector2<T>::y /= norm;
+		return true;
+	}
+	return false;
 }
 
 

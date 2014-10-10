@@ -26,8 +26,14 @@ public:
 	template<typename U>
 	explicit Vector2(const Vector2<U>& vector);
 
+	/* Returns the dot product of this and vector */
 	T dotProduct(const Vector2& vector) const;
-	void normalize();
+
+	/* Normalize this vector.
+	 * Returns true if this operation succeeded, i.e. *this isn't the null
+	 * vector.
+	 * */
+	bool normalize();
 };
 	
 

@@ -1,3 +1,4 @@
+#include <iostream>
 
 #include <SFML/Window/Event.hpp>
 
@@ -21,6 +22,7 @@ Application::Application()
 	, ballRadius_(10.f)
 	, ballColor_(sf::Color::Red)
 	, deltaMouseLine_()
+	, rects_()
 {
 	window_.setKeyRepeatEnabled(false);
 	window_.setVerticalSyncEnabled(false);
@@ -111,12 +113,21 @@ void Application::handleInput()
 			auto entBall = pBall->getLabel();
 			auto velComp = dynCast<ecs::Velocity>
 				(ecs_.getComponent(entBall, ecs::Component::Velocity));
+			assert(velComp);
 			velComp->velocity_ -= 3.f * deltaMouse_ / ballMass_;
 			balls_.push_back(std::move(pBall));
 
 			deltaMouseLine_.setOutlineColor(sf::Color::Transparent);
 			deltaMouseLine_.setFillColor(sf::Color::Transparent);
 		}
+		else if (event.type == sf::Event::MouseButtonPressed &&
+		         event.mouseButton.button == sf::Mouse::Right)			
+		{
+			deltaMouse_ = Vector2f(event.mouseButton.x, event.mouseButton.y);
+			std::unique_ptr<Rectangle> pRect(new Rectangle(ecs_, deltaMouse_, Vector2f(15.f, 75.f), sf::Color::Blue));
+			rects_.push_back(std::move(pRect));
+		}
+
 	}
 
 
@@ -132,7 +143,7 @@ void Application::update(sf::Time dt)
 {
 	ecs_.update(dt);
 	engine_.update(dt);
-	
+
 	auto it = balls_.begin();
 	while(it != balls_.end())
 	{
@@ -170,6 +181,10 @@ void Application::render()
 	for (const auto& ball : balls_)
 	{
 		window_.draw(*ball);
+	}
+	for (const auto& rect : rects_)
+	{
+		window_.draw(*rect);
 	}
 	window_.draw(deltaMouseLine_);
 	window_.display();

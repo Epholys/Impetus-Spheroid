@@ -7,7 +7,7 @@ OPTFLAGS := -O2
 BUGFLAGS :=
 
 TARGETDIR = ../
-OBJECTS = main.o Application.o Ball.o
+OBJECTS = main.o Application.o Ball.o Rectangle.o
 
 empty :=
 space := $(empty) $(empty)
