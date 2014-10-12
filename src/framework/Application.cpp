@@ -89,6 +89,12 @@ void Application::handleInput()
 
 			case sf::Keyboard::G:
 				ballColor_ = (ballColor_ == sf::Color::Green) ? sf::Color::Red : sf::Color::Green;
+				break;
+				
+			case sf::Keyboard::R:
+				balls_.clear();
+				rects_.clear();
+				break;
 
 			default:
 				break;
@@ -125,6 +131,13 @@ void Application::handleInput()
 		{
 			deltaMouse_ = Vector2f(event.mouseButton.x, event.mouseButton.y);
 			std::unique_ptr<Rectangle> pRect(new Rectangle(ecs_, deltaMouse_, Vector2f(15.f, 75.f), sf::Color::Blue));
+			rects_.push_back(std::move(pRect));
+		}
+		else if (event.type == sf::Event::MouseButtonPressed &&
+		         event.mouseButton.button == sf::Mouse::Middle)			
+		{
+			deltaMouse_ = Vector2f(event.mouseButton.x, event.mouseButton.y);
+			std::unique_ptr<Rectangle> pRect(new Rectangle(ecs_, deltaMouse_, Vector2f(800.f, 15.f), sf::Color::Blue));
 			rects_.push_back(std::move(pRect));
 		}
 

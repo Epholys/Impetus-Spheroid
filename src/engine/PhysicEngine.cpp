@@ -12,7 +12,7 @@ namespace eg
 	PhysicEngine::PhysicEngine(ecs::EntityManager& ecs)
 		: ecs_(ecs)
 		, contacts_()
-		, precision_(1)
+		, precision_(4)
 		, gravityVect_(0.f, 1000.f)
 	{
 	}
@@ -45,6 +45,7 @@ namespace eg
 			velComp->velocity_ += gravityVect_ * dt.asSeconds();
 		}
 	}
+
 
 
 	void PhysicEngine::handleCollisions(Time dt)
@@ -92,6 +93,18 @@ namespace eg
 
 				float impulse = remove / (firstSolidComp->invMass_ + secondSolidComp->invMass_);
 
+				/* Little hack to prevent the solids from pinging back when they
+				 * are constrained into a closed environment. 
+				 * Drawbacks: Solids tends to keep penetrating unmovable
+				 * objects.
+				 * TODO: Find a better way to deal with jittering when there is
+				 * severe penetration.
+				 * */
+				if(contactDistance < 0)
+				{
+					impulse *= 0.5f;
+				}
+
 				float newImpulse = std::min(impulse + contactImpulse, 0.f);
 
 				float change = newImpulse - contactImpulse;
@@ -113,7 +126,7 @@ namespace eg
 		{
 			for(auto secondIt = firstIt ; secondIt!=collidables.end() ; ++secondIt)
 			{	
-				// Disgusting hack to jump over the cazse where firstIt == secondIt
+				// Disgusting hack to jump over the case where firstIt == secondIt
 				if (firstIt == secondIt)
 				{
 					++secondIt;

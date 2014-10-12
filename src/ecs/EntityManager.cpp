@@ -107,6 +107,7 @@ namespace ecs
 		} 
 	}
 
+
 	void EntityManager::removeAllComponents(Entity ent)
 	{
 		if(entityExists(ent))
