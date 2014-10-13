@@ -21,9 +21,9 @@ namespace eg
 // *** updates functions ***
 	void PhysicEngine::update(Time dt)
 	{
+		generateAllContacts(ecs_.getObjectTable(ecs::Component::Position | ecs::Component::Collidable));
 		for(unsigned int i=0; i<precision_; ++i)
 		{
-			generateAllContacts(ecs_.getObjectTable(ecs::Component::Position | ecs::Component::Collidable));
 			handleCollisions(dt);
 		}
 
@@ -63,7 +63,6 @@ namespace eg
 			{
 				auto contactNormal = contactPair.second.normal_;
 				auto contactDistance = contactPair.second.distance_;
-				auto contactImpulse = contactPair.second.impulse_;
 
 				auto firstSolidComp = dynCast<ecs::Solid>(sol1);
 				auto secondSolidComp = dynCast<ecs::Solid>(sol2);
@@ -93,26 +92,10 @@ namespace eg
 
 				float impulse = remove / (firstSolidComp->invMass_ + secondSolidComp->invMass_);
 
-				/* Little hack to prevent the solids from pinging back when they
-				 * are constrained into a closed environment. 
-				 * Drawbacks: Solids tends to keep penetrating unmovable
-				 * objects.
-				 * TODO: Find a better way to deal with jittering when there is
-				 * severe penetration.
-				 * */
-				if(contactDistance < 0)
-				{
-					impulse *= 0.5f;
-				}
+				float newImpulse = std::min(impulse, 0.f);
 
-				float newImpulse = std::min(impulse + contactImpulse, 0.f);
-
-				float change = newImpulse - contactImpulse;
-
-				contactPair.second.impulse_ = newImpulse;
-
-				firstVelComp->velocity_ += change * contactNormal * firstSolidComp->invMass_ * firstSolidComp->restitution_;
-				secondVelComp->velocity_ -= change * contactNormal * secondSolidComp->invMass_ * secondSolidComp->restitution_;
+				firstVelComp->velocity_ += newImpulse * contactNormal * firstSolidComp->invMass_ * firstSolidComp->restitution_;
+				secondVelComp->velocity_ -= newImpulse * contactNormal * secondSolidComp->invMass_ * secondSolidComp->restitution_;
 			}
 		}
 	}
