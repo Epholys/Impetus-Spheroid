@@ -7,6 +7,8 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
@@ -39,6 +41,10 @@ private:
 	Vector2f deltaMouse_;
 
 	// Temporaries attributes to test PhysicEngine and EntityManager
+	sf::Font font_;
+	int score_;
+	sf::Text scoreText_;
+
 	std::vector<std::unique_ptr<Ball>> balls_;
 	float ballMass_;
 	float ballRadius_;

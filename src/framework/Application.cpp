@@ -1,3 +1,4 @@
+#include <sstream>
 #include <iostream>
 
 #include <SFML/Window/Event.hpp>
@@ -17,6 +18,9 @@ Application::Application()
 	, ecs_()
 	, engine_(ecs_)
 	, deltaMouse_()
+	, font_()
+	, score_(0)
+	, scoreText_()
 	, balls_()
 	, ballMass_(1.f)
 	, ballRadius_(10.f)
@@ -25,8 +29,12 @@ Application::Application()
 	, rects_()
 {
 	window_.setKeyRepeatEnabled(false);
-	window_.setVerticalSyncEnabled(false);
+	window_.setVerticalSyncEnabled(true);
 
+	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
+	scoreText_.setString("0");
+	scoreText_.setFont(font_);
+	
 	deltaMouseLine_.setPointCount(4);
 	deltaMouseLine_.setPoint(0, sf::Vector2f(0,0));
 	deltaMouseLine_.setPoint(1, sf::Vector2f(0,0));
@@ -186,10 +194,16 @@ void Application::update(sf::Time dt)
 	{
 		ball->update(dt);
 	}
+	
+	score_ += engine_.getTrackedCollisions_().size();
+	std::stringstream ss;
+	ss << score_;
+	scoreText_.setString(ss.str());
 }
 
 void Application::render()
 {
+
 	window_.clear();
 	for (const auto& ball : balls_)
 	{
@@ -200,5 +214,6 @@ void Application::render()
 		window_.draw(*rect);
 	}
 	window_.draw(deltaMouseLine_);
+	window_.draw(scoreText_);
 	window_.display();
 }

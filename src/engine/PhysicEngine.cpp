@@ -18,18 +18,49 @@ namespace eg
 	}
 
 //-----------------------------------------------------------------------------
+// *** public function: ***
+
+	const std::vector<PhysicEngine::entityPair>&
+	PhysicEngine::getTrackedCollisions_() const
+	{
+		return trackedCollisions_;
+	}
+
+
+//-----------------------------------------------------------------------------
 // *** updates functions ***
 	void PhysicEngine::update(Time dt)
 	{
+		trackedCollisions_.clear();
+
 		generateAllContacts(ecs_.getObjectTable(ecs::Component::Position | ecs::Component::Collidable));
+
 		for(unsigned int i=0; i<precision_; ++i)
 		{
-			handleCollisions(dt);
+			handleAllCollisions(dt);
 		}
 
 		updateGravity(dt);
 
 		updateMovement(dt);
+	}
+
+	void PhysicEngine::updateMovement(Time dt)
+	{
+		auto moveableObjects = ecs_.getObjectTable(ecs::Component::Moveable);
+
+		for (auto& moveablePair : moveableObjects)
+		{
+			auto posComp = dynCast<ecs::Position>
+				(moveablePair.second[ecs::Component::Position]);
+			assert(posComp);
+
+			auto velComp = dynCast<ecs::Velocity>
+				(moveablePair.second[ecs::Component::Velocity]);
+			assert(velComp);
+
+			posComp->position_ += velComp->velocity_ * dt.asSeconds();
+		}
 	}
 
 	void PhysicEngine::updateGravity(Time dt)
@@ -47,8 +78,10 @@ namespace eg
 	}
 
 
+//-----------------------------------------------------------------------------
+// *** Collisions functions: ***
 
-	void PhysicEngine::handleCollisions(Time dt)
+	void PhysicEngine::handleAllCollisions(Time dt)
 	{
 		for(auto& contactPair : contacts_)
 		{
@@ -58,12 +91,10 @@ namespace eg
 			auto vel2 = ecs_.getComponent(entityPair.second, ecs::Component::Velocity);
 			auto sol1 = ecs_.getComponent(entityPair.first, ecs::Component::Solid);
 			auto sol2 = ecs_.getComponent(entityPair.second, ecs::Component::Solid);
+			
 
 			if(sol1 && sol2)
 			{
-				auto contactNormal = contactPair.second.normal_;
-				auto contactDistance = contactPair.second.distance_;
-
 				auto firstSolidComp = dynCast<ecs::Solid>(sol1);
 				auto secondSolidComp = dynCast<ecs::Solid>(sol2);
 				assert(firstSolidComp);
@@ -71,6 +102,7 @@ namespace eg
 
 				auto firstVelComp = dynCast<ecs::Velocity>(vel1);
 				auto secondVelComp = dynCast<ecs::Velocity>(vel2);
+
 				/* If the Velocity Component is paused, create a motionless and
 				 * unmovable object (i.e. a object with null velocity and
 				 * infinite mass */
@@ -85,17 +117,26 @@ namespace eg
 					secondSolidComp = std::make_shared<ecs::Solid>(0.f, 1.f);
 				}
 
-				Vector2f relativeVelocity = secondVelComp->velocity_ - firstVelComp->velocity_;
-				float relativeNormalVelocity = relativeVelocity.dotProduct(contactNormal);
+				auto contactNormal = contactPair.second.normal_;
+				auto contactDistance = contactPair.second.distance_;
+				
+				auto firstVel = firstVelComp->velocity_;
+				auto firstInvMass = firstSolidComp->invMass_;
+				auto secondVel = secondVelComp->velocity_;
+				auto secondInvMass = secondSolidComp->invMass_;
+				
+				auto impulse = computeImpulse(dt,
+				                              contactNormal, contactDistance,
+				                              firstVel, firstInvMass,
+				                              secondVel, secondInvMass);
 
-				float remove = relativeNormalVelocity + contactDistance / dt.asSeconds();
+				if(impulse < 0)
+				{
+					saveTrackedCollision(entityPair);
+				}
 
-				float impulse = remove / (firstSolidComp->invMass_ + secondSolidComp->invMass_);
-
-				float newImpulse = std::min(impulse, 0.f);
-
-				firstVelComp->velocity_ += newImpulse * contactNormal * firstSolidComp->invMass_ * firstSolidComp->restitution_;
-				secondVelComp->velocity_ -= newImpulse * contactNormal * secondSolidComp->invMass_ * secondSolidComp->restitution_;
+				firstVelComp->velocity_ += impulse * contactNormal * firstInvMass * firstSolidComp->restitution_;
+				secondVelComp->velocity_ -= impulse * contactNormal * secondInvMass * secondSolidComp->restitution_;
 			}
 		}
 	}
@@ -236,24 +277,62 @@ namespace eg
 
 		return contact;
 	}
-		
 
-	void PhysicEngine::updateMovement(Time dt)
+
+	float PhysicEngine::computeImpulse(Time dt,
+	                                   Vector2f contactNormal, float contactDistance,
+	                                   Vector2f firstVel, float firstInvMass,
+	                                   Vector2f secondVel, float secondInvMass)
 	{
-		auto moveableObjects = ecs_.getObjectTable(ecs::Component::Moveable);
+		Vector2f relativeVelocity = secondVel - firstVel;
+		float relativeNormalVelocity = relativeVelocity.dotProduct(contactNormal);
 
-		for (auto& moveablePair : moveableObjects)
+		float remove = relativeNormalVelocity + contactDistance / dt.asSeconds();
+
+		float impulse = remove / (firstInvMass + secondInvMass);
+
+		return std::min(impulse, 0.f);
+	}
+		                     
+
+	void PhysicEngine::saveTrackedCollision(entityPair pair)
+	{
+		auto proj1 = ecs_.getComponent(pair.first, ecs::Component::Projectile);
+		auto targ2 = ecs_.getComponent(pair.second, ecs::Component::Target);
+
+
+		auto firstProjComp = dynCast<ecs::Projectile>(proj1);
+		auto secondTargetComp = dynCast<ecs::Target>(targ2);
+		
+		if(firstProjComp && secondTargetComp)
 		{
-			auto posComp = dynCast<ecs::Position>
-				(moveablePair.second[ecs::Component::Position]);
-			assert(posComp);
+			if(!firstProjComp->hasTouchedTarget())
+			{
+				firstProjComp->touchTarget();
 
-			auto velComp = dynCast<ecs::Velocity>
-				(moveablePair.second[ecs::Component::Velocity]);
-			assert(velComp);
+				trackedCollisions_.push_back(pair);
+			}
+			return;
+		}
 
-			posComp->position_ += velComp->velocity_ * dt.asSeconds();
+
+		auto proj2 = ecs_.getComponent(pair.second, ecs::Component::Projectile);
+		auto targ1 = ecs_.getComponent(pair.first, ecs::Component::Target);
+
+		auto secondProjComp = dynCast<ecs::Projectile>(proj2);
+		auto firstTargetComp = dynCast<ecs::Target>(targ1);
+
+		if(secondProjComp && firstTargetComp)
+		{
+			if(!secondProjComp->hasTouchedTarget())
+			{
+				secondProjComp->touchTarget();
+
+				std::swap(pair.first, pair.second);
+				trackedCollisions_.push_back(pair);
+			}
+			return;
 		}
 	}
-
+	
 } // namespace eg

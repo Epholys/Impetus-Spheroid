@@ -39,6 +39,7 @@ namespace ecs
 		ecs.addComponent<Position>(rect, position);
 		ecs.addComponent<Solid>(rect, 0.f, 1.f);
 		ecs.addComponent<CollidableRect>(rect, size);
+		ecs.addComponent<Target>(rect);
 
 		return rect;
 	}

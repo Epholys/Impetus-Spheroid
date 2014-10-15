@@ -19,6 +19,8 @@
 *.exe
 *.out
 *.app
+*.bin
+ImpetusSpheroid*
 
 # Emacs saves
 *~
