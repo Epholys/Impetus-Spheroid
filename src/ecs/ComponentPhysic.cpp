@@ -6,8 +6,9 @@ namespace ecs
 
 	// *** Mass: ***
 
-	Mass::Mass(float mass)
+	Mass::Mass(float mass, Vector2f gravity)
 		: mass_(mass)
+		, gravityVect_(gravity)
 	{
 	}
 

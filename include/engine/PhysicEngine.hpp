@@ -41,10 +41,16 @@ namespace eg
 	public:
 		PhysicEngine(ecs::EntityManager& ecs);
 
-		/* Main functtion called at each frame ; update everything. */
+		/* Main function called at each frame ; update everything. */
 		void update(Time dt);
 
-		const std::vector<entityPair>& getTrackedCollisions_() const;
+		/* Returns trackedCollisions_ */
+		const std::vector<entityPair>& getTrackedCollisions() const;
+
+		/* Set precision_ to precision.
+		 * Asserts if precision > 0.
+		 * */
+		void setPrecision(int precision);
 
 	private:
 		/* Apply gravity */
@@ -66,7 +72,8 @@ namespace eg
 		Contact generateMixedContact(Vector2f spherePos, float sphereRadius,
 		                             Vector2f rectPos, Vector2f rectSize);
 
-		/* Compute the impulse with the datas from handleAllCollisions. */
+		/* Compute the impulse with the datas from handleAllCollisions.
+		 * */
 		float computeImpulse(Time dt,
 		                     Vector2f contactNormal, float contactDistance,
 		                     Vector2f firstVel, float firstInvMass,
@@ -84,8 +91,6 @@ namespace eg
 		/* The Projectile is the first in the entityPair, Target is the
 		 * second. This attribute is cleared at each frame.*/
 		std::vector<entityPair> trackedCollisions_;
-
-		Vector2f gravityVect_;
 	};
 
 } // namespace eg

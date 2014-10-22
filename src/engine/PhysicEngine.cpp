@@ -13,7 +13,6 @@ namespace eg
 		: ecs_(ecs)
 		, contacts_()
 		, precision_(4)
-		, gravityVect_(0.f, 1000.f)
 	{
 	}
 
@@ -21,11 +20,16 @@ namespace eg
 // *** public function: ***
 
 	const std::vector<PhysicEngine::entityPair>&
-	PhysicEngine::getTrackedCollisions_() const
+	PhysicEngine::getTrackedCollisions() const
 	{
 		return trackedCollisions_;
 	}
 
+	void PhysicEngine::setPrecision(int precision)
+	{
+		assert(precision > 0);
+		precision_ = precision;
+	}
 
 //-----------------------------------------------------------------------------
 // *** updates functions ***
@@ -73,7 +77,11 @@ namespace eg
 				(massicPair.second[ecs::Component::Velocity]);
 			assert(velComp);
 
-			velComp->velocity_ += gravityVect_ * dt.asSeconds();
+			auto massComp = dynCast<ecs::Mass>
+				(massicPair.second[ecs::Component::Mass]);
+			assert(massComp);
+
+			velComp->velocity_ += massComp->gravityVect_ * dt.asSeconds();
 		}
 	}
 
@@ -103,18 +111,18 @@ namespace eg
 				auto firstVelComp = dynCast<ecs::Velocity>(vel1);
 				auto secondVelComp = dynCast<ecs::Velocity>(vel2);
 
-				/* If the Velocity Component is paused, create a motionless and
-				 * unmovable object (i.e. a object with null velocity and
-				 * infinite mass */
+				/* If the Velocity Component is paused or doesn't exists, create
+				 * a motionless and unmovable object (i.e. a object with null
+				 * velocity and infinite mass */
 				if(!firstVelComp)
 				{
 					firstVelComp = std::make_shared<ecs::Velocity>(Vector2f(0.f,0.f));
-					firstSolidComp = std::make_shared<ecs::Solid>(0.f, 1.f);
+					firstSolidComp = std::make_shared<ecs::Solid>(0.f, 0.f);
 				}
 				if(!secondVelComp)
 				{
 					secondVelComp = std::make_shared<ecs::Velocity>(Vector2f(0.f,0.f));
-					secondSolidComp = std::make_shared<ecs::Solid>(0.f, 1.f);
+					secondSolidComp = std::make_shared<ecs::Solid>(0.f, 0.f);
 				}
 
 				auto contactNormal = contactPair.second.normal_;
@@ -124,7 +132,7 @@ namespace eg
 				auto firstInvMass = firstSolidComp->invMass_;
 				auto secondVel = secondVelComp->velocity_;
 				auto secondInvMass = secondSolidComp->invMass_;
-				
+
 				auto impulse = computeImpulse(dt,
 				                              contactNormal, contactDistance,
 				                              firstVel, firstInvMass,
@@ -162,7 +170,6 @@ namespace eg
 					(firstIt->second.at(ecs::Component::Position));
 				auto secondPosComp = dynCast<ecs::Position>
 					(secondIt->second.at(ecs::Component::Position));
-
 				assert(firstPosComp);
 				assert(secondPosComp);
 
@@ -284,6 +291,13 @@ namespace eg
 	                                   Vector2f firstVel, float firstInvMass,
 	                                   Vector2f secondVel, float secondInvMass)
 	{
+		// Two solid with infinite mass acts like two solids of mass 1
+		if(!firstInvMass && !secondInvMass)
+		{
+			firstInvMass = 1.f;
+			secondInvMass = 1.f;
+		}
+
 		Vector2f relativeVelocity = secondVel - firstVel;
 		float relativeNormalVelocity = relativeVelocity.dotProduct(contactNormal);
 

@@ -21,7 +21,7 @@ namespace ecs
 
 		ecs.addComponent<Position>(ball, position);
 		ecs.addComponent<Velocity>(ball);
-		ecs.addComponent<Mass>(ball, mass);
+		ecs.addComponent<Mass>(ball, mass, Vector2f(0.f, 1000.f));
 		ecs.addComponent<Solid>(ball, 1.f / mass, 2.f);
 		ecs.addComponent<CollidableSphere>(ball, radius);
 		ecs.addComponent<Projectile>(ball);
