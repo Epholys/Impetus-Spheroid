@@ -8,12 +8,9 @@
 * Utility
   * TODO Add some functionnality to Time (just redirection of sf::seconds)
 
-* ECS
-  * Add all the "pause" mechanics
-  	* TODO Decide wether the pause system must accumulate
-
-* TODO *TEST EVERYTHING*
-
 * Engine
   * PhysicEngine
   	* TODO catch the exception in addEntity()
+
+* Game Engine (core branch)
+  * Everything!
