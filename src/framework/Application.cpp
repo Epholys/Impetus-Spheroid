@@ -25,7 +25,6 @@ Application::Application()
 	, ballMass_(1.f)
 	, ballRadius_(10.f)
 	, ballColor_(sf::Color::Red)
-	, deltaMouseLine_()
 	, rects_()
 {
 	window_.setKeyRepeatEnabled(false);
@@ -34,15 +33,6 @@ Application::Application()
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
 	scoreText_.setString("0");
 	scoreText_.setFont(font_);
-	
-	deltaMouseLine_.setPointCount(4);
-	deltaMouseLine_.setPoint(0, sf::Vector2f(0,0));
-	deltaMouseLine_.setPoint(1, sf::Vector2f(0,0));
-	deltaMouseLine_.setPoint(2, sf::Vector2f(0,0));
-	deltaMouseLine_.setPoint(3, sf::Vector2f(0,0));
-	deltaMouseLine_.setOutlineThickness(1);
-	deltaMouseLine_.setOutlineColor(sf::Color::Transparent);
-	deltaMouseLine_.setFillColor(sf::Color::Transparent);
 }
 
 
@@ -109,54 +99,42 @@ void Application::handleInput()
 			}
 		}
 		else if (event.type == sf::Event::MouseButtonPressed &&
-		         event.mouseButton.button == sf::Mouse::Left)			
-		{
-			deltaMouse_ = Vector2f(event.mouseButton.x, event.mouseButton.y);
-
-			deltaMouseLine_.setPoint(0, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-			deltaMouseLine_.setPoint(1, sf::Vector2f(event.mouseButton.x+1, event.mouseButton.y));
-			deltaMouseLine_.setPoint(2, sf::Vector2f(event.mouseButton.x+1, event.mouseButton.y+1));
-			deltaMouseLine_.setPoint(3, sf::Vector2f(event.mouseButton.x+1, event.mouseButton.y+1));
-			deltaMouseLine_.setOutlineColor(sf::Color::White);
-		}
-		else if (event.type == sf::Event::MouseButtonReleased &&
 		         event.mouseButton.button == sf::Mouse::Left)
 		{
-			std::unique_ptr<Ball> pBall	(new Ball(ecs_, deltaMouse_, ballRadius_, ballMass_, ballColor_));
-			deltaMouse_ -= Vector2f(event.mouseButton.x, event.mouseButton.y);
+			std::unique_ptr<Ball> pBall	(new Ball(ecs_,
+				                                  Vector2f(20.f, 580.f),
+				                                  ballRadius_, ballMass_, ballColor_));
 			auto entBall = pBall->getLabel();
 			auto velComp = dynCast<ecs::Velocity>
 				(ecs_.getComponent(entBall, ecs::Component::Velocity));
 			assert(velComp);
-			velComp->velocity_ -= 3.f * deltaMouse_ / ballMass_;
-			balls_.push_back(std::move(pBall));
 
-			deltaMouseLine_.setOutlineColor(sf::Color::Transparent);
-			deltaMouseLine_.setFillColor(sf::Color::Transparent);
+			Vector2f force = Vector2f(20.f, 580.f) - Vector2f(sf::Mouse::getPosition(window_));
+
+			velComp->velocity_ -= 3.f * force / ballMass_;
+			balls_.push_back(std::move(pBall));
 		}
+
 		else if (event.type == sf::Event::MouseButtonPressed &&
 		         event.mouseButton.button == sf::Mouse::Right)			
 		{
-			deltaMouse_ = Vector2f(event.mouseButton.x, event.mouseButton.y);
-			std::unique_ptr<Rectangle> pRect(new Rectangle(ecs_, deltaMouse_, Vector2f(15.f, 75.f), sf::Color::Blue));
+			std::unique_ptr<Rectangle> pRect(new Rectangle(ecs_,
+			                                               Vector2f(sf::Mouse::getPosition(window_)),
+			                                               Vector2f(15.f, 75.f),
+			                                               sf::Color::Blue));
 			rects_.push_back(std::move(pRect));
 		}
+
 		else if (event.type == sf::Event::MouseButtonPressed &&
 		         event.mouseButton.button == sf::Mouse::Middle)			
 		{
-			deltaMouse_ = Vector2f(event.mouseButton.x, event.mouseButton.y);
-			std::unique_ptr<Rectangle> pRect(new Rectangle(ecs_, deltaMouse_, Vector2f(800.f, 15.f), sf::Color::Blue));
+			std::unique_ptr<Rectangle> pRect(new Rectangle(ecs_,
+			                                               Vector2f(sf::Mouse::getPosition(window_)),
+			                                               Vector2f(800.f, 15.f),
+			                                               sf::Color::Blue));
 			rects_.push_back(std::move(pRect));
 		}
 
-	}
-
-
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-	{
-		auto mousePos = sf::Vector2f(sf::Mouse::getPosition(window_));
-		deltaMouseLine_.setPoint(2, sf::Vector2f(mousePos.x, mousePos.y));
-		deltaMouseLine_.setPoint(3, sf::Vector2f(mousePos.x+1, mousePos.y+1));
 	}
 }
 
@@ -194,8 +172,12 @@ void Application::update(sf::Time dt)
 	{
 		ball->update(dt);
 	}
+	for (auto& rect : rects_)
+	{
+		rect->update(dt);
+	}
 	
-	score_ += engine_.getTrackedCollisions_().size();
+	score_ += engine_.getTrackedCollisions().size();
 	std::stringstream ss;
 	ss << score_;
 	scoreText_.setString(ss.str());
@@ -203,7 +185,6 @@ void Application::update(sf::Time dt)
 
 void Application::render()
 {
-
 	window_.clear();
 	for (const auto& ball : balls_)
 	{
@@ -213,7 +194,6 @@ void Application::render()
 	{
 		window_.draw(*rect);
 	}
-	window_.draw(deltaMouseLine_);
 	window_.draw(scoreText_);
 	window_.display();
 }

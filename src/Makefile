@@ -1,4 +1,4 @@
-DIRS = ecs framework engine
+DIRS = ecs framework engine core
 
 
 % :

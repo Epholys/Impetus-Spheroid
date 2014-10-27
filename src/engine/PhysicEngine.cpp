@@ -113,7 +113,7 @@ namespace eg
 
 				/* If the Velocity Component is paused or doesn't exists, create
 				 * a motionless and unmovable object (i.e. a object with null
-				 * velocity and infinite mass */
+				 * velocity and infinite mass) */
 				if(!firstVelComp)
 				{
 					firstVelComp = std::make_shared<ecs::Velocity>(Vector2f(0.f,0.f));
@@ -227,7 +227,7 @@ namespace eg
 				 * */
 				if(!contact.normal_.normalize())
 				{
-					contact.normal_ = Vector2f(0.f, 1.f);
+					contact.normal_ = Vector2f(0.f, 0.f);
 				}
 					
 				if(contactGenerated)
@@ -313,7 +313,6 @@ namespace eg
 	{
 		auto proj1 = ecs_.getComponent(pair.first, ecs::Component::Projectile);
 		auto targ2 = ecs_.getComponent(pair.second, ecs::Component::Target);
-
 
 		auto firstProjComp = dynCast<ecs::Projectile>(proj1);
 		auto secondTargetComp = dynCast<ecs::Target>(targ2);

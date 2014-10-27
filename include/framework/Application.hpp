@@ -12,8 +12,8 @@
 
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
-#include "framework/Ball.hpp"
-#include "framework/Rectangle.hpp"
+#include "core/Ball.hpp"
+#include "core/Rectangle.hpp"
 
 /* The main object: the framework for everything else
  * 
@@ -50,8 +50,6 @@ private:
 	float ballRadius_;
 	sf::Color ballColor_;
 	
-	sf::ConvexShape deltaMouseLine_;
-
 	std::vector<std::unique_ptr<Rectangle>> rects_;
 };
 

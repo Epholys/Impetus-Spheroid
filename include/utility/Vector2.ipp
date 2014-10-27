@@ -21,6 +21,13 @@ Vector2<T>::Vector2(const Vector2<U>& vector)
 {
 }
 
+template<typename T>
+template<typename U>
+Vector2<T>::Vector2(const sf::Vector2<U>& vector)
+	: sf::Vector2<T>(vector)
+{
+}
+
 
 //-----------------------------------------------------------------------------
 // *** Maths operation: ***
