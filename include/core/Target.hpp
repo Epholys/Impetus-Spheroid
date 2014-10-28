@@ -1,30 +1,30 @@
-#ifndef BALL_HPP
-#define BALL_HPP
+#ifndef TARGET_HPP
+#define TARGET_HPP
 
 
 #include "utility/utility.hpp"
 #include "core/Entity.hpp"
 
 #include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-class Ball : public Entity
+class Target : public Entity
 {
 public:
-	Ball(ecs::EntityManager& entm,
-	     Vector2f position,
-	     float radius,
-	     float mass,
-	     sf::Color color);
-	virtual ~Ball();
+	Target(ecs::EntityManager& entm,
+	       Vector2f position,
+	       Vector2f size,
+	       sf::Color color);
+	virtual ~Target();
 
 	virtual void update(Time dt);
 	virtual void draw(sf::RenderTarget& target,
 	                  sf::RenderStates states) const;
 
 protected:
-	sf::CircleShape ball_;
+	sf::RectangleShape rect_;
 };
 
-#endif // BALL_HPP
+
+#endif // TARGET_HPP

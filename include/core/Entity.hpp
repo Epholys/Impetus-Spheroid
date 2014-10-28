@@ -21,7 +21,7 @@ public:
 
 	ecs::Entity getLabel() const;
 	
-	virtual void update(Time dt);
+	virtual void update(Time dt) =0;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	
 protected:

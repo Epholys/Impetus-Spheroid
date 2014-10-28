@@ -30,7 +30,7 @@ namespace ecs
 	}
 
 	
-	Entity createRect(EntityManager& ecs,
+	Entity createWall(EntityManager& ecs,
 	                  Vector2f position,
 	                  Vector2f size)
 	{
@@ -39,9 +39,23 @@ namespace ecs
 		ecs.addComponent<Position>(rect, position);
 		ecs.addComponent<Solid>(rect, 0.f, 1.f);
 		ecs.addComponent<CollidableRect>(rect, size);
-		ecs.addComponent<Target>(rect);
 
 		return rect;
+	}
+
+	Entity createTarget(EntityManager& ecs,
+	                    Vector2f position,
+	                    Vector2f size)
+	{
+		Entity targ = ecs.addEntity();
+
+		ecs.addComponent<Position>(targ, position);
+		ecs.addComponent<Velocity>(targ);
+		ecs.addComponent<Solid>(targ, 0.f, 1.f);
+		ecs.addComponent<CollidableRect>(targ, size);
+		ecs.addComponent<Target>(targ);
+
+		return targ;
 	}
 
 

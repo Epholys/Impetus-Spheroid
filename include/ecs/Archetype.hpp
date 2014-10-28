@@ -19,9 +19,13 @@ namespace ecs
 	                  float radius,
 	                  float mass);
 	
-	Entity createRect(EntityManager& ecs,
+	Entity createWall(EntityManager& ecs,
 	                  Vector2f position,
 	                  Vector2f size);
+
+	Entity createTarget(EntityManager& ecs,
+	                    Vector2f position,
+	                    Vector2f size);
 
 } // namespace ecs
 

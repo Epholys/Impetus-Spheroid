@@ -18,6 +18,8 @@ Ball::Ball(ecs::EntityManager& entm,
 	auto ballRect = ball_.getLocalBounds();
 	ball_.setOrigin(ballRect.left + ballRect.width / 2.f,
 	                ballRect.top + ballRect.height / 2.f);
+
+	update(Time());
 }
 
 Ball::~Ball()

@@ -1,18 +1,18 @@
-#ifndef RECTANGLE_HPP
-#define RECTANGLE_HPP
+#ifndef WALL_HPP
+#define WALL_HPP
 
 #include <SFML/Graphics/RectangleShape.hpp>
 
 #include "core/Entity.hpp"
 
-class Rectangle : public Entity
+class Wall : public Entity
 {
 public:
-	Rectangle(ecs::EntityManager& entm,
-	          Vector2f position,
-	          Vector2f size,
-	          sf::Color color);
-	virtual ~Rectangle();
+	Wall(ecs::EntityManager& entm,
+	     Vector2f position,
+	     Vector2f size,
+	     sf::Color color);
+	virtual ~Wall();
 
 	virtual void update(Time dt = Time::Zero);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -22,4 +22,4 @@ protected:
 };
 
 
-#endif // RECTANGLE_HPP
+#endif // WALL_HPP

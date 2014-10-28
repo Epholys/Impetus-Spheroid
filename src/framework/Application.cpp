@@ -17,7 +17,6 @@ Application::Application()
 	          sf::ContextSettings(0, 0, 4))
 	, ecs_()
 	, engine_(ecs_)
-	, deltaMouse_()
 	, font_()
 	, score_(0)
 	, scoreText_()
@@ -118,20 +117,20 @@ void Application::handleInput()
 		else if (event.type == sf::Event::MouseButtonPressed &&
 		         event.mouseButton.button == sf::Mouse::Right)			
 		{
-			std::unique_ptr<Rectangle> pRect(new Rectangle(ecs_,
-			                                               Vector2f(sf::Mouse::getPosition(window_)),
-			                                               Vector2f(15.f, 75.f),
-			                                               sf::Color::Blue));
+			std::unique_ptr<Wall> pRect(new Wall(ecs_,
+			                                     Vector2f(sf::Mouse::getPosition(window_)),
+			                                     Vector2f(15.f, 75.f),
+			                                     sf::Color::Blue));
 			rects_.push_back(std::move(pRect));
 		}
 
 		else if (event.type == sf::Event::MouseButtonPressed &&
 		         event.mouseButton.button == sf::Mouse::Middle)			
 		{
-			std::unique_ptr<Rectangle> pRect(new Rectangle(ecs_,
-			                                               Vector2f(sf::Mouse::getPosition(window_)),
-			                                               Vector2f(800.f, 15.f),
-			                                               sf::Color::Blue));
+			std::unique_ptr<Wall> pRect(new Wall(ecs_,
+			                                     Vector2f(sf::Mouse::getPosition(window_)),
+			                                     Vector2f(800.f, 15.f),
+			                                     sf::Color::Blue));
 			rects_.push_back(std::move(pRect));
 		}
 

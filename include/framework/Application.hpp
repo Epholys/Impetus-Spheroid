@@ -13,7 +13,7 @@
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
 #include "core/Ball.hpp"
-#include "core/Rectangle.hpp"
+#include "core/Wall.hpp"
 
 /* The main object: the framework for everything else
  * 
@@ -38,8 +38,6 @@ private:
 	ecs::EntityManager ecs_;
 	eg::PhysicEngine engine_;
 
-	Vector2f deltaMouse_;
-
 	// Temporaries attributes to test PhysicEngine and EntityManager
 	sf::Font font_;
 	int score_;
@@ -50,7 +48,7 @@ private:
 	float ballRadius_;
 	sf::Color ballColor_;
 	
-	std::vector<std::unique_ptr<Rectangle>> rects_;
+	std::vector<std::unique_ptr<Wall>> rects_;
 };
 
 
