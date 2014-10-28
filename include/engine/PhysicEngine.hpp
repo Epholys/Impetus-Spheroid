@@ -39,7 +39,7 @@ namespace eg
 			std::map<entityPair, Contact> contactTable;
 
 	public:
-		PhysicEngine(ecs::EntityManager& ecs);
+		PhysicEngine(ecs::EntityManager& ecs, int precision = 4);
 
 		/* Main function called at each frame ; update everything. */
 		void update(Time dt);

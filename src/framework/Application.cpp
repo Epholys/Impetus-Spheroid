@@ -16,7 +16,7 @@ Application::Application()
 	          sf::Style::Titlebar | sf::Style::Close,
 	          sf::ContextSettings(0, 0, 4))
 	, ecs_()
-	, engine_(ecs_)
+	, gameWorld_(ecs_, window_)
 	, font_()
 	, score_(0)
 	, scoreText_()
@@ -140,7 +140,7 @@ void Application::handleInput()
 void Application::update(sf::Time dt)
 {
 	ecs_.update(dt);
-	engine_.update(dt);
+	gameWorld_.update(dt);
 
 	auto it = balls_.begin();
 	while(it != balls_.end())
@@ -176,15 +176,18 @@ void Application::update(sf::Time dt)
 		rect->update(dt);
 	}
 	
-	score_ += engine_.getTrackedCollisions().size();
-	std::stringstream ss;
-	ss << score_;
-	scoreText_.setString(ss.str());
+	// score_ += engine_.getTrackedCollisions().size();
+	// std::stringstream ss;
+	// ss << score_;
+	// scoreText_.setString(ss.str());
 }
 
 void Application::render()
 {
 	window_.clear();
+
+	gameWorld_.draw();
+
 	for (const auto& ball : balls_)
 	{
 		window_.draw(*ball);
@@ -192,7 +195,8 @@ void Application::render()
 	for (const auto& rect : rects_)
 	{
 		window_.draw(*rect);
-	}
+	}	
+
 	window_.draw(scoreText_);
 	window_.display();
 }

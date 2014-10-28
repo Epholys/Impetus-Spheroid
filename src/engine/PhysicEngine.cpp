@@ -9,11 +9,13 @@ namespace eg
 {
 //-----------------------------------------------------------------------------
 // *** constructor ***
-	PhysicEngine::PhysicEngine(ecs::EntityManager& ecs)
+	PhysicEngine::PhysicEngine(ecs::EntityManager& ecs, int precision)
 		: ecs_(ecs)
 		, contacts_()
 		, precision_(4)
 	{
+		assert(precision > 0);
+		precision_ = precision;
 	}
 
 //-----------------------------------------------------------------------------

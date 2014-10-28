@@ -12,6 +12,7 @@
 
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
+#include "core/World.hpp"
 #include "core/Ball.hpp"
 #include "core/Wall.hpp"
 
@@ -36,7 +37,8 @@ private:
 private:
 	sf::RenderWindow window_;
 	ecs::EntityManager ecs_;
-	eg::PhysicEngine engine_;
+
+	World gameWorld_;
 
 	// Temporaries attributes to test PhysicEngine and EntityManager
 	sf::Font font_;

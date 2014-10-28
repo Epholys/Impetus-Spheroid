@@ -2,12 +2,13 @@
 #define ENTITY_HPP
 
 
-#include "framework/Assertion.hpp"
+#include <memory>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include "framework/Assertion.hpp"
 #include "utility/utility.hpp"
 #include "utility/Time.hpp"
 #include "ecs/EntityManager.hpp"
@@ -15,6 +16,9 @@
 
 class Entity : public sf::Drawable, public sf::Transformable
 {
+public:
+	typedef std::unique_ptr<Entity> Ptr;
+
 public:
 	Entity(ecs::EntityManager& entm);
 	virtual ~Entity();
