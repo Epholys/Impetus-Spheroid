@@ -14,3 +14,7 @@
 
 * Game Engine (core branch)
   * Everything!
+
+* Optimization (if necessary)
+  * TODO Search where are the bottlenecks
+  * TODO ECS: Optimize to be more cache-friendly

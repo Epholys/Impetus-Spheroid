@@ -6,9 +6,6 @@
 
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/ConvexShape.hpp>
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/Text.hpp>
 
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
