@@ -103,9 +103,12 @@ void World::handleInput()
 				(ecs_.getComponent(pBall->getLabel(), ecs::Component::Velocity));
 			assert(velComp);
 
-			Vector2f force = Vector2f(20.f, 580.f) - Vector2f(sf::Mouse::getPosition(window_));
+			Vector2f force = Vector2f(sf::Mouse::getPosition(window_)) - Vector2f(20.f, 580.f);
+			float impulse = std::max(force.x, -force.y);
+			force.normalize();
+			
 
-			velComp->velocity_ -= 3.f * force / ballMass_;
+			velComp->velocity_ += 3.f * impulse * force / ballMass_;
 
 
 			entities_.push_back(std::move(pBall));
@@ -152,8 +155,6 @@ void World::cleanEntities()
 		                                 ecs::Component::Collidable);
 		if(posPtr && collPtr)
 		{
-			bool erase = false;
-
 			sf::Vector2f windowSize (window_.getSize());
 
 			auto posComp = dynCast<ecs::Position>(posPtr);
@@ -164,17 +165,13 @@ void World::cleanEntities()
 			auto rectCollComp = dynCast<ecs::CollidableRect>(collPtr);
 
 			if((sphereCollComp &&
-			    posComp->position_.y + sphereCollComp->radius_ > windowSize.y) ||
+			    posComp->position_.y - sphereCollComp->radius_ > windowSize.y) ||
 			   (rectCollComp &&
-			    posComp->position_.y + rectCollComp->size_.y/2.f > windowSize.y))
-			{
-				erase = true;
-			}
-
-			if(erase)
+			    posComp->position_.y - rectCollComp->size_.y/2.f > windowSize.y))
 			{
 				entities_.erase(it);
 			}
+
 			else
 			{
 				++it;

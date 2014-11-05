@@ -9,7 +9,7 @@ Ball::Ball(ecs::EntityManager& entm,
            float radius, 
            float mass, 
            sf::Color color)
-	: Entity(entm)
+	: Entity(entm, EntityID::Ball)
 	, ball_(radius)
 {
 	label_ = ecs::createBall(entm, position, radius, mass);

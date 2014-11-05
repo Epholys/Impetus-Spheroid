@@ -8,7 +8,7 @@ Wall::Wall(ecs::EntityManager& entm,
            Vector2f position,
            Vector2f size,
            sf::Color color)
-	: Entity(entm)
+	: Entity(entm, EntityID::Wall)
 	, rect_(size)
 {
 	label_ = ecs::createWall(entm, position, size);

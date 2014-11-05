@@ -8,7 +8,7 @@ Target::Target(ecs::EntityManager& entm,
                Vector2f position,
                Vector2f size,
                sf::Color color)
-	: Entity(entm)
+	: Entity(entm, EntityID::Target)
 	, rect_(size)
 {
 	label_ = ecs::createTarget(entm, position, size);
