@@ -6,11 +6,11 @@ namespace EntityID
 {
 	enum Type  : unsigned int
 	{
-		None = 0
+		None = 0,
 		Wall = 1,
 		Ball = 1 << 1,
 		Target = 1 << 2,
-	}
+	};
 }
 
 

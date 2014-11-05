@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include <vector>
+#include <algorithm>
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Window/Event.hpp>
@@ -20,6 +21,7 @@
 #include "core/Wall.hpp"
 #include "core/Ball.hpp"
 #include "core/Target.hpp"
+#include "core/Modifier.hpp"
 
 class World : public sf::NonCopyable
 {
@@ -33,6 +35,8 @@ public:
 private:
 	void generateWorld();
 
+	void applyModifiers();
+
 	void cleanEntities();
 
 private:
@@ -41,6 +45,8 @@ private:
 	eg::PhysicEngine physEng_;
 
 	std::vector<Entity::Ptr> entities_;
+
+	std::vector<Modifier<Entity>> entitiesModifiers_;
 
 	// Temporaries attributes to shift from Application to World
 	sf::Font font_;

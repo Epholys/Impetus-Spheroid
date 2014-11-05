@@ -147,7 +147,7 @@ namespace ecs
 		{
 			for(auto& componentPair : entityComponents_[ent])
 			{
-				if(!(componentPair.second->isPaused()) && flag)
+				if(!(componentPair.second->isPaused()) || flag)
 				{
 					table.insert(componentPair);
 				}
@@ -164,7 +164,7 @@ namespace ecs
 		{
 			for(const auto& componentPair : entityComponents_.at(ent))
 			{
-				if(!(componentPair.second->isPaused()) && flag)
+				if(!(componentPair.second->isPaused()) || flag)
 				{
 					table.insert(componentPair);
 				}

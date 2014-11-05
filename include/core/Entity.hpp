@@ -3,6 +3,7 @@
 
 
 #include <memory>
+#include <vector>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -14,6 +15,7 @@
 #include "ecs/EntityManager.hpp"
 #include "ecs/Archetype.hpp"
 #include "core/Identifiers.hpp"
+#include "core/Modifier.hpp"
 
 class Entity : public sf::Drawable, public sf::Transformable
 {
@@ -27,6 +29,10 @@ public:
 	ecs::Entity getLabel() const;
 	EntityID::Type getType() const;
 	
+	ecs::EntityManager::componentTable getComponents();
+
+	void addModifier(Modifier<Entity> modifier);
+	
 	virtual void update(Time dt) =0;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	
@@ -34,7 +40,9 @@ protected:
 	ecs::EntityManager& ecs_;
 	ecs::Entity label_;
 	
-	Entity::Type type_;
+	EntityID::Type type_;
+
+	std::vector<Modifier<Entity>> modifiers_;
 };
 
 

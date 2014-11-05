@@ -9,6 +9,7 @@ World::World(ecs::EntityManager& ecs, sf::RenderWindow& window, int precision)
 	, window_(window)
 	, physEng_(ecs, precision)
 	, entities_()
+	, entitiesModifiers_()
 	, font_()
 	, score_(0)
 	, scoreText_()
@@ -86,6 +87,36 @@ void World::handleInput()
 				entities_.clear();
 				generateWorld();
 				break;
+
+			case sf::Keyboard::A:
+			{
+				Modifier<Entity> chgGrav;
+				chgGrav.duration_ = sf::seconds(5);
+				chgGrav.preFunction_ =
+					[](Entity& target, Time)
+					{
+						auto massPtr = target.getComponents()[ecs::Component::Mass];
+						auto massComp = dynCast<ecs::Mass>(massPtr);
+						if(massComp)
+						{
+							massComp->gravityVect_ *= -1.f;
+						}
+					};
+			
+				chgGrav.postFunction_ =
+					[](Entity& target, Time)
+					{
+						auto massPtr = target.getComponents()[ecs::Component::Mass];
+						auto massComp = dynCast<ecs::Mass>(massPtr);
+						if(massComp)
+						{
+							massComp->gravityVect_ *= -1.f;
+						}
+					};
+
+				entitiesModifiers_.push_back(chgGrav);
+				break;
+			}
 			
 			default:
 				break;
@@ -128,12 +159,12 @@ void World::handleInput()
 
 void World::update(Time dt)
 {
-	physEng_.update(dt);
-
+	applyModifiers();
 	for(const auto& ent : entities_)
 	{
 		ent->update(dt);
 	}
+	physEng_.update(dt);
 
 	cleanEntities();
 
@@ -142,6 +173,19 @@ void World::update(Time dt)
 	ss << score_;
 	scoreText_.setString(ss.str());
 
+}
+
+
+void World::applyModifiers()
+{
+	for(auto& entity : entities_)
+	{
+		for(auto& modifier : entitiesModifiers_)
+		{
+			entity->addModifier(modifier);
+		}
+	}
+	entitiesModifiers_.clear();
 }
 
 void World::cleanEntities()
@@ -179,6 +223,7 @@ void World::cleanEntities()
 		}
 	}
 }
+
 
 void World::draw() const
 {
