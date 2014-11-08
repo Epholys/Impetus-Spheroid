@@ -103,48 +103,59 @@ namespace eg
 			auto sol2 = ecs_.getComponent(entityPair.second, ecs::Component::Solid);
 			
 
+			auto firstSolidComp = dynCast<ecs::Solid>(sol1);
+			auto secondSolidComp = dynCast<ecs::Solid>(sol2);
+
+			/* If the Solid Component is paused or doesn't exists, create a fake
+			 * one to allow calculation of impulse to see if the objects collide
+			 * without bouncing. */
+			if(!firstSolidComp)
+			{
+				firstSolidComp = std::make_shared<ecs::Solid>(1.f, 1.f);
+			}
+			if(!secondSolidComp)
+			{
+				secondSolidComp = std::make_shared<ecs::Solid>(1.f, 1.f);
+			}
+
+
+			auto firstVelComp = dynCast<ecs::Velocity>(vel1);
+			auto secondVelComp = dynCast<ecs::Velocity>(vel2);
+
+			/* If the Velocity Component is paused or doesn't exists, create a
+			 * motionless and unmovable object (i.e. a object with null velocity
+			 * and infinite mass) */
+			if(!firstVelComp)
+			{
+				firstVelComp = std::make_shared<ecs::Velocity>(Vector2f(0.f,0.f));
+				firstSolidComp = std::make_shared<ecs::Solid>(0.f, 0.f);
+			}
+			if(!secondVelComp)
+			{
+				secondVelComp = std::make_shared<ecs::Velocity>(Vector2f(0.f,0.f));
+				secondSolidComp = std::make_shared<ecs::Solid>(0.f, 0.f);
+			}
+
+			auto contactNormal = contactPair.second.normal_;
+			auto contactDistance = contactPair.second.distance_;
+				
+			auto firstVel = firstVelComp->velocity_;
+			auto firstInvMass = firstSolidComp->invMass_;
+			auto secondVel = secondVelComp->velocity_;
+			auto secondInvMass = secondSolidComp->invMass_;
+
+			auto impulse = computeImpulse(dt,
+			                              contactNormal, contactDistance,
+			                              firstVel, firstInvMass,
+			                              secondVel, secondInvMass);
+
+			if(impulse < 0)
+			{
+				saveTrackedCollision(entityPair);
+			}
+
 			if(sol1 && sol2)
 			{
-				auto firstSolidComp = dynCast<ecs::Solid>(sol1);
-				auto secondSolidComp = dynCast<ecs::Solid>(sol2);
-				assert(firstSolidComp);
-				assert(secondSolidComp);
-
-				auto firstVelComp = dynCast<ecs::Velocity>(vel1);
-				auto secondVelComp = dynCast<ecs::Velocity>(vel2);
-
-				/* If the Velocity Component is paused or doesn't exists, create
-				 * a motionless and unmovable object (i.e. a object with null
-				 * velocity and infinite mass) */
-				if(!firstVelComp)
-				{
-					firstVelComp = std::make_shared<ecs::Velocity>(Vector2f(0.f,0.f));
-					firstSolidComp = std::make_shared<ecs::Solid>(0.f, 0.f);
-				}
-				if(!secondVelComp)
-				{
-					secondVelComp = std::make_shared<ecs::Velocity>(Vector2f(0.f,0.f));
-					secondSolidComp = std::make_shared<ecs::Solid>(0.f, 0.f);
-				}
-
-				auto contactNormal = contactPair.second.normal_;
-				auto contactDistance = contactPair.second.distance_;
-				
-				auto firstVel = firstVelComp->velocity_;
-				auto firstInvMass = firstSolidComp->invMass_;
-				auto secondVel = secondVelComp->velocity_;
-				auto secondInvMass = secondSolidComp->invMass_;
-
-				auto impulse = computeImpulse(dt,
-				                              contactNormal, contactDistance,
-				                              firstVel, firstInvMass,
-				                              secondVel, secondInvMass);
-
-				if(impulse < 0)
-				{
-					saveTrackedCollision(entityPair);
-				}
-
 				firstVelComp->velocity_ += impulse * contactNormal * firstInvMass * firstSolidComp->restitution_;
 				secondVelComp->velocity_ -= impulse * contactNormal * secondInvMass * secondSolidComp->restitution_;
 			}

@@ -15,15 +15,15 @@ public:
 
 	void operator() (T& target, Time dt);
 
-public:
-	bool firstTimeExecuted_;
 	bool isExpired() const;
 
+public:
+	bool firstTimeExecuted_;
+	Time duration_;
 
 	std::function<void(T&, Time dt)> preFunction_;
 	std::function<void(T&, Time dt)> mainFunction_;
 	std::function<void(T&, Time dt)> postFunction_;
-	Time duration_;
 
 };
 
