@@ -8,11 +8,21 @@ Ball::Ball(ecs::EntityManager& entm,
            Vector2f position, 
            float radius, 
            float mass, 
-           sf::Color color)
+           sf::Color color,
+           unsigned int type)
 	: Entity(entm, EntityID::Ball)
 	, ball_(radius)
 {
 	label_ = ecs::createBall(entm, position, radius, mass);
+
+	if(type & Massless)
+	{
+		entm.removeComponent(label_, ecs::Component::Mass);
+	}
+	if(type & Ghost)
+	{
+		entm.removeComponent(label_, ecs::Component::Solid);
+	}
 
 	ball_.setFillColor(color);
 	auto ballRect = ball_.getLocalBounds();

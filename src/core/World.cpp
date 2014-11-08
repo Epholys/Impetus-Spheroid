@@ -10,6 +10,8 @@ World::World(ecs::EntityManager& ecs, sf::RenderWindow& window, int precision)
 	, physEng_(ecs, precision)
 	, entities_()
 	, entitiesModifiers_()
+	, ballType_(Ball::Normal)
+	, modifiers_()
 	, font_()
 	, score_(0)
 	, scoreText_()
@@ -88,6 +90,14 @@ void World::handleInput()
 				generateWorld();
 				break;
 
+			case sf::Keyboard::W:
+				ballType_ ^= Ball::Massless;
+				break;
+
+			case sf::Keyboard::X:
+				ballType_ ^= Ball::Ghost;
+				break;
+
 			case sf::Keyboard::A:
 			{
 				Modifier<Entity> chgGrav;
@@ -127,7 +137,7 @@ void World::handleInput()
 		{
 			Entity::Ptr pBall (new Ball(ecs_,
 			                            Vector2f(20.f, 580.f),
-			                            ballRadius_, ballMass_, ballColor_));
+			                            ballRadius_, ballMass_, ballColor_, ballType_));
 
 
 			auto velComp = dynCast<ecs::Velocity>
@@ -159,7 +169,7 @@ void World::handleInput()
 
 void World::update(Time dt)
 {
-	applyModifiers();
+	applyModifiers(dt);
 	for(const auto& ent : entities_)
 	{
 		ent->update(dt);
@@ -172,12 +182,16 @@ void World::update(Time dt)
 	std::stringstream ss;
 	ss << score_;
 	scoreText_.setString(ss.str());
-
 }
 
 
-void World::applyModifiers()
+void World::applyModifiers(Time dt)
 {
+	for(auto& modifier : modifiers_)
+	{
+		modifier(*this, dt);
+	}
+
 	for(auto& entity : entities_)
 	{
 		for(auto& modifier : entitiesModifiers_)
@@ -193,9 +207,9 @@ void World::cleanEntities()
 	auto it = entities_.begin();
 	while(it != entities_.end())
 	{
-		auto posPtr = ecs_.getComponent((*(it))->getLabel(),
+		auto posPtr = ecs_.getComponent((*it)->getLabel(),
 		                                ecs::Component::Position);
-		auto collPtr = ecs_.getComponent((*(it))->getLabel(),
+		auto collPtr = ecs_.getComponent((*it)->getLabel(),
 		                                 ecs::Component::Collidable);
 		if(posPtr && collPtr)
 		{
@@ -203,7 +217,6 @@ void World::cleanEntities()
 
 			auto posComp = dynCast<ecs::Position>(posPtr);
 			assert(posComp);
-
 
 			auto sphereCollComp = dynCast<ecs::CollidableSphere>(collPtr);
 			auto rectCollComp = dynCast<ecs::CollidableRect>(collPtr);

@@ -13,17 +13,18 @@ class Modifier
 public:
 	Modifier();
 
-	bool isExpired() const;
-
 	void operator() (T& target, Time dt);
 
 public:
-	Time duration_;
 	bool firstTimeExecuted_;
+	bool isExpired() const;
+
 
 	std::function<void(T&, Time dt)> preFunction_;
 	std::function<void(T&, Time dt)> mainFunction_;
 	std::function<void(T&, Time dt)> postFunction_;
+	Time duration_;
+
 };
 
 #include "Modifier.ipp"

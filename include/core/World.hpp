@@ -35,7 +35,7 @@ public:
 private:
 	void generateWorld();
 
-	void applyModifiers();
+	void applyModifiers(Time dt);
 
 	void cleanEntities();
 
@@ -45,9 +45,11 @@ private:
 	eg::PhysicEngine physEng_;
 
 	std::vector<Entity::Ptr> entities_;
-
 	std::vector<Modifier<Entity>> entitiesModifiers_;
+	unsigned int ballType_;
 
+	std::vector<Modifier<World>> modifiers_;
+	
 	// Temporaries attributes to shift from Application to World
 	sf::Font font_;
 	int score_;

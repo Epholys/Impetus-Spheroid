@@ -12,11 +12,20 @@
 class Ball : public Entity
 {
 public:
+	enum Type : unsigned int
+	{
+		Normal = 0,
+		Massless = 1,
+		Ghost = 1 << 1,
+	};
+
+public:
 	Ball(ecs::EntityManager& entm,
 	     Vector2f position,
 	     float radius,
 	     float mass,
-	     sf::Color color);
+	     sf::Color color,
+	     unsigned int type = 0);
 	virtual ~Ball();
 
 	virtual void update(Time dt);
