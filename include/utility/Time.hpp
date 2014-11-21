@@ -13,5 +13,10 @@
 
 typedef sf::Time Time;
 
+Time seconds(float s);
+
+Time milliseconds(sf::Int32 ms);
+
+Time microseconds(sf::Int64 us);
 
 #endif // UT_TIME_HPP

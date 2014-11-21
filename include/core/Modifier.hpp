@@ -2,6 +2,7 @@
 #define MODIFIER_HPP
 
 
+#include <memory>
 #include <functional>
 
 #include "utility/Time.hpp"
@@ -16,15 +17,18 @@ public:
 	void operator() (T& target, Time dt);
 
 	bool isExpired() const;
+	void updateDuration();
 
 public:
-	bool firstTimeExecuted_;
 	Time duration_;
+	bool firstTimeExecuted_;
 
 	std::function<void(T&, Time dt)> preFunction_;
 	std::function<void(T&, Time dt)> mainFunction_;
 	std::function<void(T&, Time dt)> postFunction_;
 
+	std::shared_ptr<Modifier<T>> successor_;
+	Time preDelay_;
 };
 
 #include "Modifier.ipp"

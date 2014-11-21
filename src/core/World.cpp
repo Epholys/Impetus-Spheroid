@@ -68,7 +68,7 @@ void World::handleInput()
 			switch (event.key.code)
 			{
 			case sf::Keyboard::P:
-				ecs_.pauseAllComponents(ecs::Component::Velocity, sf::seconds(2));
+				ecs_.pauseAllComponents(ecs::Component::Velocity, seconds(2));
 				break;
 				
 			case sf::Keyboard::Add:
@@ -95,13 +95,19 @@ void World::handleInput()
 				break;
 
 			case sf::Keyboard::X:
+			{
 				ballType_ ^= Ball::Ghost;
+				if(ballType_ & Ball::Ghost)
+					ballColor_.a = 130;
+				else
+					ballColor_.a = 255;
 				break;
+			}
 
 			case sf::Keyboard::A:
 			{
 				Modifier<Entity> chgGrav;
-				chgGrav.duration_ = sf::seconds(5);
+				chgGrav.duration_ = seconds(5);
 				chgGrav.preFunction_ =
 					[](Entity& target, Time)
 					{
@@ -124,6 +130,25 @@ void World::handleInput()
 						}
 					};
 
+
+				auto pStopTime = std::make_shared<Modifier<Entity>>();
+
+				pStopTime->preDelay_ = seconds(0.5f);
+
+				pStopTime->preFunction_ =
+					[](Entity& target, Time)
+					{
+						if(target.getType() == EntityID::Ball)
+						{
+							auto velPtr = target.getComponents()[ecs::Component::Velocity];
+							if(velPtr) velPtr->pause(seconds(3));
+						}
+					};
+				
+				chgGrav.successor_ = pStopTime;
+
+				chgGrav.updateDuration();
+				
 				entitiesModifiers_.push_back(chgGrav);
 				break;
 			}
@@ -240,9 +265,9 @@ void World::cleanEntities()
 
 void World::draw() const
 {
-	for(const auto& ent : entities_)
+	for(auto rit = entities_.rbegin(); rit != entities_.rend(); ++rit)
 	{
-		window_.draw(*ent);
+		window_.draw(*(*rit));
 	}
 
 	window_.draw(scoreText_);
