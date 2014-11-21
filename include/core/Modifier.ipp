@@ -5,7 +5,6 @@ Modifier<T>::Modifier()
 	, preFunction_()
 	, mainFunction_()
 	, postFunction_()
-	, successor_(nullptr)
 	, preDelay_()
 {
 }
@@ -17,16 +16,9 @@ bool Modifier<T>::isExpired() const
 }
 
 template<typename T>
-void Modifier<T>::updateDuration()
+Time Modifier<T>::getTotalDuration() const
 {
-	duration_ += preDelay_;
-
-	auto succ = successor_.get();
-	while (succ != nullptr)
-	{
-		duration_ += succ->duration_ + succ->preDelay_;
-		succ = succ->successor_.get();
-	}
+	return duration_ + preDelay_;
 }
 
 
@@ -60,22 +52,8 @@ void Modifier<T>::operator() (T& target, Time dt)
 
 	duration_ -= dt;
 
-	if(isExpired())
+	if(isExpired() && postFunction_)
 	{
-		if(postFunction_)
-		{
-			postFunction_(target, dt);
-		}
-
-		if(successor_)
-		{
-			duration_ = successor_->duration_;
-			firstTimeExecuted_ = successor_->firstTimeExecuted_;
-			preFunction_ = successor_->preFunction_;
-			mainFunction_ = successor_->mainFunction_;
-			postFunction_ = successor_->postFunction_;
-			preDelay_ = successor_->preDelay_;
-			successor_ = successor_->successor_;
-		}
+		postFunction_(target, dt);
 	}
 }

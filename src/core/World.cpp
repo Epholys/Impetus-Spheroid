@@ -130,12 +130,12 @@ void World::handleInput()
 						}
 					};
 
+				entitiesModifiers_.push_back(chgGrav);
 
-				auto pStopTime = std::make_shared<Modifier<Entity>>();
-
-				pStopTime->preDelay_ = seconds(0.5f);
-
-				pStopTime->preFunction_ =
+				Modifier<Entity> pause;
+				pause.duration_ = seconds(0);
+				pause.preDelay_ = seconds(5.5f);
+				pause.preFunction_ =
 					[](Entity& target, Time)
 					{
 						if(target.getType() == EntityID::Ball)
@@ -144,12 +144,9 @@ void World::handleInput()
 							if(velPtr) velPtr->pause(seconds(3));
 						}
 					};
-				
-				chgGrav.successor_ = pStopTime;
 
-				chgGrav.updateDuration();
+				entitiesModifiers_.push_back(pause);
 				
-				entitiesModifiers_.push_back(chgGrav);
 				break;
 			}
 			
@@ -202,6 +199,7 @@ void World::update(Time dt)
 	physEng_.update(dt);
 
 	cleanEntities();
+	cleanModifiers();
 
 	score_ += physEng_.getTrackedCollisions().size();
 	std::stringstream ss;
@@ -209,6 +207,17 @@ void World::update(Time dt)
 	scoreText_.setString(ss.str());
 }
 
+void World::cleanModifiers()
+{
+	auto itEnd = std::remove_if(modifiers_.begin(),
+	                            modifiers_.end(),
+	                            [](Modifier<World>& modifier)
+	                            {
+		                            return modifier.isExpired();
+	                            });
+	
+	modifiers_.erase(itEnd, modifiers_.end());
+}
 
 void World::applyModifiers(Time dt)
 {
@@ -247,9 +256,15 @@ void World::cleanEntities()
 			auto rectCollComp = dynCast<ecs::CollidableRect>(collPtr);
 
 			if((sphereCollComp &&
-			    posComp->position_.y - sphereCollComp->radius_ > windowSize.y) ||
+			    (posComp->position_.y - sphereCollComp->radius_ > windowSize.y ||
+			     posComp->position_.y + sphereCollComp->radius_ < 0 ||
+			     posComp->position_.x - sphereCollComp->radius_ > windowSize.x ||
+			     posComp->position_.x + sphereCollComp->radius_ < 0)) ||
 			   (rectCollComp &&
-			    posComp->position_.y - rectCollComp->size_.y/2.f > windowSize.y))
+			    (posComp->position_.y - rectCollComp->size_.y/2.f > windowSize.y ||
+			     posComp->position_.y + rectCollComp->size_.y/2.f < 0 ||
+			     posComp->position_.x - rectCollComp->size_.y/2.f > windowSize.x ||
+			     posComp->position_.x + rectCollComp->size_.y/2.f < 0)))
 			{
 				entities_.erase(it);
 			}

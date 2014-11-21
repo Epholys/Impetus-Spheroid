@@ -38,6 +38,7 @@ private:
 	void applyModifiers(Time dt);
 
 	void cleanEntities();
+	void cleanModifiers();
 
 private:
 	ecs::EntityManager& ecs_;

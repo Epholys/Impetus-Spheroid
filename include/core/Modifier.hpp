@@ -17,7 +17,7 @@ public:
 	void operator() (T& target, Time dt);
 
 	bool isExpired() const;
-	void updateDuration();
+	Time getTotalDuration() const;
 
 public:
 	Time duration_;
@@ -27,7 +27,6 @@ public:
 	std::function<void(T&, Time dt)> mainFunction_;
 	std::function<void(T&, Time dt)> postFunction_;
 
-	std::shared_ptr<Modifier<T>> successor_;
 	Time preDelay_;
 };
 
