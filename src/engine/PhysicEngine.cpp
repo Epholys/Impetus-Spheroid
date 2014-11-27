@@ -59,13 +59,12 @@ namespace eg
 		{
 			auto posComp = dynCast<ecs::Position>
 				(moveablePair.second[ecs::Component::Position]);
-			assert(posComp);
 
 			auto velComp = dynCast<ecs::Velocity>
 				(moveablePair.second[ecs::Component::Velocity]);
-			assert(velComp);
 
-			posComp->position_ += velComp->velocity_ * dt.asSeconds();
+			if(posComp && velComp)
+				posComp->position_ += velComp->velocity_ * dt.asSeconds();
 		}
 	}
 

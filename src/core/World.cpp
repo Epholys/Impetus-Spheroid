@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "core/World.hpp"
 
 
@@ -8,9 +10,11 @@ World::World(ecs::EntityManager& ecs, sf::RenderWindow& window, int precision)
 	: ecs_(ecs)
 	, window_(window)
 	, physEng_(ecs, precision)
+	, evtGen_()
 	, entities_()
 	, entitiesModifiers_()
 	, ballType_(Ball::Normal)
+	, gravityVect_(0.f, 1000.f)
 	, modifiers_()
 	, font_()
 	, score_(0)
@@ -50,6 +54,31 @@ void World::generateWorld()
 	entities_.push_back(std::move(rightWall));
 }
 
+
+ecs::EntityManager& World::getEntityManager()
+{
+	return ecs_;
+}
+
+Vector2f& World::getGravityVect()
+{
+	return gravityVect_;
+}
+
+Vector2u World::getWindowSize() const
+{
+	return Vector2u(window_.getSize());
+}
+
+const eg::PhysicEngine& World::getPhysicEngine() const
+{
+	return physEng_;
+}
+
+void World::addEntityModifier(Modifier<Entity> modifier)
+{
+	entitiesModifiers_.push_back(modifier);
+}
 
 //-----------------------------------------------------------------------------
 // *** gameloop functions: ***
@@ -159,7 +188,7 @@ void World::handleInput()
 		{
 			Entity::Ptr pBall (new Ball(ecs_,
 			                            Vector2f(20.f, 580.f),
-			                            ballRadius_, ballMass_, ballColor_, ballType_));
+			                            ballRadius_, ballMass_, ballColor_, gravityVect_, ballType_));
 
 
 			auto velComp = dynCast<ecs::Velocity>
@@ -191,6 +220,7 @@ void World::handleInput()
 
 void World::update(Time dt)
 {
+	getEvent(dt);
 	applyModifiers(dt);
 	for(const auto& ent : entities_)
 	{
@@ -205,6 +235,23 @@ void World::update(Time dt)
 	std::stringstream ss;
 	ss << score_;
 	scoreText_.setString(ss.str());
+}
+
+void World::getEvent(Time dt)
+{
+	evt::Event evt = evtGen_.update(dt);
+	if(!evt.entityModifiers.empty())
+	{
+		entitiesModifiers_.insert(entitiesModifiers_.begin(),
+		                          evt.entityModifiers.begin(),
+		                          evt.entityModifiers.end());
+	}
+	if(!evt.worldModifiers.empty())
+	{
+		modifiers_.insert(modifiers_.begin(),
+		                  evt.worldModifiers.begin(),
+		                  evt.worldModifiers.end());
+	}
 }
 
 void World::cleanModifiers()
@@ -280,9 +327,9 @@ void World::cleanEntities()
 
 void World::draw() const
 {
-	for(auto rit = entities_.rbegin(); rit != entities_.rend(); ++rit)
+	for(auto it = entities_.begin(); it != entities_.end(); ++it)
 	{
-		window_.draw(*(*rit));
+		window_.draw(*(*it));
 	}
 
 	window_.draw(scoreText_);

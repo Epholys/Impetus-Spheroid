@@ -25,6 +25,7 @@ public:
 	     float radius,
 	     float mass,
 	     sf::Color color,
+	     Vector2f gravVect,
 	     unsigned int type = 0);
 	virtual ~Ball();
 

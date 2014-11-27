@@ -104,24 +104,36 @@ namespace ecs
 
 		/* (const) Getter for the Component of category cat of ent.
 		 *
-		 * Return a paused Component if flag is true
+		 * Doesn't return it if the Component is paused.
 		 *
 		 * If ent doesn't exists or ent doesn't have a Component of category
 		 * cat, returns a nullptr.
 		 * */
-		ComponentBase::SPtr getComponent(Entity ent, Component::Category cat, bool flag = false);
-		const ComponentBase::SPtr getComponent(Entity ent, Component::Category cat, bool flag = false) const;
+		ComponentBase::SPtr getComponent(Entity ent, Component::Category cat);
+		const ComponentBase::SPtr getComponent(Entity ent, Component::Category cat) const;
 
 
 		/* (const) Getter for the std::map of Components of ent.
 		 *
-		 * Returns the pause Components if flag is true
+		 * Doesn't return a Component if it is paused.
 		 *
 		 * If ent doesn't exists or doesn't have any Components, returns an
 		 * empty std::map.
 		 * */
-		componentTable getAllComponents(Entity ent, bool flag = false);
-		const componentTable getAllComponents(Entity ent, bool flag = false) const;
+		componentTable getAllComponents(Entity ent);
+		const componentTable getAllComponents(Entity ent) const;
+
+
+		/* (const) Getter for all Components of category cat.
+		 * 
+		 * Doesn't return a Component if it is paused.
+		 *
+		 * If there isn't any Components of this category, returns and empty
+		 * std::map.
+		 */
+		std::vector<ComponentBase::SPtr> getAllComponents(Component::Category cat);
+		const std::vector<ComponentBase::SPtr> getAllComponents(Component::Category cat) const;
+
 
 
 		/* Pauses ent's Component of category cat for dt.
@@ -158,7 +170,7 @@ namespace ecs
 		 * If there isn't any entities with all Components of mask, return a
 		 * empty objectTable.
 		 * */
-		objectTable getObjectTable(Component::CategoryMask mask, bool flag = false);
+		objectTable getObjectTable(Component::CategoryMask mask);
 
 
 //-----------------------------------------------------------------------------

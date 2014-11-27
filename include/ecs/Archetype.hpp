@@ -17,7 +17,8 @@ namespace ecs
 	Entity createBall(EntityManager& ecs,
 	                  Vector2f position,
 	                  float radius,
-	                  float mass);
+	                  float mass,
+	                  Vector2f gravVect);
 	
 	Entity createWall(EntityManager& ecs,
 	                  Vector2f position,

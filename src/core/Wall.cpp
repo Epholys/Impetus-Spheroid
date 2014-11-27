@@ -35,9 +35,11 @@ void Wall::update(Time dt)
 
 	auto pointPos = dynCast<ecs::Position>
 		(ecs_.getComponent(label_, ecs::Component::Position));
-	assert(pointPos);
-	auto position = pointPos->position_;
-	setPosition(position.x, position.y);
+	if(pointPos)
+	{
+		auto position = pointPos->position_;
+		setPosition(position.x, position.y);
+	}
 }
 
 void Wall::draw(sf::RenderTarget& target, sf::RenderStates states) const

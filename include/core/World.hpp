@@ -22,6 +22,7 @@
 #include "core/Ball.hpp"
 #include "core/Target.hpp"
 #include "core/Modifier.hpp"
+#include "core/EventGenerator.hpp"
 
 class World : public sf::NonCopyable
 {
@@ -32,22 +33,35 @@ public:
 	void update(Time dt);
 	void draw() const;
 
+	ecs::EntityManager& getEntityManager();
+	Vector2f& getGravityVect();
+	const eg::PhysicEngine& getPhysicEngine() const;
+	Vector2u getWindowSize() const;
+
+	void addEntityModifier(Modifier<Entity> modifier);
+
 private:
 	void generateWorld();
 
+	void getEvent(Time dt);
 	void applyModifiers(Time dt);
 
 	void cleanEntities();
 	void cleanModifiers();
 
 private:
+	
+
+private:
 	ecs::EntityManager& ecs_;
 	sf::RenderWindow& window_;
 	eg::PhysicEngine physEng_;
+	evt::EventGenerator evtGen_;
 
 	std::vector<Entity::Ptr> entities_;
 	std::vector<Modifier<Entity>> entitiesModifiers_;
 	unsigned int ballType_;
+	Vector2f gravityVect_;
 
 	std::vector<Modifier<World>> modifiers_;
 	

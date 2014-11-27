@@ -9,11 +9,12 @@ Ball::Ball(ecs::EntityManager& entm,
            float radius, 
            float mass, 
            sf::Color color,
+           Vector2f gravVect,
            unsigned int type)
 	: Entity(entm, EntityID::Ball)
 	, ball_(radius)
 {
-	label_ = ecs::createBall(entm, position, radius, mass);
+	label_ = ecs::createBall(entm, position, radius, mass, gravVect);
 
 	if(type & Massless)
 	{
@@ -47,9 +48,11 @@ void Ball::update(Time dt)
 
 	auto pointPos = dynCast<ecs::Position>
 		(ecs_.getComponent(label_, ecs::Component::Position));
-	assert(pointPos);
-	auto position = pointPos->position_;
-	setPosition(position.x, position.y);
+	if(pointPos)
+	{
+		auto position = pointPos->position_;
+		setPosition(position.x, position.y);
+	}
 }
 
 void Ball::draw(sf::RenderTarget& target, sf::RenderStates states) const

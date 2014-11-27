@@ -66,7 +66,6 @@ namespace ecs
 	{
 		if(entityExists(ent))
 		{
-
 			entityComponents_.erase(ent);
 			entityMasks_.erase(ent);
 		}
@@ -118,9 +117,9 @@ namespace ecs
 	}
 
 
-	ComponentBase::SPtr EntityManager::getComponent(Entity ent, Component::Category cat, bool flag)
+	ComponentBase::SPtr EntityManager::getComponent(Entity ent, Component::Category cat)
 	{
-		if(componentIsActive(ent, cat) || flag)
+		if(componentIsActive(ent, cat))
 		{
 			return entityComponents_[ent][cat];
 		}
@@ -128,10 +127,9 @@ namespace ecs
 	}
 
 	const ComponentBase::SPtr EntityManager::getComponent(Entity ent,
-	                                                      Component::Category cat,
-	                                                      bool flag) const
+	                                                      Component::Category cat) const
 	{
-		if(componentIsActive(ent, cat) || flag)
+		if(componentIsActive(ent, cat))
 		{
 			return entityComponents_.at(ent).at(cat);
 		}
@@ -140,14 +138,14 @@ namespace ecs
 
 
 	EntityManager::componentTable
-	EntityManager::getAllComponents(Entity ent, bool flag)
+	EntityManager::getAllComponents(Entity ent)
 	{
 		componentTable table;
 		if(entityExists(ent))
 		{
 			for(auto& componentPair : entityComponents_[ent])
 			{
-				if(!(componentPair.second->isPaused()) || flag)
+				if(!(componentPair.second->isPaused()))
 				{
 					table.insert(componentPair);
 				}
@@ -157,14 +155,14 @@ namespace ecs
 	}
 
 	const EntityManager::componentTable
-	EntityManager::getAllComponents(Entity ent, bool flag) const
+	EntityManager::getAllComponents(Entity ent) const
 	{
 		componentTable table;
 		if(entityExists(ent))
 		{
 			for(const auto& componentPair : entityComponents_.at(ent))
 			{
-				if(!(componentPair.second->isPaused()) || flag)
+				if(!(componentPair.second->isPaused()))
 				{
 					table.insert(componentPair);
 				}
@@ -173,6 +171,34 @@ namespace ecs
 		return table;
 	}
 
+
+	std::vector<ComponentBase::SPtr> 
+	EntityManager::getAllComponents(Component::Category cat)
+	{
+		std::vector<ComponentBase::SPtr> table;
+		for(auto& entityPair : entityComponents_)
+		{
+			if(componentIsActive(entityPair.first, cat))
+			{
+				table.push_back(entityPair.second[cat]);
+			}
+		}
+		return table;
+	}
+
+	const std::vector<ComponentBase::SPtr> 
+	EntityManager::getAllComponents(Component::Category cat) const
+	{
+		std::vector<ComponentBase::SPtr> table;
+		for(auto& entityPair : entityComponents_)
+		{
+			if(componentIsActive(entityPair.first, cat))
+			{
+				table.push_back(entityPair.second.at(cat));
+			}
+		}
+		return table;
+	}
 
 	void EntityManager::pauseComponent(Entity ent, Component::Category cat, Time dt)
 	{
@@ -234,7 +260,7 @@ namespace ecs
 	 * */ 
 
 	EntityManager::objectTable
-	EntityManager::getObjectTable(Component::CategoryMask mask, bool flag)
+	EntityManager::getObjectTable(Component::CategoryMask mask)
 	{
 		EntityManager::objectTable objects;
 
@@ -256,14 +282,14 @@ namespace ecs
 					if(cat & mask)
 					{
 						Component::Category strictCat = Component::Category(cat);
-						if(!(epair.second[strictCat]->isPaused()) || flag)
+						if(!(epair.second[strictCat]->isPaused()))
 						{
 							comps[strictCat]=epair.second[strictCat];
 						}
 						else
 						{
 							// If one Component is paused, aborts.
-							comps = EntityManager::componentTable();
+							comps.clear();
 							break;
 						}
 					}
@@ -294,20 +320,3 @@ namespace ecs
 
 
 } // namespace ecs
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -7,7 +7,7 @@ OPTFLAGS := -O2
 BUGFLAGS :=
 
 TARGETDIR = ../
-OBJECTS = Time.o
+OBJECTS = Time.o random.o
 
 empty :=
 space := $(empty) $(empty)
