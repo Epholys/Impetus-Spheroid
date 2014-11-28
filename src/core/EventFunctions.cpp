@@ -6,12 +6,58 @@
 
 namespace evt
 {
-	auto stopTime =
-		[](World& world, Time)
-		{
-			world.getEntityManager().pauseAllComponents(ecs::Component::Velocity, seconds(5));
-		};
+	/* A modifier's main function which pause velocity for every ball in the
+	 * rectangle defined bu its upper left corner POSITION and it size SIZE
+	 * */
+	auto stopTimeBall =
+		[](Vector2f position, Vector2f size, Entity& ball, Time)
+	{
+		const float PAUSE_DURATION = 5.f;
 
+		if(ball.getType() != EntityID::Ball) return;
+
+		auto components = ball.getComponents();
+		
+		auto velocityComponent = dynCast<ecs::Velocity>
+			(components[ecs::Component::Velocity]);
+		auto positionComponent = dynCast<ecs::Position>
+			(components[ecs::Component::Position]);
+
+		if(!velocityComponent || !positionComponent) return;
+
+		
+		auto ballPosition = positionComponent->position_;
+		
+		if(ballPosition.x > position.x &&
+		   ballPosition.x < position.x + size.x &&
+		   ballPosition.y > position.y &&
+		   ballPosition.y < position.y + size.y)
+		{
+			velocityComponent->pause(seconds(PAUSE_DURATION));
+		}
+	};
+
+
+	auto stopTimeWorld =
+		[](World& world, Time)
+	{
+		auto windowSize = world.getWindowSize();
+
+		const float leftMargin = windowSize.x * 0.25f;
+		
+		Vector2f zoneUpperLeftCorner (leftMargin, 0.f);
+		Vector2f zoneSize (windowSize.x - leftMargin, windowSize.y);
+
+		Modifier<Entity> stopTimeMod;
+		stopTimeMod.preFunction_ = std::bind(stopTimeBall,
+		                                    zoneUpperLeftCorner,
+		                                    zoneSize,
+		                                    std::placeholders::_1,
+		                                    std::placeholders::_2);
+		stopTimeMod.duration_ = Time();
+
+		world.addEntityModifier(stopTimeMod);
+	};
 
 //-----------------------------------------------------------------------------
 
@@ -50,7 +96,7 @@ namespace evt
 	auto addWindWorld = 
 		[](World& world, Time)
 		{
-			world.getGravityVect().x = -500.f;
+			world.getGravityVect().x = -750.f;
 		};
 
 	auto removeWindWorld = 
@@ -67,7 +113,7 @@ namespace evt
 	{
 		// Create base modifiers
 		Modifier<World> stopTimeMod;
-		stopTimeMod.preFunction_ = stopTime;
+		stopTimeMod.preFunction_ = stopTimeWorld;
 		stopTimeMod.duration_ = seconds(5);
 
 		Modifier<World> chgGravUpWorldMod;

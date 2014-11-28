@@ -104,6 +104,7 @@ void Target::moveToObjective()
 
 	if(!velocityComponent || !positionComponent) return;
 
+
 	
 	Vector2f vectToObjective = objective_ - positionComponent->position_;
 	if(std::sqrt(std::pow(vectToObjective.x,2) + std::pow(vectToObjective.y,2)) < EPSILON)

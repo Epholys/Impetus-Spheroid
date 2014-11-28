@@ -256,6 +256,8 @@ void World::getEvent(Time dt)
 
 void World::cleanModifiers()
 {
+	entitiesModifiers_.clear();
+
 	auto itEnd = std::remove_if(modifiers_.begin(),
 	                            modifiers_.end(),
 	                            [](Modifier<World>& modifier)
@@ -280,7 +282,6 @@ void World::applyModifiers(Time dt)
 			entity->addModifier(modifier);
 		}
 	}
-	entitiesModifiers_.clear();
 }
 
 void World::cleanEntities()

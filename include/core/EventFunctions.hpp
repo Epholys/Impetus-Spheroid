@@ -2,6 +2,8 @@
 #define EVENT_FUNCTIONS_HPP
 
 
+#include <SFML/Graphics/Rect.hpp>
+
 #include "core/Event.hpp"
 
 namespace evt
