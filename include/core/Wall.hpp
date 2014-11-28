@@ -8,7 +8,8 @@
 class Wall : public Entity
 {
 public:
-	Wall(ecs::EntityManager& entm,
+	Wall(World* world,
+	     ecs::EntityManager& entm,
 	     Vector2f position,
 	     Vector2f size,
 	     sf::Color color);

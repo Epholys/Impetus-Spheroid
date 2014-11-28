@@ -34,17 +34,17 @@ void World::generateWorld()
 {
 	auto winSize = window_.getSize();
 
-	Entity::Ptr ceiling (new Wall(ecs_,
+	Entity::Ptr ceiling (new Wall(this, ecs_,
 	                              Vector2f(winSize.x / 2.f, 0.f),
 	                              Vector2f(winSize.x, 10.f),
 	                              sf::Color::Blue));
 	
-	Entity::Ptr leftWall (new Wall(ecs_,
+	Entity::Ptr leftWall (new Wall(this, ecs_,
 	                               Vector2f(0.f, winSize.y / 2.f),
 	                               Vector2f(10.f, winSize.y),
 	                               sf::Color::Blue));
 
-	Entity::Ptr rightWall (new Wall(ecs_,
+	Entity::Ptr rightWall (new Wall(this, ecs_,
 	                                Vector2f(winSize.x, winSize.y / 2.f),
 	                                Vector2f(10.f, winSize.y),
 	                                sf::Color::Blue));
@@ -186,7 +186,7 @@ void World::handleInput()
 		else if (event.type == sf::Event::MouseButtonPressed &&
 		         event.mouseButton.button == sf::Mouse::Left)
 		{
-			Entity::Ptr pBall (new Ball(ecs_,
+			Entity::Ptr pBall (new Ball(this, ecs_,
 			                            Vector2f(20.f, 580.f),
 			                            ballRadius_, ballMass_, ballColor_, gravityVect_, ballType_));
 
@@ -209,7 +209,7 @@ void World::handleInput()
 		else if (event.type == sf::Event::MouseButtonPressed &&
 		         event.mouseButton.button == sf::Mouse::Right)			
 		{
-			Entity::Ptr pTarget (new Target(ecs_,
+			Entity::Ptr pTarget (new Target(this, ecs_,
 			                                Vector2f(sf::Mouse::getPosition(window_)),
 			                                Vector2f(15.f, 75.f),
 			                                sf::Color::Yellow));

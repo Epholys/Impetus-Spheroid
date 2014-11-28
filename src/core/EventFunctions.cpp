@@ -14,65 +14,6 @@ namespace evt
 
 
 //-----------------------------------------------------------------------------
-	
-	void moveEntityTo(int xPos, int yPos, ecs::Entity label, Entity& entity, Time)
-	{
-		if(entity.getLabel() == label)
-		{
-			auto velComp =
-				dynCast<ecs::Velocity>(entity.getComponents()[ecs::Component::Velocity]);
-			auto posComp =
-				dynCast<ecs::Position>(entity.getComponents()[ecs::Component::Position]);
-
-			if(velComp && velComp)
-			{
-				Vector2f vectToObjective = Vector2f(xPos, yPos) - posComp->position_;
-				velComp->velocity_ = velComp->velocity_ * 0.25f + vectToObjective * 2.5f;
-			}
-		}
-	}
-	
-	void resetEntityVelocity(ecs::Entity label, Entity& entity, Time)
-	{
-		if(entity.getLabel() == label)
-		{
-			auto velComp =
-				dynCast<ecs::Velocity>(entity.getComponents()[ecs::Component::Velocity]);
-			if(velComp)
-			{
-				velComp->velocity_ = Vector2f(0.f, 0.f);
-			}
-		}
-	}
-
-	auto teleportTarget =
-		[](World& world, Time)
-		{
-			auto collisions = world.getPhysicEngine().getTrackedCollisions();
-			
-			for(auto& pair : collisions)
-			{
-				auto posPtr = world.getEntityManager().getComponent(pair.second, ecs::Component::Position);
-				auto posComp = dynCast<ecs::Position>(posPtr);
-				if(posComp)
-				{
-					auto windowSize = world.getWindowSize();
-					int newXPosition = randInt(windowSize.x / 4, windowSize.x - 20);
-					int newYPosition = randInt(80, windowSize.y - 80);
-
-					Modifier<Entity> moveMod;
-					moveMod.mainFunction_ = std::bind(moveEntityTo, newXPosition, newYPosition,
-					                                 pair.second, std::placeholders::_1,
-					                                 std::placeholders::_2);
-					moveMod.postFunction_ = std::bind(resetEntityVelocity, pair.second,
-					                                  std::placeholders::_1, std::placeholders::_2);
-					moveMod.duration_ = seconds(1.5f);
-					world.addEntityModifier(moveMod);
-				}
-			}
-		};
-
-//-----------------------------------------------------------------------------
 
 
 	auto chgGravUpWorld =
@@ -129,10 +70,6 @@ namespace evt
 		stopTimeMod.preFunction_ = stopTime;
 		stopTimeMod.duration_ = seconds(5);
 
-		Modifier<World> teleportTargetMod;
-		teleportTargetMod.mainFunction_ = teleportTarget;
-		teleportTargetMod.duration_ = seconds(10);
-
 		Modifier<World> chgGravUpWorldMod;
 		chgGravUpWorldMod.preFunction_ = chgGravUpWorld;
 		chgGravUpWorldMod.postFunction_ = chgGravUpWorld;
@@ -151,10 +88,6 @@ namespace evt
 		Event stopTimeEvt;
 		stopTimeEvt.chance = 5;
 		stopTimeEvt.worldModifiers.push_back(stopTimeMod);
-
-		Event teleportTargetEvt;
-		teleportTargetEvt.chance = 100;
-		teleportTargetEvt.worldModifiers.push_back(teleportTargetMod);
 
 		Event chgGravUpWorldEvt;
 		chgGravUpWorldEvt.chance = 5;
@@ -179,8 +112,8 @@ namespace evt
 		
 		// Create and return all the Events
 		std::vector<Event> events
-			{stopTimeEvt, teleportTargetEvt, chgGravUpWorldEvt,
-			 createObstacleWorldEvt, addWindWorldEvt, gravAndTimeEvt};
+				{stopTimeEvt, chgGravUpWorldEvt, createObstacleWorldEvt,
+				addWindWorldEvt, gravAndTimeEvt};
 		return events;
 	}
 }

@@ -4,11 +4,12 @@
 
 //-----------------------------------------------------------------------------
 
-Wall::Wall(ecs::EntityManager& entm,
+Wall::Wall(World* world,
+           ecs::EntityManager& entm,
            Vector2f position,
            Vector2f size,
            sf::Color color)
-	: Entity(entm, EntityID::Wall)
+	: Entity(world, entm, EntityID::Wall)
 	, rect_(size)
 {
 	label_ = ecs::createWall(entm, position, size);

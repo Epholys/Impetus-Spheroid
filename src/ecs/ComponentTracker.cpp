@@ -7,12 +7,25 @@ namespace ecs
 	// *** Target: ***
 
 	Target::Target()
+		: hasBeenTouched_(false)
 	{
 	}
 
 	Component::Category Target::getCategory() const
 	{
 		return Component::Target;
+	}
+
+	void Target::touch()
+	{
+		hasBeenTouched_ = true;
+	}
+	
+	bool Target::reset()
+	{
+		bool returnVal = hasBeenTouched_;
+		hasBeenTouched_ = false;
+		return returnVal;
 	}
 
 //-----------------------------------------------------------------------------

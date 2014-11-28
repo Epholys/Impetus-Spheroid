@@ -22,7 +22,17 @@ namespace ecs
 	public:
 		Target();
 
+		/* These two functions are used to keep track of wether or not the
+		 * target has been touched, for the purpose of moving it, for example,
+		 * and not to keep track of each collision separately.
+		 * */
+		void touch();
+		bool reset();
+
 		virtual Component::Category getCategory() const;
+
+	private:
+		bool hasBeenTouched_;
 	};
 
 //-----------------------------------------------------------------------------

@@ -20,7 +20,8 @@ public:
 	};
 
 public:
-	Ball(ecs::EntityManager& entm,
+	Ball(World* world,
+		 ecs::EntityManager& entm,
 	     Vector2f position,
 	     float radius,
 	     float mass,

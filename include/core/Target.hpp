@@ -12,7 +12,8 @@
 class Target : public Entity
 {
 public:
-	Target(ecs::EntityManager& entm,
+	Target(World* world,
+		   ecs::EntityManager& entm,
 	       Vector2f position,
 	       Vector2f size,
 	       sf::Color color);
@@ -22,8 +23,14 @@ public:
 	virtual void draw(sf::RenderTarget& target,
 	                  sf::RenderStates states) const;
 
+private:
+	void updateObjective();
+	void moveToObjective();
+
 protected:
 	sf::RectangleShape rect_;
+
+	Vector2f objective_;
 };
 
 

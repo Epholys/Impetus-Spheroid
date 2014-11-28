@@ -334,6 +334,7 @@ namespace eg
 			if(!firstProjComp->hasTouchedTarget())
 			{
 				firstProjComp->touchTarget();
+				secondTargetComp->touch();
 
 				trackedCollisions_.push_back(pair);
 			}
@@ -352,6 +353,7 @@ namespace eg
 			if(!secondProjComp->hasTouchedTarget())
 			{
 				secondProjComp->touchTarget();
+				firstTargetComp->touch();
 
 				std::swap(pair.first, pair.second);
 				trackedCollisions_.push_back(pair);

@@ -17,13 +17,15 @@
 #include "core/Identifiers.hpp"
 #include "core/Modifier.hpp"
 
+class World;
+
 class Entity : public sf::Drawable, public sf::Transformable
 {
 public:
 	typedef std::unique_ptr<Entity> Ptr;
 
 public:
-	Entity(ecs::EntityManager& entm, EntityID::Type type = EntityID::None);
+	Entity(World* world, ecs::EntityManager& entm, EntityID::Type type = EntityID::None);
 	virtual ~Entity();
 
 	ecs::Entity getLabel() const;
@@ -37,6 +39,8 @@ public:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	
 protected:
+	World* world_;
+
 	ecs::EntityManager& ecs_;
 	ecs::Entity label_;
 	

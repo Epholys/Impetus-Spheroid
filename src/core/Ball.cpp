@@ -4,14 +4,15 @@
 
 //-----------------------------------------------------------------------------
 
-Ball::Ball(ecs::EntityManager& entm,
+Ball::Ball(World* world,
+           ecs::EntityManager& entm,
            Vector2f position, 
            float radius, 
            float mass, 
            sf::Color color,
            Vector2f gravVect,
            unsigned int type)
-	: Entity(entm, EntityID::Ball)
+	: Entity(world, entm, EntityID::Ball)
 	, ball_(radius)
 {
 	label_ = ecs::createBall(entm, position, radius, mass, gravVect);
