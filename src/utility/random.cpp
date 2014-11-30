@@ -19,7 +19,7 @@ int randInt(int minInclusive, int maxInclusive)
 	return dist(randomEngine);
 }
 
-int normalRandFloat(float mean, float stddev)
+float normalRandFloat(float mean, float stddev)
 {
 	std::normal_distribution<float> dist (mean, stddev);
 

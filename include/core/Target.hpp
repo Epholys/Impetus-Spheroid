@@ -2,12 +2,12 @@
 #define TARGET_HPP
 
 
-#include "utility/utility.hpp"
-#include "core/Entity.hpp"
-
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+
+#include "utility/utility.hpp"
+#include "core/Entity.hpp"
 
 class Target : public Entity
 {

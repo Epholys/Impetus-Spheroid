@@ -39,6 +39,8 @@ public:
 	Vector2u getWindowSize() const;
 
 	void addEntityModifier(Modifier<Entity> modifier);
+	void addModifier(Modifier<World> modifier);
+	void addEntity(Entity::Ptr entity);
 
 private:
 	void generateWorld();
@@ -48,9 +50,6 @@ private:
 
 	void cleanEntities();
 	void cleanModifiers();
-
-private:
-	
 
 private:
 	ecs::EntityManager& ecs_;
@@ -64,6 +63,7 @@ private:
 	Vector2f gravityVect_;
 
 	std::vector<Modifier<World>> modifiers_;
+	std::vector<Modifier<World>> modifierBuffer_;
 	
 	// Temporaries attributes to shift from Application to World
 	sf::Font font_;

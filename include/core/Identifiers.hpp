@@ -10,6 +10,7 @@ namespace EntityID
 		Wall = 1,
 		Ball = 1 << 1,
 		Target = 1 << 2,
+		Obstacle = 1 << 3,
 	};
 }
 

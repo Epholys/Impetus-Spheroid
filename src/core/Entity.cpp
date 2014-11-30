@@ -7,6 +7,8 @@ Entity::Entity(World* world, ecs::EntityManager& entm, EntityID::Type type)
 	, ecs_(entm)
 	, label_(0)
 	, type_(type)
+	, modifiers_()
+	, modifierBuffer_()
 {
 }
 
@@ -33,11 +35,19 @@ Entity::getComponents()
 
 void Entity::addModifier(Modifier<Entity> modifier)
 {
-	modifiers_.push_back(modifier);
+	modifierBuffer_.push_back(modifier);
 }
 
 void Entity::update(Time dt)
 {
+	if(!modifierBuffer_.empty())
+	{
+		modifiers_.insert(modifiers_.begin(),
+		                  modifierBuffer_.begin(),
+		                  modifierBuffer_.end());
+		modifierBuffer_.clear();
+	}
+
 	for(auto& modifier : modifiers_)
 	{
 		modifier(*this, dt);

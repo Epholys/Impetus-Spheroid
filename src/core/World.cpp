@@ -1,7 +1,4 @@
-#include <iostream>
-
 #include "core/World.hpp"
-
 
 //-----------------------------------------------------------------------------
 // *** constructor: ***
@@ -16,6 +13,7 @@ World::World(ecs::EntityManager& ecs, sf::RenderWindow& window, int precision)
 	, ballType_(Ball::Normal)
 	, gravityVect_(0.f, 1000.f)
 	, modifiers_()
+	, modifierBuffer_()
 	, font_()
 	, score_(0)
 	, scoreText_()
@@ -78,6 +76,16 @@ const eg::PhysicEngine& World::getPhysicEngine() const
 void World::addEntityModifier(Modifier<Entity> modifier)
 {
 	entitiesModifiers_.push_back(modifier);
+}
+
+void World::addModifier(Modifier<World> modifier)
+{
+	modifierBuffer_.push_back(modifier);
+}
+
+void World::addEntity(Entity::Ptr entity)
+{
+	entities_.push_back(std::move(entity));
 }
 
 //-----------------------------------------------------------------------------
@@ -260,7 +268,7 @@ void World::cleanModifiers()
 
 	auto itEnd = std::remove_if(modifiers_.begin(),
 	                            modifiers_.end(),
-	                            [](Modifier<World>& modifier)
+	                            [](const Modifier<World>& modifier)
 	                            {
 		                            return modifier.isExpired();
 	                            });
@@ -270,6 +278,14 @@ void World::cleanModifiers()
 
 void World::applyModifiers(Time dt)
 {
+	if(!modifierBuffer_.empty())
+	{
+		modifiers_.insert(modifiers_.begin(),
+		                  modifierBuffer_.begin(),
+		                  modifierBuffer_.end());
+		modifierBuffer_.clear();
+	}
+
 	for(auto& modifier : modifiers_)
 	{
 		modifier(*this, dt);

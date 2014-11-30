@@ -7,7 +7,7 @@
 
 int randInt(int minInclusive, int maxInclusive);
 
-int normalRandFloat(float mean, float stddev);
+float normalRandFloat(float mean, float stddev);
 
 
 #endif // UT_RANDOM_HPP

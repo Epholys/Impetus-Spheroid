@@ -47,6 +47,7 @@ protected:
 	EntityID::Type type_;
 
 	std::vector<Modifier<Entity>> modifiers_;
+	std::vector<Modifier<Entity>> modifierBuffer_;
 };
 
 
