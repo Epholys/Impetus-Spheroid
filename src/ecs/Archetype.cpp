@@ -44,6 +44,7 @@ namespace ecs
 		return rect;
 	}
 
+
 	Entity createTarget(EntityManager& ecs,
 	                    Vector2f position,
 	                    Vector2f size)
@@ -57,6 +58,30 @@ namespace ecs
 		ecs.addComponent<Target>(targ);
 
 		return targ;
+	}
+
+
+	Entity createObstacle(EntityManager& ecs,
+	                      Vector2f position,
+	                      Vector2f size,
+	                      Vector2f velocity,
+	                      float mass,
+	                      Vector2f gravVect)
+	{
+		Entity obst = ecs.addEntity();
+
+		if(mass == 0.f)
+		{
+			mass = 1.f;
+		}
+
+		ecs.addComponent<Position>(obst, position);
+		ecs.addComponent<Velocity>(obst, velocity);
+		ecs.addComponent<Mass>(obst, mass, gravVect);
+		ecs.addComponent<Solid>(obst, 1.f / mass, 1.f);
+		ecs.addComponent<CollidableRect>(obst, size);
+
+		return obst;
 	}
 
 

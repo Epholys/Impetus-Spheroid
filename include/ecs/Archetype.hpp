@@ -28,6 +28,15 @@ namespace ecs
 	                    Vector2f position,
 	                    Vector2f size);
 
+	Entity createObstacle(EntityManager& ecs,
+	                      Vector2f position,
+	                      Vector2f size,
+	                      Vector2f velocity,
+	                      float mass,
+	                      Vector2f gravVect);
+
+	                      
+
 } // namespace ecs
 
 

@@ -1,5 +1,10 @@
 #include <functional>
+#include <vector>
 
+#include <SFML/Graphics/Color.hpp>
+
+#include "ecs/Archetype.hpp"
+#include "core/Obstacle.hpp"
 #include "core/EventFunctions.hpp"
 #include "core/World.hpp"
 #include "core/Entity.hpp"
@@ -43,10 +48,10 @@ namespace evt
 	{
 		auto windowSize = world.getWindowSize();
 
-		const float leftMargin = windowSize.x * 0.25f;
+		const float LEFT_MARGIN = windowSize.x * 0.25f;
 		
-		Vector2f zoneUpperLeftCorner (leftMargin, 0.f);
-		Vector2f zoneSize (windowSize.x - leftMargin, windowSize.y);
+		Vector2f zoneUpperLeftCorner (LEFT_MARGIN, 0.f);
+		Vector2f zoneSize (windowSize.x - LEFT_MARGIN, windowSize.y);
 
 		Modifier<Entity> stopTimeMod;
 		stopTimeMod.preFunction_ = std::bind(stopTimeBall,
@@ -82,12 +87,69 @@ namespace evt
 
 //-----------------------------------------------------------------------------
 
+	void generateAnObstacle (Vector2f upLeftCorner, Vector2f zoneSize,
+	                         World& world, Time)
+	{
+		const Vector2f SIZE (15.f, 150.f);
+		const float MEAN_VEL = -500.f;
+		const float DVT_VEL = 150.f;
+		const float MEAN_GRAV = 250.f;
+		const float DVT_GRAV = 50.f;
+		const sf::Color COLOR = sf::Color::Green;
+		
+		float xMean = upLeftCorner.x + zoneSize.x / 2.f;
+		float xDev = zoneSize.x / 2.f;
+		float xPosition = normalRandFloat(xMean, xDev);
+		float yPosition = upLeftCorner.y + zoneSize.y + SIZE.y/2.f;
 
-	auto createObstacleWorld =
-		[](World& world, Time)
+		float yVelocity = normalRandFloat(MEAN_VEL, DVT_VEL);
+		float yGrav = normalRandFloat(MEAN_GRAV, DVT_GRAV);
+		
+  		Entity::Ptr pObstacle (new Obstacle(&world, world.getEntityManager(),
+		                                    Vector2f(xPosition, yPosition),
+		                                    SIZE,
+		                                    Vector2f(0.f, yVelocity),
+		                                    Vector2f(0.f, yGrav),
+		                                    COLOR));
+		
+		world.addEntity(std::move(pObstacle));
+	}
+
+	void createObstacleModifiers(World& world, Time)
+	{
+		auto windowSize = world.getWindowSize();
+
+		const float LEFT_MARGIN = windowSize.x * 0.25f;
+		const float RIGHT_MARGIN = windowSize.x * 0.25f;
+
+		Vector2f zoneUpperLeftCorner (LEFT_MARGIN, 0.f);
+		Vector2f zoneSize (windowSize.x - LEFT_MARGIN - RIGHT_MARGIN, windowSize.y - 1);
+		
+		const int MIN_OBSTACLE = 3;
+		const int MAX_OBSTACLE = 10;
+		const float MEAN_DELAY = 1.f;
+		const float DEVIATION = 0.5f;
+		
+		int nObstacle = randInt(MIN_OBSTACLE, MAX_OBSTACLE);
+		float totalDelay = 0.f;
+		for(int i=0; i<nObstacle; ++i)
 		{
+			float delay = normalRandFloat(MEAN_DELAY, DEVIATION);
+			delay = std::max(0.f, delay);
+			totalDelay += delay;
+
+			Modifier<World> generateObstacle;
+			generateObstacle.preDelay_ = seconds(totalDelay);
+			generateObstacle.preFunction_ = std::bind(generateAnObstacle,
+			                                          zoneUpperLeftCorner,
+			                                          zoneSize,
+			                                          std::placeholders::_1,
+			                                          std::placeholders::_2);
+			generateObstacle.duration_ = seconds(delay);
 			
-		};
+			world.addModifier(generateObstacle);
+		}
+	}
 
 
 //-----------------------------------------------------------------------------
@@ -121,8 +183,9 @@ namespace evt
 		chgGravUpWorldMod.postFunction_ = chgGravUpWorld;
 		chgGravUpWorldMod.duration_ = seconds(5);
 
-		Modifier<World> createObstacleWorldMod;
-		createObstacleWorldMod.mainFunction_ = createObstacleWorld;
+		Modifier<World> generateObstaclesMod;
+		generateObstaclesMod.preFunction_ = createObstacleModifiers;
+		generateObstaclesMod.duration_ = seconds(5);
 
 		Modifier<World> addWindWorldMod;
 		addWindWorldMod.preFunction_ = addWindWorld;
@@ -140,8 +203,8 @@ namespace evt
 		chgGravUpWorldEvt.worldModifiers.push_back(chgGravUpWorldMod);
 
 		Event createObstacleWorldEvt;
-		createObstacleWorldEvt.chance = 0;
-		createObstacleWorldEvt.worldModifiers.push_back(createObstacleWorldMod);
+		createObstacleWorldEvt.chance = 1000;
+		createObstacleWorldEvt.worldModifiers.push_back(generateObstaclesMod);
 
 		Event addWindWorldEvt;
 		addWindWorldEvt.chance = 5;
@@ -158,8 +221,8 @@ namespace evt
 		
 		// Create and return all the Events
 		std::vector<Event> events
-				{stopTimeEvt, chgGravUpWorldEvt, createObstacleWorldEvt,
-				addWindWorldEvt, gravAndTimeEvt};
+			{stopTimeEvt, chgGravUpWorldEvt, createObstacleWorldEvt,
+			addWindWorldEvt, gravAndTimeEvt};
 		return events;
 	}
 }
