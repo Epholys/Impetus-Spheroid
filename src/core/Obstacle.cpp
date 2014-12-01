@@ -15,7 +15,7 @@ Obstacle:: Obstacle(World* world,
 	: Entity(world, entm, EntityID::Obstacle)
 	, rect_(size)
 {
-	const float MASS = 1000.f;
+	const float MASS = 10000.f;
 
 	label_ = ecs::createObstacle(entm, position, size, velocity, MASS, gravVect);
 	

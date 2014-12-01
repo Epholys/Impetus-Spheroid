@@ -78,7 +78,7 @@ namespace ecs
 		ecs.addComponent<Position>(obst, position);
 		ecs.addComponent<Velocity>(obst, velocity);
 		ecs.addComponent<Mass>(obst, mass, gravVect);
-		ecs.addComponent<Solid>(obst, 1.f / mass, 1.f);
+		ecs.addComponent<Solid>(obst, 1.f / mass, 1.5f);
 		ecs.addComponent<CollidableRect>(obst, size);
 
 		return obst;

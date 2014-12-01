@@ -229,6 +229,14 @@ namespace eg
 
 					contactGenerated = true;
 				}
+				else if(firstCollRect && secondCollRect)
+				{
+					contact = generateRectContact(firstPosComp->position_,
+					                              firstCollRect->size_,
+					                              secondPosComp->position_,
+					                              secondCollRect->size_);
+					contactGenerated = true;
+				}
 				else
 				{
 					// Do nothing
@@ -267,6 +275,36 @@ namespace eg
 		
 		return contact;
 	}
+
+
+	Contact PhysicEngine::generateRectContact(Vector2f firstPos, Vector2f firstSize,
+	                                          Vector2f secondPos, Vector2f secondSize)
+	{
+		Contact contact;
+
+		Vector2f gap = secondPos - firstPos;
+
+		bool insideX = !(std::max(std::abs(gap.x) - firstSize.x/2.f - secondSize.x/2.f, 0.f));
+		bool insideY = !(std::max(std::abs(gap.y) - firstSize.y/2.f - secondSize.y/2.f, 0.f));
+
+		float xFactor = std::signbit(gap.x) ? -1 : 1;
+		float yFactor = std::signbit(gap.y) ? -1 : 1;
+
+		gap = Vector2f(gap.x - xFactor * (firstSize.x/2.f + secondSize.x/2.f),
+		               gap.y - yFactor * (firstSize.y/2.f + secondSize.y/2.f));
+
+		if(insideX)
+			gap.x = 0.f;
+		if(insideY)
+			gap.y = 0.f;
+		
+		contact.normal_ = gap;
+
+		contact.distance_ = std::sqrt(std::pow(gap.x, 2) + std::pow(gap.y, 2));
+
+		return contact;
+	}
+
 
 	Contact PhysicEngine::generateMixedContact(Vector2f spherePos, float sphereRadius,
 	                                           Vector2f rectPos, Vector2f rectSize)
