@@ -4,17 +4,20 @@
 ### TODO
 
 * Global
+  * Game Engine
+  * Graphics
+  * Sound
+  * Clean-up everything ! (I code dirty)
 
-* Utility
-  * TODO Add some functionnality to Time (just redirection of sf::seconds)
-
-* Engine
-  * PhysicEngine
-  	* TODO catch the exception in addEntity()
-
+* Physic Engine
+ 
 * Game Engine (core branch)
-  * Everything!
+  * Adaptivity and difficulty
+  	* Design
+	* Implementation
+	* Testing
+	* Tweaking
 
 * Optimization (if necessary)
-  * TODO Search where are the bottlenecks
-  * TODO ECS: Optimize to be more cache-friendly
+  * Search where are the bottlenecks
+  * ECS: Optimize to be more cache-friendly
