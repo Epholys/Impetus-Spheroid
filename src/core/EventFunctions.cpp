@@ -40,6 +40,12 @@ namespace evt
 		{
 			velocityComponent->pause(seconds(PAUSE_DURATION));
 		}
+
+		auto projectileComponent = dynCast<ecs::Projectile>
+			(components[ecs::Component::Projectile]);
+		if(projectileComponent)
+			projectileComponent->pause(seconds(PAUSE_DURATION));
+			
 	};
 
 
@@ -203,7 +209,7 @@ namespace evt
 		chgGravUpWorldEvt.worldModifiers.push_back(chgGravUpWorldMod);
 
 		Event createObstacleWorldEvt;
-		createObstacleWorldEvt.chance = 1000;
+		createObstacleWorldEvt.chance = 5;
 		createObstacleWorldEvt.worldModifiers.push_back(generateObstaclesMod);
 
 		Event addWindWorldEvt;

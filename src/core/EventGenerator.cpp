@@ -1,8 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////
-#include<iostream>
-///////////////////////////////////////////////////////////////////////////////
-
-
 #include "core/EventGenerator.hpp"
 
 
@@ -45,7 +40,7 @@ namespace evt
 
 	void EventGenerator::updateCounters(std::size_t nextEvt)
 	{
-		float delay = normalRandFloat(5.f, 2.f);
+		float delay = normalRandFloat(10.f, 2.f);
 		delay = std::max(0.f, delay);
 
 		timeUntilNextEvent_ += events_[nextEvt].getDuration() + seconds(delay);
