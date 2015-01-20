@@ -51,6 +51,10 @@ private:
 	void cleanEntities();
 	void cleanModifiers();
 
+// TODO: Replace all the input by a separate class
+	void createBall(Vector2f mousePosition);
+	void createTarget(Vector2f mousePosition);
+
 private:
 	ecs::EntityManager& ecs_;
 	sf::RenderWindow& window_;
@@ -64,12 +68,12 @@ private:
 
 	std::vector<Modifier<World>> modifiers_;
 	std::vector<Modifier<World>> modifierBuffer_;
-	
-	// Temporaries attributes to shift from Application to World
+
 	sf::Font font_;
 	int score_;
 	sf::Text scoreText_;
-
+	
+	// Temporary attributes to shift from Application to World
 	float ballMass_;
 	float ballRadius_;
 	sf::Color ballColor_;

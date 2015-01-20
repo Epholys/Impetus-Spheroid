@@ -88,8 +88,52 @@ void World::addEntity(Entity::Ptr entity)
 	entities_.push_back(std::move(entity));
 }
 
+
+//-----------------------------------------------------------------------------
+// *** TEMPORARY FUNCTIONS: ***
+// TODO: Replace all the input by a separate class
+
 //-----------------------------------------------------------------------------
 // *** gameloop functions: ***
+void World::createBall(Vector2f mousePosition)
+{
+	const Vector2f CANON_POSITION {20.f, 580.f};
+	const float IMPULSE_COEFF = 3.f;
+
+
+	Entity::Ptr pBall (new Ball(this, ecs_,
+	                            CANON_POSITION,
+	                            ballRadius_, ballMass_, ballColor_, gravityVect_, ballType_));
+
+
+	auto velComp = dynCast<ecs::Velocity>
+		(ecs_.getComponent(pBall->getLabel(), ecs::Component::Velocity));
+	assert(velComp);
+
+	Vector2f direction = mousePosition - CANON_POSITION;
+	float impulse = std::max(direction.x, -direction.y);
+	direction.normalize();
+			
+
+	velComp->velocity_ += IMPULSE_COEFF * impulse * direction / ballMass_;
+
+
+	entities_.push_back(std::move(pBall));
+}
+
+void World::createTarget(Vector2f mousePosition)
+{
+	const Vector2f TARGET_DIMENSION {15.f, 75.f};
+	const sf::Color TARGET_COLOR {sf::Color::Yellow};
+
+
+	Entity::Ptr pTarget (new Target(this, ecs_,
+	                                mousePosition,
+	                                TARGET_DIMENSION,
+	                                TARGET_COLOR));
+	entities_.push_back(std::move(pTarget));
+
+}
 
 void World::handleInput()
 {
@@ -140,52 +184,6 @@ void World::handleInput()
 					ballColor_.a = 255;
 				break;
 			}
-
-			case sf::Keyboard::A:
-			{
-				Modifier<Entity> chgGrav;
-				chgGrav.duration_ = seconds(5);
-				chgGrav.preFunction_ =
-					[](Entity& target, Time)
-					{
-						auto massPtr = target.getComponents()[ecs::Component::Mass];
-						auto massComp = dynCast<ecs::Mass>(massPtr);
-						if(massComp)
-						{
-							massComp->gravityVect_ *= -1.f;
-						}
-					};
-			
-				chgGrav.postFunction_ =
-					[](Entity& target, Time)
-					{
-						auto massPtr = target.getComponents()[ecs::Component::Mass];
-						auto massComp = dynCast<ecs::Mass>(massPtr);
-						if(massComp)
-						{
-							massComp->gravityVect_ *= -1.f;
-						}
-					};
-
-				entitiesModifiers_.push_back(chgGrav);
-
-				Modifier<Entity> pause;
-				pause.duration_ = seconds(0);
-				pause.preDelay_ = seconds(5.5f);
-				pause.preFunction_ =
-					[](Entity& target, Time)
-					{
-						if(target.getType() == EntityID::Ball)
-						{
-							auto velPtr = target.getComponents()[ecs::Component::Velocity];
-							if(velPtr) velPtr->pause(seconds(3));
-						}
-					};
-
-				entitiesModifiers_.push_back(pause);
-				
-				break;
-			}
 			
 			default:
 				break;
@@ -194,34 +192,13 @@ void World::handleInput()
 		else if (event.type == sf::Event::MouseButtonPressed &&
 		         event.mouseButton.button == sf::Mouse::Left)
 		{
-			Entity::Ptr pBall (new Ball(this, ecs_,
-			                            Vector2f(20.f, 580.f),
-			                            ballRadius_, ballMass_, ballColor_, gravityVect_, ballType_));
-
-
-			auto velComp = dynCast<ecs::Velocity>
-				(ecs_.getComponent(pBall->getLabel(), ecs::Component::Velocity));
-			assert(velComp);
-
-			Vector2f force = Vector2f(sf::Mouse::getPosition(window_)) - Vector2f(20.f, 580.f);
-			float impulse = std::max(force.x, -force.y);
-			force.normalize();
-			
-
-			velComp->velocity_ += 3.f * impulse * force / ballMass_;
-
-
-			entities_.push_back(std::move(pBall));
+			createBall(Vector2f(sf::Mouse::getPosition(window_)));
 		}
 
 		else if (event.type == sf::Event::MouseButtonPressed &&
 		         event.mouseButton.button == sf::Mouse::Right)			
 		{
-			Entity::Ptr pTarget (new Target(this, ecs_,
-			                                Vector2f(sf::Mouse::getPosition(window_)),
-			                                Vector2f(15.f, 75.f),
-			                                sf::Color::Yellow));
-			entities_.push_back(std::move(pTarget));
+			createTarget(Vector2f(sf::Mouse::getPosition(window_)));
 		}
 	}
 }
