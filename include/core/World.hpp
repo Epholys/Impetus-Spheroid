@@ -23,6 +23,8 @@
 #include "core/Target.hpp"
 #include "core/Modifier.hpp"
 #include "core/EventGenerator.hpp"
+#include "core/DifficultyManager.hpp"
+#include "data/DifficultyData.hpp"
 
 class World : public sf::NonCopyable
 {
@@ -42,6 +44,8 @@ public:
 	void addModifier(Modifier<World> modifier);
 	void addEntity(Entity::Ptr entity);
 
+	void updateDifficulty(DifficultyWorld diff);
+
 private:
 	void generateWorld();
 
@@ -60,6 +64,9 @@ private:
 	sf::RenderWindow& window_;
 	eg::PhysicEngine physEng_;
 	evt::EventGenerator evtGen_;
+	DifficultyManager difficulty_;
+
+	float speedCoeff_;
 
 	std::vector<Entity::Ptr> entities_;
 	std::vector<Modifier<Entity>> entitiesModifiers_;

@@ -1,4 +1,4 @@
-DIRS = ecs framework engine core utility
+DIRS = ecs framework engine core utility data
 
 
 % :

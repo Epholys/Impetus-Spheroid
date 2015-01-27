@@ -8,6 +8,8 @@ World::World(ecs::EntityManager& ecs, sf::RenderWindow& window, int precision)
 	, window_(window)
 	, physEng_(ecs, precision)
 	, evtGen_()
+	, difficulty_(DifficultyContext{this, &evtGen_})
+	, speedCoeff_(1.f)
 	, entities_()
 	, entitiesModifiers_()
 	, ballType_(Ball::Normal)
@@ -88,6 +90,10 @@ void World::addEntity(Entity::Ptr entity)
 	entities_.push_back(std::move(entity));
 }
 
+void World::updateDifficulty(DifficultyWorld diff)
+{
+	speedCoeff_ += diff.speedConstant;
+}
 
 //-----------------------------------------------------------------------------
 // *** TEMPORARY FUNCTIONS: ***
@@ -205,8 +211,16 @@ void World::handleInput()
 
 void World::update(Time dt)
 {
+	// All the objects that requires the "real" time:
 	getEvent(dt);
+	difficulty_.update(dt);
+
+	// All the objects that requires the faster time below:
+	dt *= speedCoeff_;
+
+	ecs_.update(dt);
 	applyModifiers(dt);
+
 	for(const auto& ent : entities_)
 	{
 		ent->update(dt);
@@ -325,7 +339,9 @@ void World::draw() const
 	{
 		window_.draw(*(*it));
 	}
+	window_.draw(difficulty_);
 
 	window_.draw(scoreText_);
+	
 }
 

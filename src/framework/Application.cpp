@@ -58,7 +58,6 @@ void Application::handleInput()
 
 void Application::update(sf::Time dt)
 {
-	ecs_.update(dt);
 	gameWorld_.update(dt);
 }
 
