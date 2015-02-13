@@ -27,6 +27,8 @@ namespace evt
 			(components[ecs::Component::Velocity]);
 		auto positionComponent = dynCast<ecs::Position>
 			(components[ecs::Component::Position]);
+		auto projectileComponent = dynCast<ecs::Projectile>
+			(components[ecs::Component::Projectile]);
 
 		if(!velocityComponent || !positionComponent) return;
 
@@ -39,12 +41,12 @@ namespace evt
 		   ballPosition.y < position.y + size.y)
 		{
 			velocityComponent->pause(seconds(PAUSE_DURATION));
+			if(projectileComponent)
+			{
+				projectileComponent->pause(seconds(PAUSE_DURATION));
+			}
 		}
 
-		auto projectileComponent = dynCast<ecs::Projectile>
-			(components[ecs::Component::Projectile]);
-		if(projectileComponent)
-			projectileComponent->pause(seconds(PAUSE_DURATION));
 			
 	};
 
@@ -96,24 +98,27 @@ namespace evt
 	void generateAnObstacle (Vector2f upLeftCorner, Vector2f zoneSize,
 	                         World& world, Time)
 	{
-		const Vector2f SIZE (15.f, 150.f);
+		const float MEAN_HEIGHT = 75.f;
+		const float DVT_HEIGHT = 25.f;
 		const float MEAN_VEL = -500.f;
 		const float DVT_VEL = 150.f;
 		const float MEAN_GRAV = 250.f;
 		const float DVT_GRAV = 50.f;
 		const sf::Color COLOR = sf::Color::Green;
+
+		Vector2f size (15.f, normalRandFloat(MEAN_HEIGHT, DVT_HEIGHT));
 		
 		float xMean = upLeftCorner.x + zoneSize.x / 2.f;
 		float xDev = zoneSize.x / 2.f;
 		float xPosition = normalRandFloat(xMean, xDev);
-		float yPosition = upLeftCorner.y + zoneSize.y + SIZE.y/2.f;
+		float yPosition = upLeftCorner.y + zoneSize.y + size.y/2.f;
 
 		float yVelocity = normalRandFloat(MEAN_VEL, DVT_VEL);
 		float yGrav = normalRandFloat(MEAN_GRAV, DVT_GRAV);
-		
+
   		Entity::Ptr pObstacle (new Obstacle(&world, world.getEntityManager(),
 		                                    Vector2f(xPosition, yPosition),
-		                                    SIZE,
+		                                    size,
 		                                    Vector2f(0.f, yVelocity),
 		                                    Vector2f(0.f, yGrav),
 		                                    COLOR));

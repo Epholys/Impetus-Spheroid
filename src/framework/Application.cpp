@@ -63,7 +63,7 @@ void Application::update(sf::Time dt)
 
 void Application::render()
 {
-	window_.clear();
+	window_.clear(sf::Color(230,230,230));
 
 	gameWorld_.draw();
 
