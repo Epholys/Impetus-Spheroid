@@ -7,7 +7,7 @@ OPTFLAGS := -O2
 BUGFLAGS := 
 
 TARGETDIR = ../
-OBJECTS = Component.o Menu.o
+OBJECTS = Component.o Menu.o Slider.o
 
 empty :=
 space := $(empty) $(empty)

@@ -10,10 +10,12 @@ namespace gui
 //-----------------------------------------------------------------------------
 // *** Constructor and helper: ***
 
-Menu::Menu(SelectionType type)
+	Menu::Menu(sf::Font font, SelectionType type, bool hasSlider, bool hideChild)
 	: Component()
 	, children_()
 	, selectedChild_(-1)
+	, hasSlider_(hasSlider)
+	, hidingChildren_(hideChild)
 	, nextKey_()
 	, previousKey_()
 {
@@ -27,25 +29,39 @@ Menu::Menu(SelectionType type)
 		nextKey_ = sf::Keyboard::Right;
 		previousKey_ = sf::Keyboard::Left;
 	}
+
+
+	if (hasSlider_)
+	{
+		Slider<int>* slider = new Slider<int>(selectedChild_,
+		                                      Vector2f(50.f, 25.f),
+		                                      font,
+		                                      "Menu");
+		slider->setOperationPlus([this](int&){selectNext();});
+		slider->setOperationMinus([this](int&){selectPrevious();});
+
+		std::shared_ptr<Component> comp (slider);
+
+		pack(comp);
+	}
 }
 
 void Menu::pack(Component::SPtr component)
 {
 	children_.push_back(component);
-
+	
 	if(!hasSelection() && component->isSelectable())
 	{
 		select(children_.size() - 1);
 	}
 }
 
-
 //-----------------------------------------------------------------------------
 // *** gui::Component behaviour: ***
 
 bool Menu::isSelectable() const
 {
-    return false;
+	return true;
 }
 
 
@@ -64,7 +80,7 @@ void Menu::select(std::size_t index)
 	{
 		if (hasSelection())
 			children_[selectedChild_]->deselect();
-
+		
 		children_[index]->select();
 		selectedChild_ = index;
 	}
@@ -88,7 +104,7 @@ void Menu::selectPrevious()
 {
 	if (!hasSelection())
 		return;
-
+	
 	// Search previous component that is selectable, wrap around if necessary
 	int prev = selectedChild_;
 	do
@@ -115,7 +131,6 @@ void Menu::handleEvent(const sf::Event& event)
 		}
 	}
 
-	
 	else if(event.type == sf::Event::KeyReleased)
 	{
 		/* An _active_ child has the exclusivity of the Event */
@@ -123,14 +138,29 @@ void Menu::handleEvent(const sf::Event& event)
 		{
 			children_[selectedChild_]->handleEvent(event);
 		}
-
-		else if (event.key.code == previousKey_)
+		else if (hasSelection() && event.key.code == sf::Keyboard::Return)
 		{
-			selectPrevious();
+			if(children_[selectedChild_]->isActive())
+			{
+				children_[selectedChild_]->activate();
+			}
+			else
+			{
+				children_[selectedChild_]->deactivate();
+			}
 		}
-		else if (event.key.code == nextKey_)
+
+		else if(hasSelection() &&
+		        (!hasSlider_ || children_[0]->isSelected()))
 		{
-			selectNext();
+			if (event.key.code == previousKey_)
+			{
+				selectPrevious();
+			}
+			else if (event.key.code == nextKey_)
+			{
+				selectNext();
+			}
 		}
 		
 		else
@@ -148,10 +178,17 @@ void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     states.transform *= getTransform();
 
-    for (const auto& child : children_)
+    if(hidingChildren_ && hasSelection())
     {
-		target.draw(*child, states);
+	    target.draw(*children_[selectedChild_], states);
+    }
+    else
+    {
+	    for (const auto& child : children_)
+	    {
+		    target.draw(*child, states);
+	    }
     }
 }
 
-}
+} // namespace gui

@@ -6,6 +6,7 @@
 #include <SFML/Window/Event.hpp>
 
 #include "gui/Component.hpp"
+#include "gui/Slider.hpp"
 
 namespace gui
 {
@@ -21,7 +22,7 @@ public:
 	};
 
 public:
-	Menu(SelectionType type);
+	Menu(sf::Font font, SelectionType type, bool hasSlider = false, bool hideChild = false);
 
 	void pack(Component::SPtr component);
 
@@ -38,6 +39,9 @@ protected:
 protected:
 	std::vector<Component::SPtr> children_;
 	int selectedChild_;
+
+	bool hasSlider_;
+	bool hidingChildren_;
 
 	sf::Keyboard::Key nextKey_;
 	sf::Keyboard::Key previousKey_;

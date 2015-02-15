@@ -3,6 +3,9 @@
 
 
 #include <memory>
+#include <sstream>
+
+#include <SFML/Graphics/Text.hpp>
 
 #include "ecs/ComponentBase.hpp"
 
@@ -15,5 +18,17 @@ std::shared_ptr<Child> dynCast(const ecs::ComponentBase::SPtr& pParent)
 	return std::dynamic_pointer_cast<Child>(pParent);
 }
 
+
+template<typename T>
+std::string toString(const T& var)
+{
+	std::stringstream ss;
+	ss << var;
+	return ss.str();
+}
+
+//------------------------------------------------------------------------------
+
+void centerOrigin(sf::Text& text);
 
 #endif // UT_UTILITY_HPP
