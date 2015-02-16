@@ -14,3 +14,8 @@ Time microseconds(sf::Int64 us)
 {
 	return sf::microseconds(us);
 }
+
+std::ostream& operator<<(std::ostream& os, const Time& t)
+{
+	return os << t.asSeconds();
+}

@@ -22,7 +22,10 @@ public:
 	};
 
 public:
-	Menu(sf::Font font, SelectionType type, bool hasSlider = false, bool hideChild = false);
+	typedef std::shared_ptr<Menu> SPtr;
+
+public:
+	Menu(SelectionType type, bool hasSlider = false, bool hideChild = false);
 
 	void pack(Component::SPtr component);
 

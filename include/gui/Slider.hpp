@@ -27,8 +27,18 @@ namespace gui
 		Slider();
 		Slider(T& var,
 		       Vector2f size,
-		       const sf::Font& font,
 			   const std::string& name);
+		Slider(T& var,
+		       const T& increment,
+		       Vector2f size,
+			   const std::string& name);
+		Slider(T& var,
+		       const T& increment,
+		       Vector2f size,
+		       const std::string& name,
+		       bool safe,
+		       const T& min,
+		       const T& max);
 		
 		void setName(const std::string& name);
 		void updateText();
@@ -50,30 +60,37 @@ namespace gui
 		Operation opMinus_;
 	
 		sf::RectangleShape backRectangle_;
+		sf::Font font_;
 		sf::Text varValue_;
 		sf::Text varName_;
 	};
 
 	template<typename T>
-	std::function<void(T&)> defaultOpPlus(const T& incr, const T& max)
+	void opPlus (T& t, const T& incr, const T& max, bool safe)
 	{
-		return
-			[&](T& t)
-			{
-				if(t + incr < max)
-					t += incr;
-			};
+		if (!safe || t + incr <= max)
+			t += incr;
 	}
 
 	template<typename T>
-	std::function<void(T&)> defaultOpMinus(const T& incr, const T& min)
+	void opMinus (T& t, const T& incr, const T& max, bool safe)
 	{
-		return
-			[&](T& t)
-			{
-				if(t - incr > min)
-					t -= incr;
-			};
+		if (!safe || t - incr >= max)
+			t -= incr;
+	}
+
+	template<typename T>
+	std::function<void(T&)> defaultOpPlus(const T& incr, const T& max, bool safe)
+	{
+		using namespace std::placeholders;
+		return std::bind(opPlus<T>, _1, incr, max, safe);
+	}
+
+	template<typename T>
+	std::function<void(T&)> defaultOpMinus(const T& incr, const T& min, bool safe)
+	{
+		using namespace std::placeholders;
+		return std::bind(opMinus<T>, _1, incr, min, safe);
 	}
 }
 

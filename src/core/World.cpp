@@ -206,6 +206,8 @@ void World::handleInput()
 		{
 			createTarget(Vector2f(sf::Mouse::getPosition(window_)));
 		}
+
+		difficulty_.handleInput(event);
 	}
 }
 

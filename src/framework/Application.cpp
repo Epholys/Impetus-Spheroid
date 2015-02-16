@@ -22,7 +22,6 @@ Application::Application()
 	, rects_()
 {
 	window_.setKeyRepeatEnabled(false);
-	window_.setVerticalSyncEnabled(true);
 
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
 	scoreText_.setString("0");

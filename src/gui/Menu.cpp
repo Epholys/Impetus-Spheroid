@@ -10,7 +10,7 @@ namespace gui
 //-----------------------------------------------------------------------------
 // *** Constructor and helper: ***
 
-	Menu::Menu(sf::Font font, SelectionType type, bool hasSlider, bool hideChild)
+	Menu::Menu(SelectionType type, bool hasSlider, bool hideChild)
 	: Component()
 	, children_()
 	, selectedChild_(-1)
@@ -35,7 +35,6 @@ namespace gui
 	{
 		Slider<int>* slider = new Slider<int>(selectedChild_,
 		                                      Vector2f(50.f, 25.f),
-		                                      font,
 		                                      "Menu");
 		slider->setOperationPlus([this](int&){selectNext();});
 		slider->setOperationMinus([this](int&){selectPrevious();});
@@ -133,12 +132,17 @@ void Menu::handleEvent(const sf::Event& event)
 
 	else if(event.type == sf::Event::KeyReleased)
 	{
+		if(!hasSelection())
+			return;
+
 		/* An _active_ child has the exclusivity of the Event */
-		if (hasSelection() && children_[selectedChild_]->isActive())
+		if (children_[selectedChild_]->isActive())
 		{
 			children_[selectedChild_]->handleEvent(event);
+			return;
 		}
-		else if (hasSelection() && event.key.code == sf::Keyboard::Return)
+		
+		if (event.key.code == sf::Keyboard::Return)
 		{
 			if(children_[selectedChild_]->isActive())
 			{
@@ -148,28 +152,28 @@ void Menu::handleEvent(const sf::Event& event)
 			{
 				children_[selectedChild_]->deactivate();
 			}
+			return;
 		}
 
-		else if(hasSelection() &&
-		        (!hasSlider_ || children_[0]->isSelected()))
+		if(!hasSlider_ || children_[0]->isSelected())
 		{
 			if (event.key.code == previousKey_)
 			{
 				selectPrevious();
+				return;
 			}
 			else if (event.key.code == nextKey_)
 			{
 				selectNext();
+				return;
 			}
 		}
 		
-		else
+		for(auto& child : children_)
 		{
-			for(auto& child : children_)
-			{
-				child->handleEvent(event);
-			}	
-		}
+			child->handleEvent(event);
+		}	
+
 	}
 }
 
