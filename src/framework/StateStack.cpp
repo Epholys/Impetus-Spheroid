@@ -25,7 +25,7 @@ bool StateStack::isEmpty() const
 //-----------------------------------------------------------------------------
 
 
-void StateStack::pushState(StateID id)
+void StateStack::pushState(StateID::ID id)
 {
 	pendingList_.push_back(PendingChange(Push, id));
 }
@@ -73,7 +73,7 @@ void StateStack::handleEvent(const sf::Event& event)
 
 //-----------------------------------------------------------------------------
 
-State::UPtr StateStack::createState(StateID id)
+State::UPtr StateStack::createState(StateID::ID id)
 {
 	auto found = factories_.find(id);
 	assert(found != factories_.end());
@@ -104,7 +104,7 @@ void StateStack::applyPendingChanges()
 	pendingList_.clear();
 }
 
-StateStack::PendingChange::PendingChange(Action action, StateID id)
+StateStack::PendingChange::PendingChange(Action action, StateID::ID id)
 : action(action)
 , id(id)
 {

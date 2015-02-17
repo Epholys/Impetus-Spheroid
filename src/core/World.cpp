@@ -144,73 +144,65 @@ void World::createTarget(Vector2f mousePosition)
 
 }
 
-void World::handleInput()
+void World::handleInput(const sf::Event& event)
 {
-	sf::Event event;
-	while(window_.pollEvent(event))
+	if (event.type == sf::Event::KeyReleased)
 	{
-		if (event.type == sf::Event::Closed)
+		switch (event.key.code)
 		{
-			window_.close();
+		case sf::Keyboard::P:
+			ecs_.pauseAllComponents(ecs::Component::Velocity, seconds(2));
+			break;
+				
+		case sf::Keyboard::Add:
+			ballMass_ *= 2.f;
+			ballRadius_ *= 1.5f;
+			break;
+
+		case sf::Keyboard::Subtract:
+			ballMass_ /= 2.f;
+			ballRadius_ /= 1.5f;
+			break;
+
+		case sf::Keyboard::G:
+			ballColor_ = (ballColor_ == sf::Color::Green) ? sf::Color::Red : sf::Color::Green;
+			break;
+				
+		case sf::Keyboard::R:
+			difficulty_.handleInput(event);
+			break;
+
+		case sf::Keyboard::W:
+			ballType_ ^= Ball::Massless;
+			break;
+
+		case sf::Keyboard::X:
+		{
+			ballType_ ^= Ball::Ghost;
+			if(ballType_ & Ball::Ghost)
+				ballColor_.a = 130;
+			else
+				ballColor_.a = 255;
+			break;
 		}
-		else if (event.type == sf::Event::KeyReleased)
-		{
-			switch (event.key.code)
-			{
-			case sf::Keyboard::P:
-				ecs_.pauseAllComponents(ecs::Component::Velocity, seconds(2));
-				break;
-				
-			case sf::Keyboard::Add:
-				ballMass_ *= 2.f;
-				ballRadius_ *= 1.5f;
-				break;
-
-			case sf::Keyboard::Subtract:
-				ballMass_ /= 2.f;
-				ballRadius_ /= 1.5f;
-				break;
-
-			case sf::Keyboard::G:
-				ballColor_ = (ballColor_ == sf::Color::Green) ? sf::Color::Red : sf::Color::Green;
-				break;
-				
-			case sf::Keyboard::R:
-				difficulty_.handleInput(event);
-				break;
-
-			case sf::Keyboard::W:
-				ballType_ ^= Ball::Massless;
-				break;
-
-			case sf::Keyboard::X:
-			{
-				ballType_ ^= Ball::Ghost;
-				if(ballType_ & Ball::Ghost)
-					ballColor_.a = 130;
-				else
-					ballColor_.a = 255;
-				break;
-			}
 			
-			default:
-				break;
-			}
+		default:
+			break;
 		}
-		else if (event.type == sf::Event::MouseButtonPressed &&
-		         event.mouseButton.button == sf::Mouse::Left)
-		{
-			createBall(Vector2f(sf::Mouse::getPosition(window_)));
-		}
-
-		else if (event.type == sf::Event::MouseButtonPressed &&
-		         event.mouseButton.button == sf::Mouse::Right)			
-		{
-			createTarget(Vector2f(sf::Mouse::getPosition(window_)));
-		}
-
-		difficulty_.handleInput(event);
 	}
+	else if (event.type == sf::Event::MouseButtonPressed &&
+	         event.mouseButton.button == sf::Mouse::Left)
+	{
+		createBall(Vector2f(sf::Mouse::getPosition(window_)));
+	}
+
+	else if (event.type == sf::Event::MouseButtonPressed &&
+	         event.mouseButton.button == sf::Mouse::Right)			
+	{
+		createTarget(Vector2f(sf::Mouse::getPosition(window_)));
+	}
+
+	difficulty_.handleInput(event);
 }
 
 void World::update(Time dt)

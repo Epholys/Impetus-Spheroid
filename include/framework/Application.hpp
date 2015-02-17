@@ -8,6 +8,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "framework/StateStack.hpp"
+#include "framework/StateGame.hpp"
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
 #include "core/World.hpp"
@@ -36,8 +37,6 @@ private:
 	sf::RenderWindow window_;
 
 	StateStack stack_;
-
-	World gameWorld_;
 };
 
 

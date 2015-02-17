@@ -22,29 +22,29 @@ public:
 	StateStack(State::Context context);
 
 	template<typename T>
-	void registerState(StateID id);
+	void registerState(StateID::ID id);
 
 	void update(sf::Time dt);
 	void draw();
 	void handleEvent(const sf::Event& event);
 	
-	void pushState(StateID id);
+	void pushState(StateID::ID id);
 	void popState();
 	void clearStates();
 
 	bool isEmpty() const;
 
 private:
-	State::UPtr createState(StateID id);
+	State::UPtr createState(StateID::ID id);
 	void applyPendingChanges();
 
 private:
 	struct PendingChange
 	{
-		PendingChange(Action action, StateID id = StateID::None);
+		PendingChange(Action action, StateID::ID id = StateID::None);
 
 		Action action;
-		StateID id;
+		StateID::ID id;
 	};
 
 private:
@@ -52,11 +52,11 @@ private:
 	std::vector<PendingChange> pendingList_;
 	
 	State::Context context_;
-	std::map<StateID, std::function<State::UPtr()>> factories_;
+	std::map<StateID::ID, std::function<State::UPtr()>> factories_;
 };
 
 template<typename T>
-void StateStack::registerState(StateID id)
+void StateStack::registerState(StateID::ID id)
 {
 	factories_[id] = 
 		[this]()

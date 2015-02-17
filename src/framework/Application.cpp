@@ -10,10 +10,11 @@ Application::Application()
 	          "Impetus Spheroid",
 	          sf::Style::Titlebar | sf::Style::Close,
 	          sf::ContextSettings(0, 0, 4))
-	, stack_()
-	, gameWorld_(window_)
+	, stack_(State::Context(window_))
 {
-
+	stack_.registerState<StateGame>(StateID::Game);
+	
+	stack_.pushState(StateID::Game);
 }
 
 
@@ -40,19 +41,28 @@ void Application::run()
 
 void Application::handleInput()
 {
-	gameWorld_.handleInput();
+	sf::Event event;
+	while (window_.pollEvent(event))
+	{
+		stack_.handleEvent(event);
+
+		if (event.type == sf::Event::Closed)
+		{
+			window_.close();
+		}
+	}
 }
 
 void Application::update(sf::Time dt)
 {
-	gameWorld_.update(dt);
+	stack_.update(dt);
 }
 
 void Application::render()
 {
 	window_.clear(sf::Color(230,230,230));
 
-	gameWorld_.draw();
+	stack_.draw();
 
 	window_.display();
 }

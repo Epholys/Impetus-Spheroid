@@ -17,11 +17,14 @@ class StateStack;
 
 
 
-enum StateID
+namespace StateID
 {
-	None = 0,
-	
-};
+	enum ID
+	{
+		None = 0,
+		Game,
+	};
+}
 
 
 class State
@@ -46,7 +49,7 @@ public:
 	virtual bool handleInput(const sf::Event& event) =0;
 
 protected:
-	void requestStackPush(StateID id);
+	void requestStackPush(StateID::ID id);
 	void requestStackPop();
 	void requestStackClear();
 

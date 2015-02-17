@@ -32,7 +32,7 @@ public:
 	World(sf::RenderWindow& window, int precision = 4);
 	~World() {};
 
-	void handleInput();
+	void handleInput(const sf::Event& event);
 	void update(Time dt);
 	void draw() const;
 
