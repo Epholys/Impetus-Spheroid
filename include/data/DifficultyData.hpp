@@ -9,12 +9,19 @@ struct DifficultyWorld
 	float speedConstant;
 };
 
+struct DifficultyWorldSeed
+{
+	float speedCoeff;
+};
+
 struct DifficultyEventGen
 {
 	
 };
 
 std::vector<DifficultyWorld> genDifficultyWorld();
+std::vector<DifficultyWorld> genDifficultyWorld(DifficultyWorldSeed seed);
+
 std::vector<DifficultyEventGen> genDifficultyEvent();
 
 

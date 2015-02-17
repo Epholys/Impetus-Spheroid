@@ -2,6 +2,8 @@
 #define UT_TIME_HPP
 
 
+#include <iostream>
+
 #include <SFML/System/Time.hpp>
 
 /* Normally, that would be a custom class for all the ECS, the Engine, and
@@ -18,5 +20,7 @@ Time seconds(float s);
 Time milliseconds(sf::Int32 ms);
 
 Time microseconds(sf::Int64 us);
+
+std::ostream& operator<<(std::ostream& os, const Time& t);
 
 #endif // UT_TIME_HPP

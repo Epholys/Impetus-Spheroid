@@ -10,6 +10,13 @@ std::vector<DifficultyWorld> genDifficultyWorld()
 	return datas;
 }
 
+std::vector<DifficultyWorld> genDifficultyWorld(DifficultyWorldSeed seed)
+{
+	DifficultyWorld dw {seed.speedCoeff};
+	std::vector<DifficultyWorld> datas {dw};
+	return datas;
+}
+
 
 //-----------------------------------------------------------------------------
 

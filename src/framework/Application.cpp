@@ -21,12 +21,7 @@ Application::Application()
 	, ballColor_(sf::Color::Red)
 	, rects_()
 {
-	window_.setKeyRepeatEnabled(false);
-	window_.setVerticalSyncEnabled(true);
 
-	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
-	scoreText_.setString("0");
-	scoreText_.setFont(font_);
 }
 
 

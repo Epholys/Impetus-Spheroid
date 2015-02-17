@@ -9,6 +9,7 @@
 
 #include "utility/Time.hpp"
 #include "data/DifficultyData.hpp"
+#include "gui/Menu.hpp"
 
 class World;
 namespace evt {
@@ -31,15 +32,19 @@ public:
 
 	void update(Time dt);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
+	void handleInput(const sf::Event& event);
+	
 private:
+	void createGui();
+
 	template<typename T>
 	auto selectDataIndex(std::vector<T> v);
 
 	void updateDifficulty();
+	void reloadDifficulty();
 
 private:
-	const Time phaseDuration_;
+	Time phaseDuration_;
 
 private:
 	Time phaseTime_;
@@ -49,6 +54,12 @@ private:
 
 	sf::Font font_;
 	sf::Text timer_;
+
+	gui::Component::SPtr diffGui_;
+
+// Temp attributes for quick adjustements
+private:
+	DifficultyWorldSeed worldSeed_;
 };
 
 #include "core/DifficultyManager.ipp"
