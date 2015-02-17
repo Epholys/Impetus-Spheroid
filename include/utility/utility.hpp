@@ -3,6 +3,7 @@
 
 
 #include <memory>
+#include <vector>
 #include <sstream>
 
 #include <SFML/Graphics/Text.hpp>

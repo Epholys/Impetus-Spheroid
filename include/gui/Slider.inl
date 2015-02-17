@@ -112,9 +112,8 @@ namespace gui
 	void Slider<T>::handleEvent(const sf::Event& event)
 	{
 		if (!isSelected())
-		{
 			return;
-		}
+
 
 		if(event.type == sf::Event::KeyReleased)
 		{

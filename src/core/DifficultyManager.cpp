@@ -26,7 +26,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, diffGui_(nullptr)
 	, worldSeed_()
 {
-	const Vector2f TIMER_POSITION (750.f, 20.f);
+	const Vector2f TIMER_POSITION (720.f, 20.f);
 
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
 
@@ -44,29 +44,41 @@ void DifficultyManager::createGui()
 	const Vector2f SLIDER_SIZE(40.f,20.f);
 	Vector2f sliderPos(0.f,25.f);
 	const Vector2f sliderMov(0.f, SLIDER_SIZE.y);
+	int pos = 1;
 
-//	gui::Menu* mainMenu = new gui::Menu(gui::Menu::Horizontal, true, true);
+	gui::Menu* mainMenu = new gui::Menu(gui::Menu::Horizontal, true, true);
+	mainMenu->move(5.f, 5.f);
+
+	//---
 	
 	gui::Menu* globalDiff = new gui::Menu(gui::Menu::Vertical);
 	
-	gui::Slider<Time>::SPtr durationSlider 
+	gui::Slider<Time>::SPtr pDurationSlider 
 		(new gui::Slider<Time>(phaseDuration_, seconds(5.f), SLIDER_SIZE, "Phase Duration", true, seconds(5), seconds(900)));
-	durationSlider->move(sliderPos);	sliderPos+=sliderMov;
-	gui::Slider<Time>::SPtr pDurationSlider (durationSlider);
+	pDurationSlider->move(sliderPos);
 	globalDiff->pack(pDurationSlider);
+	
+	gui::Menu::SPtr pGlobalDiff (globalDiff);
+	mainMenu->pack(pGlobalDiff);
+
+	//---
+
+	gui::Menu::SPtr worldDiff (new gui::Menu(gui::Menu::Vertical));
 	
 	gui::Slider<float>::SPtr pSpeedSlider
 		(new gui::Slider<float>(worldSeed_.speedCoeff, 0.05f, SLIDER_SIZE, "SpeedCoeff", true, 0.f, 1.f));
-	pSpeedSlider->move(sliderPos);	sliderPos+=sliderMov;
-	globalDiff->pack(pSpeedSlider);
-	
-	gui::Menu::SPtr pGlobalDiff (globalDiff);
-//	mainMenu->pack(pGlobalDiff);
+	pSpeedSlider->move(sliderPos);
+	worldDiff->pack(pSpeedSlider);
 
-//	gui::Menu::SPtr pMainMenu (mainMenu);
-	gui::Menu::SPtr pMainMenu (pGlobalDiff);
-	
+	mainMenu->pack(worldDiff);
+
+	//---
+
+	gui::Menu::SPtr pMainMenu (mainMenu);
 	diffGui_ = pMainMenu;
+
+	// Important
+	diffGui_->select();
 }
 
 DifficultyManager::~DifficultyManager()
@@ -96,6 +108,10 @@ void DifficultyManager::update(Time dt)
 
 void DifficultyManager::handleInput(const sf::Event& event)
 {
+	if(event.type == sf::Event::KeyReleased
+	   && event.key.code == sf::Keyboard::R)
+		reloadDifficulty();
+
 	diffGui_->handleEvent(event);
 }
 

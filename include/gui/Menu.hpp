@@ -26,12 +26,16 @@ public:
 
 public:
 	Menu(SelectionType type, bool hasSlider = false, bool hideChild = false);
+	virtual ~Menu();
 
-	void pack(Component::SPtr component);
+	void pack(Component::SPtr component, bool overrideFirst = false);
 
 	virtual bool isSelectable() const;
 	virtual void handleEvent(const sf::Event& event);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+	virtual void select();
+	virtual void deselect();
 
 protected:
 	bool hasSelection() const;
@@ -42,9 +46,10 @@ protected:
 protected:
 	std::vector<Component::SPtr> children_;
 	int selectedChild_;
+	Component* menuSlider_;
 
-	bool hasSlider_;
 	bool hidingChildren_;
+	bool isMeta_;
 
 	sf::Keyboard::Key nextKey_;
 	sf::Keyboard::Key previousKey_;

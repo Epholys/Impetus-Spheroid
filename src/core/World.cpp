@@ -23,11 +23,14 @@ World::World(ecs::EntityManager& ecs, sf::RenderWindow& window, int precision)
 	, ballRadius_(10.f)
 	, ballColor_(sf::Color::Red)
 {
+	const Vector2f SCORE_POSITION (750.f, 0.f);
+
 	generateWorld();
 
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
 	scoreText_.setString("0");
 	scoreText_.setFont(font_);
+	scoreText_.setPosition(SCORE_POSITION);
 }
 
 void World::generateWorld()
@@ -150,7 +153,7 @@ void World::handleInput()
 		{
 			window_.close();
 		}
-		else if (event.type == sf::Event::KeyPressed)
+		else if (event.type == sf::Event::KeyReleased)
 		{
 			switch (event.key.code)
 			{
@@ -173,8 +176,7 @@ void World::handleInput()
 				break;
 				
 			case sf::Keyboard::R:
-				entities_.clear();
-				generateWorld();
+				difficulty_.handleInput(event);
 				break;
 
 			case sf::Keyboard::W:
