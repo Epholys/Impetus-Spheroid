@@ -46,20 +46,19 @@ void DifficultyManager::createGui()
 	const Vector2f sliderMov(0.f, SLIDER_SIZE.y);
 	int pos = 1;
 
-	gui::Menu* mainMenu = new gui::Menu(gui::Menu::Horizontal, true, true);
-	mainMenu->move(5.f, 5.f);
+	gui::Menu::SPtr pMainMenu (new gui::Menu(gui::Menu::Horizontal, true, true));
+	pMainMenu->move(5.f, 5.f);
 
 	//---
 	
-	gui::Menu* globalDiff = new gui::Menu(gui::Menu::Vertical);
+	gui::Menu::SPtr pGlobalDiff (new gui::Menu(gui::Menu::Vertical));
 	
 	gui::Slider<Time>::SPtr pDurationSlider 
 		(new gui::Slider<Time>(phaseDuration_, seconds(5.f), SLIDER_SIZE, "Phase Duration", true, seconds(5), seconds(900)));
 	pDurationSlider->move(sliderPos);
-	globalDiff->pack(pDurationSlider);
+	pGlobalDiff->pack(std::move(pDurationSlider));
 	
-	gui::Menu::SPtr pGlobalDiff (globalDiff);
-	mainMenu->pack(pGlobalDiff);
+	pMainMenu->pack(std::move(pGlobalDiff));
 
 	//---
 
@@ -68,14 +67,13 @@ void DifficultyManager::createGui()
 	gui::Slider<float>::SPtr pSpeedSlider
 		(new gui::Slider<float>(worldSeed_.speedCoeff, 0.05f, SLIDER_SIZE, "SpeedCoeff", true, 0.f, 1.f));
 	pSpeedSlider->move(sliderPos);
-	worldDiff->pack(pSpeedSlider);
+	worldDiff->pack(std::move(pSpeedSlider));
 
-	mainMenu->pack(worldDiff);
+	pMainMenu->pack(std::move(worldDiff));
 
 	//---
 
-	gui::Menu::SPtr pMainMenu (mainMenu);
-	diffGui_ = pMainMenu;
+	diffGui_ = std::move(pMainMenu);
 
 	// Important
 	diffGui_->select();

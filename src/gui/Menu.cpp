@@ -34,17 +34,15 @@ Menu::Menu(SelectionType type, bool hasSlider, bool hideChild)
 
 	if (hasSlider)
 	{
-		Slider<int>* slider = new Slider<int>(selectedChild_,
-		                                      Vector2f(50.f, 25.f),
-		                                      "Menu");
+		std::shared_ptr<Slider<int>> slider (new Slider<int>(selectedChild_,
+		                                                     Vector2f(50.f, 25.f),
+		                                                     "Menu"));
 		slider->setOperationPlus([](int&){});
 		slider->setOperationMinus([](int&){});
 
-		std::shared_ptr<Component> comp (slider);
 
-		menuSlider_ = comp.get();
-		pack(comp);
-		slider->updateText();
+		menuSlider_ = slider.get();
+		pack(std::move(slider));
 	}
 }
 
