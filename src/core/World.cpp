@@ -3,10 +3,10 @@
 //-----------------------------------------------------------------------------
 // *** constructor: ***
 
-World::World(ecs::EntityManager& ecs, sf::RenderWindow& window, int precision)
-	: ecs_(ecs)
-	, window_(window)
-	, physEng_(ecs, precision)
+World::World(sf::RenderWindow& window, int precision)
+	: window_(window)
+	, ecs_()
+	, physEng_(ecs_, precision)
 	, evtGen_()
 	, difficulty_(DifficultyContext{this, &evtGen_})
 	, speedCoeff_(1.f)
@@ -346,6 +346,5 @@ void World::draw() const
 	window_.draw(difficulty_);
 
 	window_.draw(scoreText_);
-	
 }
 

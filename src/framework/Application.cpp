@@ -10,16 +10,8 @@ Application::Application()
 	          "Impetus Spheroid",
 	          sf::Style::Titlebar | sf::Style::Close,
 	          sf::ContextSettings(0, 0, 4))
-	, ecs_()
-	, gameWorld_(ecs_, window_)
-	, font_()
-	, score_(0)
-	, scoreText_()
-	, balls_()
-	, ballMass_(1.f)
-	, ballRadius_(10.f)
-	, ballColor_(sf::Color::Red)
-	, rects_()
+	, stack_()
+	, gameWorld_(window_)
 {
 
 }

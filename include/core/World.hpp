@@ -29,7 +29,8 @@
 class World : public sf::NonCopyable
 {
 public:
-	World(ecs::EntityManager& ecs, sf::RenderWindow& window, int precision = 4);
+	World(sf::RenderWindow& window, int precision = 4);
+	~World() {};
 
 	void handleInput();
 	void update(Time dt);
@@ -60,8 +61,8 @@ private:
 	void createTarget(Vector2f mousePosition);
 
 private:
-	ecs::EntityManager& ecs_;
 	sf::RenderWindow& window_;
+	ecs::EntityManager ecs_;
 	eg::PhysicEngine physEng_;
 	evt::EventGenerator evtGen_;
 	DifficultyManager difficulty_;

@@ -7,6 +7,7 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include "framework/StateStack.hpp"
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
 #include "core/World.hpp"
@@ -33,21 +34,10 @@ private:
 
 private:
 	sf::RenderWindow window_;
-	ecs::EntityManager ecs_;
+
+	StateStack stack_;
 
 	World gameWorld_;
-
-	// Temporaries attributes to test PhysicEngine and EntityManager
-	sf::Font font_;
-	int score_;
-	sf::Text scoreText_;
-
-	std::vector<std::unique_ptr<Ball>> balls_;
-	float ballMass_;
-	float ballRadius_;
-	sf::Color ballColor_;
-	
-	std::vector<std::unique_ptr<Wall>> rects_;
 };
 
 

@@ -132,7 +132,7 @@ namespace gui
 				break;
 			}
 
-			varValue_.setString(toString(variable_));
+			varValue_.setString(toString(*variable_));
 		}
 	}
 
