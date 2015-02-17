@@ -9,7 +9,7 @@ namespace gui
 {
 	template <typename T>
 	Slider<T>::Slider()
-		: variable_()
+		: variable_(nullptr)
 		, opPlus_()
 		, opMinus_()
 		, backRectangle_()
@@ -47,7 +47,7 @@ namespace gui
 	                  bool safe,
 	                  const T& min,
 	                  const T& max)
-		: variable_(var)
+		: variable_(&var)
 		, opPlus_()
 		, opMinus_()
 		, backRectangle_(size)
@@ -120,11 +120,12 @@ namespace gui
 			switch(event.key.code)
 			{
 			case sf::Keyboard::Right:
-				opPlus_(variable_);
+			{
+				opPlus_(*variable_);
 				break;
-
+			}
 			case sf::Keyboard::Left:
-				opMinus_(variable_);
+				opMinus_(*variable_);
 				break;
 
 			default:
@@ -160,7 +161,7 @@ namespace gui
 	template<typename T>
 	void Slider<T>::updateText()
 	{
-		varValue_.setString(toString(variable_));
+		varValue_.setString(toString(*variable_));
 	}
 
 	template<typename T>

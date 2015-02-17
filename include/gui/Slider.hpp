@@ -39,6 +39,7 @@ namespace gui
 		       bool safe,
 		       const T& min,
 		       const T& max);
+		virtual ~Slider() {};
 		
 		void setName(const std::string& name);
 		void updateText();
@@ -55,7 +56,7 @@ namespace gui
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	private:
-		T& variable_;
+		T* variable_;
 		Operation opPlus_;
 		Operation opMinus_;
 	
