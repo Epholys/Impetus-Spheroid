@@ -98,6 +98,7 @@ void World::updateDifficulty(DifficultyWorld diff)
 	speedCoeff_ += diff.speedConstant;
 }
 
+
 //-----------------------------------------------------------------------------
 // *** TEMPORARY FUNCTIONS: ***
 // TODO: Replace all the input by a separate class
@@ -150,26 +151,12 @@ void World::handleInput(const sf::Event& event)
 	{
 		switch (event.key.code)
 		{
-		case sf::Keyboard::P:
-			ecs_.pauseAllComponents(ecs::Component::Velocity, seconds(2));
-			break;
-				
-		case sf::Keyboard::Add:
-			ballMass_ *= 2.f;
-			ballRadius_ *= 1.5f;
-			break;
-
-		case sf::Keyboard::Subtract:
-			ballMass_ /= 2.f;
-			ballRadius_ /= 1.5f;
-			break;
-
-		case sf::Keyboard::G:
-			ballColor_ = (ballColor_ == sf::Color::Green) ? sf::Color::Red : sf::Color::Green;
-			break;
-				
-		case sf::Keyboard::R:
-			difficulty_.handleInput(event);
+		case sf::Keyboard::O:
+			// Reset
+			difficulty_.reset();
+			entities_.clear();
+			speedCoeff_ = 1.f;
+			generateWorld();
 			break;
 
 		case sf::Keyboard::W:
@@ -185,7 +172,7 @@ void World::handleInput(const sf::Event& event)
 				ballColor_.a = 255;
 			break;
 		}
-			
+
 		default:
 			break;
 		}

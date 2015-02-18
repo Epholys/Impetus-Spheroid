@@ -7,7 +7,7 @@
   * Game Engine
   * Graphics
   * Sound
-  * Clean-up everything ! (I code dirty)
+  * Clean-up everything !
 
 * Physic Engine
  

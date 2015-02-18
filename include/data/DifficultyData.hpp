@@ -11,7 +11,7 @@ struct DifficultyWorld
 
 struct DifficultyWorldSeed
 {
-	float speedCoeff;
+	float speedConstant;
 };
 
 struct DifficultyEventGen

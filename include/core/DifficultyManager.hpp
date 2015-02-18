@@ -33,6 +33,8 @@ public:
 	void update(Time dt);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	void handleInput(const sf::Event& event);
+
+	void reset();
 	
 private:
 	void createGui();
@@ -41,6 +43,8 @@ private:
 	auto selectDataIndex(std::vector<T> v);
 
 	void updateDifficulty();
+
+// Temp functions for prototyping
 	void reloadDifficulty();
 
 private:

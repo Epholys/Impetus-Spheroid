@@ -34,7 +34,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	timer_.setPosition(TIMER_POSITION);
 	timer_.setString("0:00");
 
-	worldSeed_.speedCoeff = 0.05f;
+	worldSeed_.speedConstant = 0.05f;
 
 	createGui();
 }
@@ -64,7 +64,7 @@ void DifficultyManager::createGui()
 	gui::Menu::SPtr worldDiff (new gui::Menu(gui::Menu::Vertical, "World Difficulty"));
 	
 	gui::Slider<float>::SPtr pSpeedSlider
-		(new gui::Slider<float>(worldSeed_.speedCoeff, 0.05f, SLIDER_SIZE, "SpeedCoeff", true, 0.f, 1.f));
+		(new gui::Slider<float>(worldSeed_.speedConstant, 0.05f, SLIDER_SIZE, "SpeedCoeff", true, 0.f, 1.f));
 	pSpeedSlider->move(sliderPos);
 	worldDiff->pack(std::move(pSpeedSlider));
 
@@ -106,8 +106,12 @@ void DifficultyManager::update(Time dt)
 void DifficultyManager::handleInput(const sf::Event& event)
 {
 	if(event.type == sf::Event::KeyReleased
-	   && event.key.code == sf::Keyboard::R)
+	   && event.key.code == sf::Keyboard::P)
 		reloadDifficulty();
+
+	else if(event.type == sf::Event::KeyReleased
+	   && event.key.code == sf::Keyboard::O)
+		reset();
 
 	diffGui_->handleEvent(event);
 }
@@ -131,4 +135,10 @@ void DifficultyManager::updateDifficulty()
 void DifficultyManager::reloadDifficulty()
 {
 	worldDatas = genDifficultyWorld(worldSeed_);
+}
+
+void DifficultyManager::reset()
+{
+	phaseNumber_ = 0;
+	phaseTime_ = Time::Zero;
 }

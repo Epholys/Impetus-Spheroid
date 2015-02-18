@@ -5,14 +5,14 @@
 
 std::vector<DifficultyWorld> genDifficultyWorld()
 {
-	DifficultyWorld dw {0.05f};
-	std::vector<DifficultyWorld> datas {dw};
-	return datas;
+	const float speedCoeff = 0.05f;
+
+	return genDifficultyWorld(DifficultyWorldSeed{speedCoeff});
 }
 
 std::vector<DifficultyWorld> genDifficultyWorld(DifficultyWorldSeed seed)
 {
-	DifficultyWorld dw {seed.speedCoeff};
+	DifficultyWorld dw {seed.speedConstant};
 	std::vector<DifficultyWorld> datas {dw};
 	return datas;
 }
