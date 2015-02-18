@@ -2,6 +2,7 @@
 #define GUI_MENU_HPP
 
 #include <vector>
+#include <string>
 
 #include <SFML/Window/Event.hpp>
 
@@ -25,7 +26,7 @@ public:
 	typedef std::shared_ptr<Menu> SPtr;
 
 public:
-	Menu(SelectionType type, bool hasSlider = false, bool hideChild = false);
+	Menu(SelectionType type, const std::string& name = "Menu", bool hasSlider = false, bool hideChild = false);
 	virtual ~Menu();
 
 	void pack(Component::SPtr component, bool overrideFirst = false);
@@ -46,7 +47,8 @@ protected:
 protected:
 	std::vector<Component::SPtr> children_;
 	int selectedChild_;
-	Component* menuSlider_;
+	Slider<int>* menuSlider_;
+	std::string name_;
 
 	bool hidingChildren_;
 	bool isMeta_;

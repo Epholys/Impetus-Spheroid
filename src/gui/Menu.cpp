@@ -10,11 +10,12 @@ namespace gui
 //-----------------------------------------------------------------------------
 // *** Constructor and helper: ***
 
-Menu::Menu(SelectionType type, bool hasSlider, bool hideChild)
+	Menu::Menu(SelectionType type, const std::string& name, bool hasSlider, bool hideChild)
 	: Component()
 	, children_()
 	, selectedChild_(-1)
 	, menuSlider_(nullptr)
+	, name_(name)
 	, hidingChildren_(hideChild)
 	, isMeta_(hasSlider)
 	, nextKey_()
@@ -36,7 +37,7 @@ Menu::Menu(SelectionType type, bool hasSlider, bool hideChild)
 	{
 		std::shared_ptr<Slider<int>> slider (new Slider<int>(selectedChild_,
 		                                                     Vector2f(50.f, 25.f),
-		                                                     "Menu"));
+		                                                     name));
 		slider->setOperationPlus([](int&){});
 		slider->setOperationMinus([](int&){});
 
@@ -46,7 +47,7 @@ Menu::Menu(SelectionType type, bool hasSlider, bool hideChild)
 	}
 }
 
-	void Menu::pack(Component::SPtr component, bool overrideFirst)
+void Menu::pack(Component::SPtr component, bool overrideFirst)
 {
 	if(overrideFirst)
 	{
@@ -77,6 +78,7 @@ bool Menu::isSelectable() const
 	return true;
 }
 
+
 void Menu::select()
 {
 	Component::select();
@@ -92,6 +94,12 @@ void Menu::select()
 		{
 			select(index);
 		}
+
+		if(menuSlider_)
+		{
+			menuSlider_->updateText();
+			menuSlider_->setName(name_);
+		}
 	}
 }
 
@@ -99,6 +107,10 @@ void Menu::deselect()
 {
 	Component::deselect();
 	selectedChild_ = -1;
+	if(menuSlider_)
+	{
+		menuSlider_->setName("Main Menu");
+	}
 }
 
 //-----------------------------------------------------------------------------
