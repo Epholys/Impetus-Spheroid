@@ -35,6 +35,7 @@ public:
 	void handleInput(const sf::Event& event);
 
 	void reset();
+	void mask();
 	
 private:
 	void createGui();
@@ -60,10 +61,12 @@ private:
 	sf::Text timer_;
 
 	gui::Component::SPtr diffGui_;
+	bool maskGui_;
 
 // Temp attributes for quick adjustements
 private:
 	DifficultyWorldSeed worldSeed_;
+	DifficultyEventGenSeed eventSeed_;
 };
 
 #include "core/DifficultyManager.ipp"

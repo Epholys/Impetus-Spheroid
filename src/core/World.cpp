@@ -159,6 +159,11 @@ void World::handleInput(const sf::Event& event)
 			generateWorld();
 			break;
 
+		case sf::Keyboard::M:
+			// Mask/UnMask
+			difficulty_.mask();
+			break;
+
 		case sf::Keyboard::W:
 			ballType_ ^= Ball::Massless;
 			break;
@@ -222,6 +227,10 @@ void World::update(Time dt)
 void World::getEvent(Time dt)
 {
 	evt::Event evt = evtGen_.update(dt);
+
+	if(evt.diff == evt::Event::None)
+		return;
+	
 	if(!evt.entityModifiers.empty())
 	{
 		entitiesModifiers_.insert(entitiesModifiers_.begin(),

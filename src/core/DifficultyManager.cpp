@@ -24,19 +24,21 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, font_()
 	, timer_()
 	, diffGui_(nullptr)
-	, worldSeed_()
+	, maskGui_(true)
+	, worldSeed_({0.05f})
+	, eventSeed_({100, 8, 10})
 {
-	const Vector2f TIMER_POSITION (720.f, 20.f);
 
+	const Vector2f TIMER_POSITION (720.f, 20.f);
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
 
 	timer_.setFont(font_);
 	timer_.setPosition(TIMER_POSITION);
 	timer_.setString("0:00");
 
-	worldSeed_.speedConstant = 0.05f;
-
 	createGui();
+
+	context_.eventGenerator->updateDifficulty(eventDatas[0]);
 }
 
 void DifficultyManager::createGui()
@@ -44,6 +46,7 @@ void DifficultyManager::createGui()
 	const Vector2f SLIDER_SIZE(40.f,20.f);
 	Vector2f sliderPos(0.f,25.f);
 	const Vector2f sliderMov(0.f, SLIDER_SIZE.y);
+	float i = 0.f;
 
 	gui::Menu::SPtr pMainMenu (new gui::Menu(gui::Menu::Horizontal, "Main Menu", true, true));
 	pMainMenu->move(5.f, 5.f);
@@ -72,6 +75,23 @@ void DifficultyManager::createGui()
 
 	//---
 
+	gui::Menu::SPtr eventDiff (new gui::Menu(gui::Menu::Vertical, "Advanced Event Diff"));
+
+	gui::Slider<int>::SPtr attenuation
+		(new gui::Slider<int>(eventSeed_.attenuation, 1, SLIDER_SIZE, "Attenuation", true, 1, 16));
+	attenuation->move(sliderPos + i * sliderMov); ++i;
+	eventDiff->pack(std::move(attenuation));
+
+	gui::Slider<int>::SPtr offset
+		(new gui::Slider<int>(eventSeed_.offset, 2, SLIDER_SIZE, "Offset", true, 0, 30));
+    offset->move(sliderPos + i * sliderMov); ++i;
+    eventDiff->pack(std::move(offset));
+
+    pMainMenu->pack(std::move(eventDiff)); i=0;
+
+	
+	//---
+
 	diffGui_ = std::move(pMainMenu);
 
 	// Important
@@ -91,8 +111,8 @@ void DifficultyManager::update(Time dt)
 	if (phaseTime_ >= phaseDuration_)
 	{
 		phaseTime_ -= phaseDuration_;
-		updateDifficulty();
 		++phaseNumber_;
+		updateDifficulty();
 	}
 
 	Time timerRemaining = phaseDuration_ - phaseTime_;
@@ -109,19 +129,26 @@ void DifficultyManager::handleInput(const sf::Event& event)
 	   && event.key.code == sf::Keyboard::P)
 		reloadDifficulty();
 
-	else if(event.type == sf::Event::KeyReleased
-	   && event.key.code == sf::Keyboard::O)
-		reset();
-
-	diffGui_->handleEvent(event);
+	if(!maskGui_)
+	{
+		diffGui_->handleEvent(event);
+	}
 }
+
 
 void DifficultyManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(timer_, states);
-	target.draw(*diffGui_, states);
+	if(!maskGui_)
+	{
+		target.draw(*diffGui_, states);
+	}
 }
 
+void DifficultyManager::mask()
+{
+	maskGui_ = !maskGui_;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -129,16 +156,20 @@ void DifficultyManager::updateDifficulty()
 {
 	auto worldIndex = selectDataIndex(worldDatas);
 	context_.world->updateDifficulty(worldDatas[worldIndex]);
-	// context_.eventGenerator->update(data);
+
+	auto egenIndex = selectDataIndex(eventDatas);
+	context_.eventGenerator->updateDifficulty(eventDatas[egenIndex]);
 }
 
 void DifficultyManager::reloadDifficulty()
 {
 	worldDatas = genDifficultyWorld(worldSeed_);
+	eventDatas = genDifficultyEvent(eventSeed_);
 }
 
 void DifficultyManager::reset()
 {
 	phaseNumber_ = 0;
 	phaseTime_ = Time::Zero;
+	context_.eventGenerator->updateDifficulty(eventDatas[0]);
 }

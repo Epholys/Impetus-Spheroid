@@ -12,13 +12,20 @@ namespace evt
 	{
 		events_ = generateEvents();
 
+		timeUntilNextEvent_ = seconds(normalRandFloat(5.f, 2.f));
+
+		computeChanceSum();
+	}
+
+	void EventGenerator::computeChanceSum()
+	{
+		chanceSum_ = 0;
 		for(const auto& evt : events_)
 		{
 			chanceSum_ += evt.chance;
 		}
-
-		timeUntilNextEvent_ = seconds(normalRandFloat(5.f, 2.f));
 	}
+
 
 //-----------------------------------------------------------------------------
 
@@ -33,8 +40,33 @@ namespace evt
 			return events_[iEvt];
 		}
 
-		return Event();
+		Event e;
+		e.diff = Event::None;
+		return e;
 	}
+
+	void EventGenerator::updateDifficulty(DifficultyEventGen diff)
+	{
+		updateChances(Event::Easy, diff.probaEasy);
+		updateChances(Event::Medium, diff.probaMedium);
+		updateChances(Event::Hard, diff.probaHard);
+		computeChanceSum();
+	}
+
+	// I love shiny functional C++14! But g++4.8.2 doesn't support everything (yet).
+	// That's why some things are commented.
+	void EventGenerator::updateChances(Event::Difficulty diff, unsigned int chance)
+	{
+		std::for_each(events_.begin(),
+		              events_.end(),
+//		              [=](auto& event)
+		              [=](Event& event)
+		              {
+			              if(event.diff == diff)
+				              event.chance = chance;
+		              });
+	}
+
 
 //-----------------------------------------------------------------------------
 

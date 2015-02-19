@@ -13,6 +13,11 @@ namespace evt
 {
 	struct Event
 	{
+		enum Difficulty
+		{
+			None=0, Easy, Medium, Hard
+		};
+
 		Event();
 
 		Time getDuration() const;
@@ -21,6 +26,7 @@ namespace evt
 		std::vector<Modifier<World>> worldModifiers;
 
 		unsigned int chance;
+		Difficulty diff;
 	};
 }
 

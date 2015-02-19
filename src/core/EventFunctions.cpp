@@ -206,26 +206,27 @@ namespace evt
 
 		// Create base Events
 		Event stopTimeEvt;
-		stopTimeEvt.chance = 5;
+		stopTimeEvt.diff = Event::Medium;
 		stopTimeEvt.worldModifiers.push_back(stopTimeMod);
 
 		Event chgGravUpWorldEvt;
-		chgGravUpWorldEvt.chance = 5;
+		chgGravUpWorldEvt.diff = Event::Medium;
 		chgGravUpWorldEvt.worldModifiers.push_back(chgGravUpWorldMod);
 
 		Event createObstacleWorldEvt;
-		createObstacleWorldEvt.chance = 5;
+		createObstacleWorldEvt.diff = Event::Medium;
 		createObstacleWorldEvt.worldModifiers.push_back(generateObstaclesMod);
 
 		Event addWindWorldEvt;
 		addWindWorldEvt.chance = 5;
+		addWindWorldEvt.diff = Event::Easy;
 		addWindWorldEvt.worldModifiers.push_back(addWindWorldMod);
 
 
 		// Modify Base Modifiers to create more complex Events
 		stopTimeMod.preDelay_ = seconds(5.5f);
 		Event gravAndTimeEvt;
-		gravAndTimeEvt.chance = 2;
+		gravAndTimeEvt.diff = Event::Hard;
 		gravAndTimeEvt.worldModifiers.push_back(chgGravUpWorldMod);
 		gravAndTimeEvt.worldModifiers.push_back(stopTimeMod);
 
