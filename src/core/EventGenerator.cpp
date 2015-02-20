@@ -8,6 +8,7 @@ namespace evt
 	EventGenerator::EventGenerator()
 		: events_()
 		, timeUntilNextEvent_()
+		, timeBeetweenEvents_(10.f)
 		, chanceSum_(0)
 	{
 		events_ = generateEvents();
@@ -51,6 +52,8 @@ namespace evt
 		updateChances(Event::Medium, diff.probaMedium);
 		updateChances(Event::Hard, diff.probaHard);
 		computeChanceSum();
+
+		timeBeetweenEvents_ = diff.delay;
 	}
 
 	// I love shiny functional C++14! But g++4.8.2 doesn't support everything (yet).
@@ -72,7 +75,7 @@ namespace evt
 
 	void EventGenerator::updateCounters(std::size_t nextEvt)
 	{
-		float delay = normalRandFloat(10.f, 2.f);
+		float delay = normalRandFloat(timeBeetweenEvents_, timeBeetweenEvents_ / 5);
 		delay = std::max(0.f, delay);
 
 		timeUntilNextEvent_ += events_[nextEvt].getDuration() + seconds(delay);

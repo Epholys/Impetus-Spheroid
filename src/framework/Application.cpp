@@ -12,6 +12,9 @@ Application::Application()
 	          sf::ContextSettings(0, 0, 4))
 	, stack_(State::Context(window_))
 {
+	window_.setFramerateLimit(0);
+	window_.setVerticalSyncEnabled(false);
+
 	stack_.registerState<StateGame>(StateID::Game);
 	
 	stack_.pushState(StateID::Game);

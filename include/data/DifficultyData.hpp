@@ -20,8 +20,7 @@ struct DifficultyEventGen
 	unsigned int probaEasy;
 	unsigned int probaMedium;
 	unsigned int probaHard;
-
-	
+	float delay;	
 };
 
 struct DifficultyEventGenSeed
@@ -29,6 +28,7 @@ struct DifficultyEventGenSeed
 	int resolution;
 	int attenuation;
 	int offset;
+	float delay;
 };
 
 std::vector<DifficultyWorld> genDifficultyWorld();

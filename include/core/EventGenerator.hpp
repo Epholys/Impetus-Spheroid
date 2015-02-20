@@ -32,6 +32,7 @@ namespace evt
 		std::vector<Event> events_;
 
 		Time timeUntilNextEvent_;
+		float timeBeetweenEvents_;
 
 		unsigned int chanceSum_;
 	};

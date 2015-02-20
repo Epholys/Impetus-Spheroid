@@ -1,3 +1,4 @@
+#include "utility/random.hpp"
 #include "core/Ball.hpp"
 
 
@@ -9,7 +10,6 @@ Ball::Ball(World* world,
            Vector2f position, 
            float radius, 
            float mass, 
-           sf::Color color,
            Vector2f gravVect,
            unsigned int type)
 	: Entity(world, entm, EntityID::Ball)
@@ -26,10 +26,10 @@ Ball::Ball(World* world,
 		entm.removeComponent(label_, ecs::Component::Solid);
 	}
 
-	ball_.setFillColor(color);
 	auto ballRect = ball_.getLocalBounds();
 	ball_.setOrigin(ballRect.left + ballRect.width / 2.f,
 	                ballRect.top + ballRect.height / 2.f);
+	ball_.setFillColor(sf::Color::Red);
 
 	update(Time());
 }

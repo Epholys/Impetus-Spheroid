@@ -21,7 +21,6 @@ World::World(sf::RenderWindow& window, int precision)
 	, scoreText_()
 	, ballMass_(1.f)
 	, ballRadius_(10.f)
-	, ballColor_(sf::Color::Red)
 {
 	const Vector2f SCORE_POSITION (750.f, 0.f);
 
@@ -113,7 +112,7 @@ void World::createBall(Vector2f mousePosition)
 
 	Entity::Ptr pBall (new Ball(this, ecs_,
 	                            CANON_POSITION,
-	                            ballRadius_, ballMass_, ballColor_, gravityVect_, ballType_));
+	                            ballRadius_, ballMass_, gravityVect_, ballType_));
 
 
 	auto velComp = dynCast<ecs::Velocity>
