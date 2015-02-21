@@ -23,19 +23,28 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, context_(context)
 	, font_()
 	, timer_()
+	, score_(0)
+	, objective_(10)
+	, objectiveIncrement_(1)
+	, scoreText_()
 	, diffGui_(nullptr)
 	, maskGui_(true)
 	, worldSeed_({0.05f})
 	, eventSeed_({100, 8, 10, 10.f})
 {
 
-	const Vector2f TIMER_POSITION (720.f, 20.f);
+	const Vector2f TIMER_POSITION (720.f, 0.f);
+	const Vector2f SCORE_POSITION (720.f, 20.f);
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
 
 	timer_.setFont(font_);
 	timer_.setPosition(TIMER_POSITION);
 	timer_.setString("0:00");
 
+	scoreText_.setFont(font_);
+	scoreText_.setPosition(SCORE_POSITION);
+	updateScore();
+	
 	createGui();
 
 	context_.eventGenerator->updateDifficulty(eventDatas[0]);
@@ -120,6 +129,7 @@ DifficultyManager::~DifficultyManager()
 void DifficultyManager::update(Time dt)
 {
 	phaseTime_ += dt;
+	updateScore();
 	if (phaseTime_ >= phaseDuration_)
 	{
 		phaseTime_ -= phaseDuration_;
@@ -151,6 +161,7 @@ void DifficultyManager::handleInput(const sf::Event& event)
 void DifficultyManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(timer_, states);
+	target.draw(scoreText_, states);
 	if(!maskGui_)
 	{
 		target.draw(*diffGui_, states);
@@ -166,11 +177,37 @@ void DifficultyManager::mask()
 
 void DifficultyManager::updateDifficulty()
 {
+	updateObjective();
+
 	auto worldIndex = selectDataIndex(worldDatas);
 	context_.world->updateDifficulty(worldDatas[worldIndex]);
 
 	auto egenIndex = selectDataIndex(eventDatas);
 	context_.eventGenerator->updateDifficulty(eventDatas[egenIndex]);
+}
+
+void DifficultyManager::updateScore()
+{
+	auto points = context_.world->getTrackedCollisions().size();
+
+	score_ += points;
+	std::stringstream ss;
+	ss << score_;
+	ss << "/";
+	ss << objective_;
+	scoreText_.setString(ss.str());
+	sf::Color txtCol = (score_ < objective_) ? sf::Color::Red : sf::Color::Green;
+	scoreText_.setColor(txtCol);
+}
+
+void DifficultyManager::updateObjective()
+{
+	const int ATTENUATION = 2;
+		
+	int excess = std::max(0, score_ - objective_);
+	
+	objective_ += objectiveIncrement_ + excess / ATTENUATION;
+	score_ = 0;
 }
 
 void DifficultyManager::reloadDifficulty()

@@ -16,20 +16,12 @@ World::World(sf::RenderWindow& window, int precision)
 	, gravityVect_(0.f, 1000.f)
 	, modifiers_()
 	, modifierBuffer_()
-	, font_()
-	, score_(0)
-	, scoreText_()
 	, ballMass_(1.f)
 	, ballRadius_(10.f)
 {
 	const Vector2f SCORE_POSITION (750.f, 0.f);
 
 	generateWorld();
-
-	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
-	scoreText_.setString("0");
-	scoreText_.setFont(font_);
-	scoreText_.setPosition(SCORE_POSITION);
 }
 
 void World::generateWorld()
@@ -97,6 +89,11 @@ void World::updateDifficulty(DifficultyWorld diff)
 	speedCoeff_ += diff.speedConstant;
 }
 
+const std::vector<eg::PhysicEngine::entityPair>&
+World::getTrackedCollisions() const
+{
+	return physEng_.getTrackedCollisions();
+}
 
 //-----------------------------------------------------------------------------
 // *** TEMPORARY FUNCTIONS: ***
@@ -216,11 +213,6 @@ void World::update(Time dt)
 
 	cleanEntities();
 	cleanModifiers();
-
-	score_ += physEng_.getTrackedCollisions().size();
-	std::stringstream ss;
-	ss << score_;
-	scoreText_.setString(ss.str());
 }
 
 void World::getEvent(Time dt)
@@ -331,7 +323,5 @@ void World::draw() const
 		window_.draw(*(*it));
 	}
 	window_.draw(difficulty_);
-
-	window_.draw(scoreText_);
 }
 

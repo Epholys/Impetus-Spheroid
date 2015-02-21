@@ -29,7 +29,7 @@
 class World : public sf::NonCopyable
 {
 public:
-	World(sf::RenderWindow& window, int precision = 4);
+	World(sf::RenderWindow& window, int precision = 2);
 	~World() {};
 
 	void handleInput(const sf::Event& event);
@@ -40,6 +40,7 @@ public:
 	Vector2f& getGravityVect();
 	const eg::PhysicEngine& getPhysicEngine() const;
 	Vector2u getWindowSize() const;
+	const std::vector<eg::PhysicEngine::entityPair>& getTrackedCollisions() const;
 
 	void addEntityModifier(Modifier<Entity> modifier);
 	void addModifier(Modifier<World> modifier);
@@ -77,10 +78,6 @@ private:
 	std::vector<Modifier<World>> modifiers_;
 	std::vector<Modifier<World>> modifierBuffer_;
 
-	sf::Font font_;
-	int score_;
-	sf::Text scoreText_;
-	
 	// Temporary attributes to shift from Application to World
 	float ballMass_;
 	float ballRadius_;

@@ -44,6 +44,8 @@ private:
 	auto selectDataIndex(std::vector<T> v);
 
 	void updateDifficulty();
+	void updateScore();
+	void updateObjective();
 
 // Temp functions for prototyping
 	void reloadDifficulty();
@@ -60,8 +62,14 @@ private:
 	sf::Font font_;
 	sf::Text timer_;
 
+	int score_;
+	int objective_;
+	int objectiveIncrement_;
+	sf::Text scoreText_;
+
 	gui::Component::SPtr diffGui_;
 	bool maskGui_;
+
 
 // Temp attributes for quick adjustements
 private:
