@@ -6,6 +6,7 @@
 StateGame::StateGame(StateStack& stack, Context context)
 	: State(stack, context)
 	, world_(*context.window)
+	, overScreenUp_(false)
 {
 }
 
@@ -22,8 +23,13 @@ void StateGame::draw()
 }
 
 bool StateGame::update(Time dt)
-{
+{	
 	world_.update(dt);
+	if(world_.isGameOver() && !overScreenUp_)
+	{
+		requestStackPush(StateID::GameOver);
+		overScreenUp_ = true;
+	}
 	return true;
 }
 

@@ -18,6 +18,7 @@ public:
 
 private:
 	World world_;
+	bool overScreenUp_;
 };
 
 

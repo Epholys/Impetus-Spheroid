@@ -14,6 +14,7 @@ namespace
 	auto eventDatas = genDifficultyEvent();
 }
 
+
 //-----------------------------------------------------------------------------
 
 DifficultyManager::DifficultyManager(DifficultyContext context)
@@ -24,7 +25,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, font_()
 	, timer_()
 	, score_(0)
-	, objective_(10)
+	, objective_(baseObjective_)
 	, objectiveIncrement_(1)
 	, scoreText_()
 	, diffGui_(nullptr)
@@ -204,7 +205,14 @@ void DifficultyManager::updateObjective()
 {
 	const int ATTENUATION = 2;
 		
-	int excess = std::max(0, score_ - objective_);
+	int excess = score_ - objective_;
+
+	if(excess < 0)
+	{
+		context_.world->setState(World::GameState::GameOver);
+		reset();
+		return;
+	}
 	
 	objective_ += objectiveIncrement_ + excess / ATTENUATION;
 	score_ = 0;
@@ -219,6 +227,8 @@ void DifficultyManager::reloadDifficulty()
 void DifficultyManager::reset()
 {
 	phaseNumber_ = 0;
+	score_ = 0;
+	objective_ = baseObjective_;
 	phaseTime_ = Time::Zero;
 	context_.eventGenerator->updateDifficulty(eventDatas[0]);
 }

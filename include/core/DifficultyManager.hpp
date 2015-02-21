@@ -52,6 +52,7 @@ private:
 
 private:
 	Time phaseDuration_;
+	static const int baseObjective_ = 10;
 
 private:
 	Time phaseTime_;

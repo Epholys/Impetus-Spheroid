@@ -16,6 +16,7 @@ Application::Application()
 	window_.setVerticalSyncEnabled(false);
 
 	stack_.registerState<StateGame>(StateID::Game);
+	stack_.registerState<StateOver>(StateID::GameOver);
 	
 	stack_.pushState(StateID::Game);
 }

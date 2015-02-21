@@ -29,6 +29,14 @@
 class World : public sf::NonCopyable
 {
 public:
+	enum GameState
+	{
+		Waiting,
+		Playing,
+		GameOver
+	};
+
+public:
 	World(sf::RenderWindow& window, int precision = 2);
 	~World() {};
 
@@ -45,6 +53,9 @@ public:
 	void addEntityModifier(Modifier<Entity> modifier);
 	void addModifier(Modifier<World> modifier);
 	void addEntity(Entity::Ptr entity);
+
+	bool isGameOver() const;
+	void setState(GameState state);
 
 	void updateDifficulty(DifficultyWorld diff);
 
@@ -67,6 +78,8 @@ private:
 	eg::PhysicEngine physEng_;
 	evt::EventGenerator evtGen_;
 	DifficultyManager difficulty_;
+
+	GameState state_;
 
 	float speedCoeff_;
 

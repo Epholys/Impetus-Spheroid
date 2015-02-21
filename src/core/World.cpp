@@ -9,6 +9,7 @@ World::World(sf::RenderWindow& window, int precision)
 	, physEng_(ecs_, precision)
 	, evtGen_()
 	, difficulty_(DifficultyContext{this, &evtGen_})
+	, state_(Waiting)
 	, speedCoeff_(1.f)
 	, entities_()
 	, entitiesModifiers_()
@@ -84,6 +85,16 @@ void World::addEntity(Entity::Ptr entity)
 	entities_.push_back(std::move(entity));
 }
 
+bool World::isGameOver() const
+{
+	return state_ == GameOver;
+}
+
+void World::setState(GameState state)
+{
+	state_ = state;
+}
+
 void World::updateDifficulty(DifficultyWorld diff)
 {
 	speedCoeff_ += diff.speedConstant;
@@ -143,6 +154,13 @@ void World::createTarget(Vector2f mousePosition)
 
 void World::handleInput(const sf::Event& event)
 {
+	if(state_ == Waiting || state_ == GameOver)
+	{
+		if(event.type == sf::Event::MouseButtonPressed)
+			state_ = Playing;
+		return;
+	}
+
 	if (event.type == sf::Event::KeyReleased)
 	{
 		switch (event.key.code)
@@ -195,9 +213,17 @@ void World::handleInput(const sf::Event& event)
 
 void World::update(Time dt)
 {
+	if(state_ == Waiting)
+		return;
+
 	// All the objects that requires the "real" time:
+	if(state_ != GameOver)
+	{
+		difficulty_.update(dt);
+	}
+
 	getEvent(dt);
-	difficulty_.update(dt);
+
 
 	// All the objects that requires the faster time below:
 	dt *= speedCoeff_;
