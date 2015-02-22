@@ -17,6 +17,7 @@ Application::Application()
 
 	stack_.registerState<StateGame>(StateID::Game);
 	stack_.registerState<StateOver>(StateID::GameOver);
+	stack_.registerState<StatePause>(StateID::Pause);
 	
 	stack_.pushState(StateID::Game);
 }

@@ -35,6 +35,10 @@ bool StateGame::update(Time dt)
 
 bool StateGame::handleInput(const sf::Event& event)
 {
+	if(event.type == sf::Event::LostFocus)
+	{
+		requestStackPush(StateID::Pause);
+	}
 	world_.handleInput(event);
 	return true;
 }

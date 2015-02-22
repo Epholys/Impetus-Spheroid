@@ -58,6 +58,8 @@ void World::generateWorld()
 	entities_.push_back(std::move(leftWall));
 	entities_.push_back(std::move(rightWall));
 
+	createTarget(Vector2f(3* window_.getSize().x / 4.f, window_.getSize().y / 2.f));
+
 	for(int i=0; i<10; ++i)
 	{
 		ballBuffer_.push_back(genBallData());
@@ -169,14 +171,14 @@ BallData World::genBallData() const
 	return ballDatas[0];
 }
 
-void World::createTarget(Vector2f mousePosition)
+void World::createTarget(Vector2f position)
 {
 	const Vector2f TARGET_DIMENSION {15.f, 75.f};
 	const sf::Color TARGET_COLOR {sf::Color::Yellow};
 
 
 	Entity::Ptr pTarget (new Target(this, ecs_,
-	                                mousePosition,
+	                                position,
 	                                TARGET_DIMENSION,
 	                                TARGET_COLOR));
 	entities_.push_back(std::move(pTarget));
@@ -189,7 +191,8 @@ void World::handleInput(const sf::Event& event)
 	{
 		if(event.type == sf::Event::MouseButtonPressed)
 			state_ = Playing;
-		return;
+		else
+			return;
 	}
 
 	if (event.type == sf::Event::KeyReleased)
@@ -231,12 +234,6 @@ void World::handleInput(const sf::Event& event)
 	         event.mouseButton.button == sf::Mouse::Left)
 	{
 		createBall(Vector2f(sf::Mouse::getPosition(window_)));
-	}
-
-	else if (event.type == sf::Event::MouseButtonPressed &&
-	         event.mouseButton.button == sf::Mouse::Right)			
-	{
-		createTarget(Vector2f(sf::Mouse::getPosition(window_)));
 	}
 
 	difficulty_.handleInput(event);

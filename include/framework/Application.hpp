@@ -10,6 +10,7 @@
 #include "framework/StateStack.hpp"
 #include "framework/StateGame.hpp"
 #include "framework/StateOver.hpp"
+#include "framework/StatePause.hpp"
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
 #include "core/World.hpp"

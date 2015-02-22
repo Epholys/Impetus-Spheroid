@@ -24,6 +24,7 @@ namespace StateID
 		None = 0,
 		Game,
 		GameOver,
+		Pause,
 	};
 }
 
