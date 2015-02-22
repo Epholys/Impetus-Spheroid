@@ -73,6 +73,7 @@ private:
 
 // TODO: Replace all the input by a separate class
 	void createBall(Vector2f mousePosition);
+	BallData genBallData() const;
 	void createTarget(Vector2f mousePosition);
 
 private:

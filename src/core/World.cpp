@@ -57,6 +57,11 @@ void World::generateWorld()
 	entities_.push_back(std::move(ceiling));
 	entities_.push_back(std::move(leftWall));
 	entities_.push_back(std::move(rightWall));
+
+	for(int i=0; i<10; ++i)
+	{
+		ballBuffer_.push_back(genBallData());
+	}
 }
 
 
@@ -127,20 +132,12 @@ void World::createBall(Vector2f mousePosition)
 	const Vector2f CANON_POSITION {20.f, 580.f};
 	const float IMPULSE_COEFF = 3.f;
 
-	BallData data;
-	for(auto ritr = ballDatas.rbegin(); ritr != ballDatas.rend(); ++ritr)
-	{
-		int rint = randInt(1,1000);
-		if(rint <= (*ritr).proba)
-		{
-			data = *ritr;
-			break;
-		}
-	}
-
 	Entity::Ptr pBall (new Ball(this, ecs_,
 	                            CANON_POSITION,
-	                            ballRadius_, ballMass_, gravityVect_, data, ballType_));
+	                            ballRadius_, ballMass_, gravityVect_,
+	                            ballBuffer_.front(), ballType_));
+	ballBuffer_.pop_front();
+	ballBuffer_.push_back(genBallData());
 
 
 	auto velComp = dynCast<ecs::Velocity>
@@ -156,6 +153,20 @@ void World::createBall(Vector2f mousePosition)
 
 
 	entities_.push_back(std::move(pBall));
+}
+
+BallData World::genBallData() const
+{
+	for(auto ritr = ballDatas.rbegin(); ritr != ballDatas.rend(); ++ritr)
+	{
+		int rint = randInt(1,1000);
+		if(rint <= (*ritr).proba)
+		{
+			return *ritr;
+			break;
+		}
+	}
+	return ballDatas[0];
 }
 
 void World::createTarget(Vector2f mousePosition)
