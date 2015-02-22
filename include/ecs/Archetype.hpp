@@ -18,7 +18,8 @@ namespace ecs
 	                  Vector2f position,
 	                  float radius,
 	                  float mass,
-	                  Vector2f gravVect);
+	                  Vector2f gravVect,
+	                  int points = 1);
 	
 	Entity createWall(EntityManager& ecs,
 	                  Vector2f position,
@@ -26,7 +27,8 @@ namespace ecs
 
 	Entity createTarget(EntityManager& ecs,
 	                    Vector2f position,
-	                    Vector2f size);
+	                    Vector2f size,
+	                    float multiplier = 1.f);
 
 	Entity createObstacle(EntityManager& ecs,
 	                      Vector2f position,

@@ -11,11 +11,12 @@ Ball::Ball(World* world,
            float radius, 
            float mass, 
            Vector2f gravVect,
+           BallData data,
            unsigned int type)
 	: Entity(world, entm, EntityID::Ball)
 	, ball_(radius)
 {
-	label_ = ecs::createBall(entm, position, radius, mass, gravVect);
+	label_ = ecs::createBall(entm, position, radius, mass, gravVect, data.point);
 
 	if(type & Massless)
 	{
@@ -29,7 +30,7 @@ Ball::Ball(World* world,
 	auto ballRect = ball_.getLocalBounds();
 	ball_.setOrigin(ballRect.left + ballRect.width / 2.f,
 	                ballRect.top + ballRect.height / 2.f);
-	ball_.setFillColor(sf::Color::Red);
+	ball_.setFillColor(data.color);
 
 	update(Time());
 }

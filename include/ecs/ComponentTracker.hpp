@@ -20,7 +20,7 @@ namespace ecs
 	class Target : public ComponentBase
 	{
 	public:
-		Target();
+		Target(float pointMultiplier);
 
 		/* These two functions are used to keep track of wether or not the
 		 * target has been touched, for the purpose of moving it, for example,
@@ -29,10 +29,13 @@ namespace ecs
 		void touch();
 		bool reset();
 
+		float getPointMultiplier() const;
+
 		virtual Component::Category getCategory() const;
 
 	private:
 		bool hasBeenTouched_;
+		float pointMultiplier_;
 	};
 
 //-----------------------------------------------------------------------------
@@ -40,15 +43,18 @@ namespace ecs
 	class Projectile : public ComponentBase
 	{
 	public:
-		Projectile();
+		Projectile(int points);
 		
 		void touchTarget();
 		bool hasTouchedTarget() const;
+
+		int getPoints() const;
 
 		virtual Component::Category getCategory() const;
 
 	private:
 		bool hasTouchedTarget_;
+		int points_;
 	};
 
 

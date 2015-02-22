@@ -1,5 +1,6 @@
 #include <sstream>
 
+#include "framework/Assertion.hpp"
 #include "core/DifficultyManager.hpp"
 #include "core/World.hpp"
 #include "core/EventGenerator.hpp"
@@ -24,7 +25,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, context_(context)
 	, font_()
 	, timer_()
-	, score_(0)
+	, score_(0.f)
 	, objective_(baseObjective_)
 	, objectiveIncrement_(1)
 	, scoreText_()
@@ -189,11 +190,25 @@ void DifficultyManager::updateDifficulty()
 
 void DifficultyManager::updateScore()
 {
-	auto points = context_.world->getTrackedCollisions().size();
+	auto collisions = context_.world->getTrackedCollisions();
+	auto ecs = context_.world->getEntityManager();
+	float points;
+	for(const auto& pair : collisions)
+	{
+		auto projectileComp =
+			dynCast<ecs::Projectile>(ecs.getComponent(pair.first,
+			                                          ecs::Component::Projectile));
+		auto targetComp =
+			dynCast<ecs::Target>(ecs.getComponent(pair.second,
+			                                      ecs::Component::Target));
+		assert(projectileComp);
+		assert(targetComp);
+		points += projectileComp->getPoints() * targetComp->getPointMultiplier();
+	}
 
 	score_ += points;
 	std::stringstream ss;
-	ss << score_;
+	ss << int(score_);
 	ss << "/";
 	ss << objective_;
 	scoreText_.setString(ss.str());
@@ -215,7 +230,7 @@ void DifficultyManager::updateObjective()
 	}
 	
 	objective_ += objectiveIncrement_ + excess / ATTENUATION;
-	score_ = 0;
+	score_ = 0.f;
 }
 
 void DifficultyManager::reloadDifficulty()
@@ -227,7 +242,7 @@ void DifficultyManager::reloadDifficulty()
 void DifficultyManager::reset()
 {
 	phaseNumber_ = 0;
-	score_ = 0;
+	score_ = 0.f;
 	objective_ = baseObjective_;
 	phaseTime_ = Time::Zero;
 	context_.eventGenerator->updateDifficulty(eventDatas[0]);

@@ -2,12 +2,14 @@
 #define BALL_HPP
 
 
-#include "utility/utility.hpp"
-#include "core/Entity.hpp"
-
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+
+#include "utility/utility.hpp"
+#include "core/Entity.hpp"
+#include "data/BallData.hpp"
+
 
 class Ball : public Entity
 {
@@ -26,6 +28,7 @@ public:
 	     float radius,
 	     float mass,
 	     Vector2f gravVect,
+	     BallData data,
 	     unsigned int type = 0);
 	virtual ~Ball();
 

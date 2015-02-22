@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include <vector>
+#include <deque>
 #include <algorithm>
 
 #include <SFML/System/NonCopyable.hpp>
@@ -15,6 +16,7 @@
 
 #include "utility/Time.hpp"
 #include "utility/utility.hpp"
+#include "utility/random.hpp"
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
 #include "core/Entity.hpp"
@@ -25,6 +27,7 @@
 #include "core/EventGenerator.hpp"
 #include "core/DifficultyManager.hpp"
 #include "data/DifficultyData.hpp"
+#include "data/BallData.hpp"
 
 class World : public sf::NonCopyable
 {
@@ -87,6 +90,7 @@ private:
 	std::vector<Modifier<Entity>> entitiesModifiers_;
 	unsigned int ballType_;
 	Vector2f gravityVect_;
+	std::deque<BallData> ballBuffer_;
 
 	std::vector<Modifier<World>> modifiers_;
 	std::vector<Modifier<World>> modifierBuffer_;

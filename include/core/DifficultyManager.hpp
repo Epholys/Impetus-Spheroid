@@ -63,7 +63,7 @@ private:
 	sf::Font font_;
 	sf::Text timer_;
 
-	int score_;
+	float score_;
 	int objective_;
 	int objectiveIncrement_;
 	sf::Text scoreText_;

@@ -11,7 +11,8 @@ namespace ecs
 	                  Vector2f position,
 	                  float radius,
 	                  float mass,
-	                  Vector2f gravVect)
+	                  Vector2f gravVect,
+	                  int points)
 	{
 		Entity ball = ecs.addEntity();
 
@@ -25,7 +26,7 @@ namespace ecs
 		ecs.addComponent<Mass>(ball, mass, gravVect);
 		ecs.addComponent<Solid>(ball, 1.f / mass, 2.f);
 		ecs.addComponent<CollidableSphere>(ball, radius);
-		ecs.addComponent<Projectile>(ball);
+		ecs.addComponent<Projectile>(ball, points);
 
 		return ball;
 	}
@@ -47,7 +48,8 @@ namespace ecs
 
 	Entity createTarget(EntityManager& ecs,
 	                    Vector2f position,
-	                    Vector2f size)
+	                    Vector2f size,
+	                    float multiplier)
 	{
 		Entity targ = ecs.addEntity();
 
@@ -55,7 +57,7 @@ namespace ecs
 		ecs.addComponent<Velocity>(targ);
 		ecs.addComponent<Solid>(targ, 0.f, 1.f);
 		ecs.addComponent<CollidableRect>(targ, size);
-		ecs.addComponent<Target>(targ);
+		ecs.addComponent<Target>(targ, multiplier);
 
 		return targ;
 	}

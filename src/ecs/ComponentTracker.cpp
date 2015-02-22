@@ -6,8 +6,9 @@ namespace ecs
 
 	// *** Target: ***
 
-	Target::Target()
+	Target::Target(float pointMultiplier)
 		: hasBeenTouched_(false)
+		, pointMultiplier_(pointMultiplier)
 	{
 	}
 
@@ -28,11 +29,17 @@ namespace ecs
 		return returnVal;
 	}
 
+	float Target::getPointMultiplier() const
+	{
+		return pointMultiplier_;
+	}
+
 //-----------------------------------------------------------------------------
 	// *** Projectile: ***
 
-	Projectile::Projectile()
+	Projectile::Projectile(int points)
 		: hasTouchedTarget_(false)
+		, points_(points)
 	{
 	}
 
@@ -44,6 +51,11 @@ namespace ecs
 	bool Projectile::hasTouchedTarget() const
 	{
 		return hasTouchedTarget_;
+	}
+
+	int Projectile::getPoints() const
+	{
+		return points_;
 	}
 
 	Component::Category Projectile::getCategory() const

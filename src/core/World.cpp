@@ -1,5 +1,14 @@
 #include "core/World.hpp"
 
+
+//-----------------------------------------------------------------------------
+
+namespace
+{
+	auto ballDatas = genBallDatas();
+}
+
+
 //-----------------------------------------------------------------------------
 // *** constructor: ***
 
@@ -15,6 +24,7 @@ World::World(sf::RenderWindow& window, int precision)
 	, entitiesModifiers_()
 	, ballType_(Ball::Normal)
 	, gravityVect_(0.f, 1000.f)
+	, ballBuffer_()
 	, modifiers_()
 	, modifierBuffer_()
 	, ballMass_(1.f)
@@ -117,10 +127,20 @@ void World::createBall(Vector2f mousePosition)
 	const Vector2f CANON_POSITION {20.f, 580.f};
 	const float IMPULSE_COEFF = 3.f;
 
+	BallData data;
+	for(auto ritr = ballDatas.rbegin(); ritr != ballDatas.rend(); ++ritr)
+	{
+		int rint = randInt(1,1000);
+		if(rint <= (*ritr).proba)
+		{
+			data = *ritr;
+			break;
+		}
+	}
 
 	Entity::Ptr pBall (new Ball(this, ecs_,
 	                            CANON_POSITION,
-	                            ballRadius_, ballMass_, gravityVect_, ballType_));
+	                            ballRadius_, ballMass_, gravityVect_, data, ballType_));
 
 
 	auto velComp = dynCast<ecs::Velocity>
