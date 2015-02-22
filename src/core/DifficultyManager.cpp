@@ -29,6 +29,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, objective_(baseObjective_)
 	, objectiveIncrement_(1)
 	, scoreText_()
+	, ballCount_()
 	, diffGui_(nullptr)
 	, maskGui_(true)
 	, worldSeed_({0.05f})
@@ -204,6 +205,7 @@ void DifficultyManager::updateScore()
 		assert(projectileComp);
 		assert(targetComp);
 		points += projectileComp->getPoints() * targetComp->getPointMultiplier();
+		++ballCount_[projectileComp->getPoints()];
 	}
 
 	score_ += points;
@@ -219,6 +221,7 @@ void DifficultyManager::updateScore()
 void DifficultyManager::updateObjective()
 {
 	const int ATTENUATION = 2;
+	const int MODULATION = 2;
 		
 	int excess = score_ - objective_;
 
@@ -230,7 +233,25 @@ void DifficultyManager::updateObjective()
 	}
 	
 	objective_ += objectiveIncrement_ + excess / ATTENUATION;
+	// Try to modulate big points balls
+	for(int i=0; i<MODULATION; ++i)
+	{
+		auto it  = std::max_element(ballCount_.begin(),
+		                            ballCount_.end(),
+		                            [](std::pair<const int,int> p1, std::pair<const int,int> p2)
+		                            {
+			                            return p1.first < p2.first;
+		                            });
+		if(it != ballCount_.end())
+		{
+			int ballMaxPoints = (*it).first;
+			objective_ -= (ballMaxPoints / 10) * ballCount_[ballMaxPoints];
+			ballCount_.erase(it);
+		}
+	}
+
 	score_ = 0.f;
+	ballCount_.clear();
 }
 
 void DifficultyManager::reloadDifficulty()

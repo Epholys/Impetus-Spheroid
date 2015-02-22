@@ -2,6 +2,9 @@
 #define DIFFICULTY_MANAGER_HPP
 
 
+#include <algorithm>
+#include <map>
+
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Font.hpp>
@@ -67,7 +70,8 @@ private:
 	int objective_;
 	int objectiveIncrement_;
 	sf::Text scoreText_;
-
+	std::map<int, int> ballCount_;
+	
 	gui::Component::SPtr diffGui_;
 	bool maskGui_;
 
