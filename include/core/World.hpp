@@ -46,6 +46,7 @@ public:
 	void handleInput(const sf::Event& event);
 	void update(Time dt);
 	void draw() const;
+	void drawFutureBalls() const;
 
 	ecs::EntityManager& getEntityManager();
 	Vector2f& getGravityVect();

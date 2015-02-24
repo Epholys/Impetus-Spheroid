@@ -42,17 +42,17 @@ void World::generateWorld()
 	Entity::Ptr ceiling (new Wall(this, ecs_,
 	                              Vector2f(winSize.x / 2.f, 0.f),
 	                              Vector2f(winSize.x, 10.f),
-	                              sf::Color::Blue));
+	                              sf::Color(0,0,80)));
 	
 	Entity::Ptr leftWall (new Wall(this, ecs_,
-	                               Vector2f(0.f, winSize.y / 2.f),
-	                               Vector2f(10.f, winSize.y),
-	                               sf::Color::Blue));
+	                               Vector2f(17.5f, (winSize.y / 2.f) - 20.f),
+	                               Vector2f(10.f, winSize.y-40.f),
+	                               sf::Color(0,0,80)));
 
 	Entity::Ptr rightWall (new Wall(this, ecs_,
 	                                Vector2f(winSize.x, winSize.y / 2.f),
 	                                Vector2f(10.f, winSize.y),
-	                                sf::Color::Blue));
+	                                sf::Color(0,0,80)));
 
 	entities_.push_back(std::move(ceiling));
 	entities_.push_back(std::move(leftWall));
@@ -131,7 +131,7 @@ World::getTrackedCollisions() const
 // *** gameloop functions: ***
 void World::createBall(Vector2f mousePosition)
 {
-	const Vector2f CANON_POSITION {20.f, 580.f};
+	const Vector2f CANON_POSITION {40.f, 580.f};
 	const float IMPULSE_COEFF = 3.f;
 
 	Entity::Ptr pBall (new Ball(this, ecs_,
@@ -377,5 +377,23 @@ void World::draw() const
 		window_.draw(*(*it));
 	}
 	window_.draw(difficulty_);
+	drawFutureBalls();
+}
+
+void World::drawFutureBalls() const
+{
+	sf::RectangleShape rect (Vector2f(25.f, window_.getSize().y));
+	rect.setFillColor(sf::Color(0,0,80));
+	window_.draw(rect);
+
+	Vector2f firstBallPos {2.5f, 570.f};
+	for (const auto& data : ballBuffer_)
+	{
+		sf::CircleShape circ (ballRadius_);
+		circ.setFillColor(data.color);
+		circ.setPosition(firstBallPos);
+		firstBallPos.y -= 60.f;
+		window_.draw(circ);
+	}
 }
 
