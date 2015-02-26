@@ -13,6 +13,7 @@ namespace
 	Time PHASE_TIME {seconds(20.f)};
 	auto worldDatas = genDifficultyWorld();
 	auto eventDatas = genDifficultyEvent();
+	auto ballDatas = genBallDatas();
 }
 
 
@@ -27,7 +28,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, timer_()
 	, score_(0.f)
 	, objective_(baseObjective_)
-	, objectiveIncrement_(1)
+	, objectiveIncrement_(2)
 	, scoreText_()
 	, ballCount_()
 	, diffGui_(nullptr)
@@ -36,8 +37,8 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, eventSeed_({100, 8, 10, 10.f})
 {
 
-	const Vector2f TIMER_POSITION (720.f, 0.f);
-	const Vector2f SCORE_POSITION (720.f, 20.f);
+	const Vector2f TIMER_POSITION (710.f, 0.f);
+	const Vector2f SCORE_POSITION (710.f, 20.f);
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
 
 	timer_.setFont(font_);
@@ -193,7 +194,7 @@ void DifficultyManager::updateScore()
 {
 	auto collisions = context_.world->getTrackedCollisions();
 	auto ecs = context_.world->getEntityManager();
-	float points;
+	float points = 0;
 	for(const auto& pair : collisions)
 	{
 		auto projectileComp =
@@ -221,7 +222,8 @@ void DifficultyManager::updateScore()
 void DifficultyManager::updateObjective()
 {
 	const int ATTENUATION = 2;
-	const int MODULATION = 2;
+	const int CUTTING = 2;
+	const int MODULATION = 1;
 		
 	int excess = score_ - objective_;
 
@@ -232,8 +234,24 @@ void DifficultyManager::updateObjective()
 		return;
 	}
 	
-	objective_ += objectiveIncrement_ + excess / ATTENUATION;
-	// Try to modulate big points balls
+	auto datas = ballDatas;
+	// Eliminated from the excess all the CUTTING most valuable balls.
+	for(int i=0; i<CUTTING; ++i)
+	{
+		auto it  = std::max_element(datas.begin(),
+		                            datas.end(),
+		                            [](BallData data1, BallData data2)
+		                            {
+			                            return data1.point < data2.point;
+		                            });
+		assert(it!=ballDatas.end());
+		int count = ballCount_.count(it->point);
+		excess = std::max(0, excess - it->point*count);
+		ballCount_.erase(it->point);
+		datas.erase(it);
+	}
+	
+	// Try to modulate remaining big points balls : 
 	for(int i=0; i<MODULATION; ++i)
 	{
 		auto it  = std::max_element(ballCount_.begin(),
@@ -245,11 +263,13 @@ void DifficultyManager::updateObjective()
 		if(it != ballCount_.end())
 		{
 			int ballMaxPoints = (*it).first;
-			objective_ -= (ballMaxPoints / 10) * ballCount_[ballMaxPoints];
+			excess = std::max(0, excess - (ballMaxPoints / 10) * ballCount_[ballMaxPoints]);
 			ballCount_.erase(it);
 		}
 	}
 
+	objective_ += objectiveIncrement_ + excess / ATTENUATION;
+	
 	score_ = 0.f;
 	ballCount_.clear();
 }

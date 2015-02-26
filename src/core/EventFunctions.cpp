@@ -109,7 +109,7 @@ namespace evt
 		Vector2f size (15.f, normalRandFloat(MEAN_HEIGHT, DVT_HEIGHT));
 		
 		float xMean = upLeftCorner.x + zoneSize.x / 2.f;
-		float xDev = zoneSize.x / 2.f;
+		float xDev = zoneSize.x / 3.f;
 		float xPosition = normalRandFloat(xMean, xDev);
 		float yPosition = upLeftCorner.y + zoneSize.y + size.y/2.f;
 

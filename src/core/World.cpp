@@ -42,17 +42,17 @@ void World::generateWorld()
 	Entity::Ptr ceiling (new Wall(this, ecs_,
 	                              Vector2f(winSize.x / 2.f, 0.f),
 	                              Vector2f(winSize.x, 10.f),
-	                              sf::Color(0,0,80)));
+	                              sf::Color(80,80,80)));
 	
 	Entity::Ptr leftWall (new Wall(this, ecs_,
-	                               Vector2f(17.5f, (winSize.y / 2.f) - 20.f),
-	                               Vector2f(10.f, winSize.y-40.f),
-	                               sf::Color(0,0,80)));
+	                               Vector2f(12.5f, winSize.y / 2.f),
+	                               Vector2f(25.f, winSize.y),
+	                               sf::Color(80,80,80)));
 
 	Entity::Ptr rightWall (new Wall(this, ecs_,
 	                                Vector2f(winSize.x, winSize.y / 2.f),
 	                                Vector2f(10.f, winSize.y),
-	                                sf::Color(0,0,80)));
+	                                sf::Color(80,80,80)));
 
 	entities_.push_back(std::move(ceiling));
 	entities_.push_back(std::move(leftWall));
@@ -382,10 +382,6 @@ void World::draw() const
 
 void World::drawFutureBalls() const
 {
-	sf::RectangleShape rect (Vector2f(25.f, window_.getSize().y));
-	rect.setFillColor(sf::Color(0,0,80));
-	window_.draw(rect);
-
 	Vector2f firstBallPos {2.5f, 570.f};
 	for (const auto& data : ballBuffer_)
 	{
