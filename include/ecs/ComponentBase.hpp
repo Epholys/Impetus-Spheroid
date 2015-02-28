@@ -30,6 +30,7 @@ namespace ecs
 			
 		void update(Time dt);
 		void pause(Time t);
+		void unpause();
 		bool isPaused() const;
 		
 		virtual Component::Category getCategory() const =0;

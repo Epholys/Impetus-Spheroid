@@ -15,10 +15,8 @@ namespace evt
 	 * rectangle defined bu its upper left corner POSITION and it size SIZE
 	 * */
 	auto stopTimeBall =
-		[](Vector2f position, Vector2f size, Entity& ball, Time)
+		[](Vector2f position, Vector2f size, Time pause, Entity& ball, Time)
 	{
-		const float PAUSE_DURATION = 5.f;
-
 		if(ball.getType() != EntityID::Ball) return;
 
 		auto components = ball.getComponents();
@@ -40,17 +38,34 @@ namespace evt
 		   ballPosition.y > position.y &&
 		   ballPosition.y < position.y + size.y)
 		{
-			velocityComponent->pause(seconds(PAUSE_DURATION));
+			velocityComponent->pause(pause);
 			if(projectileComponent)
 			{
-				projectileComponent->pause(seconds(PAUSE_DURATION));
+				projectileComponent->pause(pause);
 			}
 		}
 	};
 
+	auto resumeTimeBall = [](Entity& ball, Time)
+	{
+		if(ball.getType() != EntityID::Ball) return;
+
+		auto components = ball.getComponents(true);
+		
+		auto velocityComponent = dynCast<ecs::Velocity>
+			(components[ecs::Component::Velocity]);
+		auto projectileComponent = dynCast<ecs::Projectile>
+			(components[ecs::Component::Projectile]);
+
+		if(!velocityComponent || !projectileComponent) return;
+		
+		velocityComponent->unpause();
+		projectileComponent->unpause();
+	};
+
 
 	auto stopTimeWorld =
-		[](World& world, Time)
+		[](Time pause, World& world, Time)
 	{
 		auto windowSize = world.getWindowSize();
 
@@ -61,13 +76,26 @@ namespace evt
 
 		Modifier<Entity> stopTimeMod;
 		stopTimeMod.preFunction_ = std::bind(stopTimeBall,
-		                                    zoneUpperLeftCorner,
-		                                    zoneSize,
-		                                    std::placeholders::_1,
-		                                    std::placeholders::_2);
+		                                     zoneUpperLeftCorner,
+		                                     zoneSize,
+		                                     pause,
+		                                     std::placeholders::_1,
+		                                     std::placeholders::_2);
 		stopTimeMod.duration_ = Time();
 
 		world.addEntityModifier(stopTimeMod);
+	};
+
+	auto resumeTimeWorld =
+		[](World& world, Time)
+	{
+		Modifier<Entity> resumeTimeMod;
+		resumeTimeMod.preFunction_ = std::bind(resumeTimeBall,
+		                                       std::placeholders::_1,
+		                                       std::placeholders::_2);
+		resumeTimeMod.duration_ = Time();
+
+		world.addEntityModifier(resumeTimeMod);
 	};
 
 //-----------------------------------------------------------------------------
@@ -181,8 +209,9 @@ namespace evt
 	{
 		// Create base modifiers
 		Modifier<World> stopTimeMod;
-		stopTimeMod.preFunction_ = stopTimeWorld;
 		stopTimeMod.duration_ = seconds(5);
+		stopTimeMod.preFunction_ = std::bind(stopTimeWorld, stopTimeMod.duration_, std::placeholders::_1, std::placeholders::_2);
+		stopTimeMod.postFunction_ = resumeTimeWorld;
 
 		Modifier<World> chgGravUpWorldMod;
 		chgGravUpWorldMod.preFunction_ = chgGravUpWorld;

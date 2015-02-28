@@ -26,9 +26,9 @@ EntityID::Type Entity::getType() const
 }
 
 ecs::EntityManager::componentTable
-Entity::getComponents()
+Entity::getComponents(bool force)
 {
-	return ecs_.getAllComponents(label_);
+	return ecs_.getAllComponents(label_, force);
 }
 
 void Entity::update(Time dt)

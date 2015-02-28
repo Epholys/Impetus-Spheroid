@@ -117,9 +117,10 @@ namespace ecs
 	}
 
 
-	ComponentBase::SPtr EntityManager::getComponent(Entity ent, Component::Category cat)
+	ComponentBase::SPtr EntityManager::getComponent(Entity ent, Component::Category cat, bool force)
 	{
-		if(componentIsActive(ent, cat))
+		if(componentIsActive(ent, cat) ||
+		   (force && componentExists(ent, cat)))
 		{
 			return entityComponents_[ent][cat];
 		}
@@ -127,9 +128,11 @@ namespace ecs
 	}
 
 	const ComponentBase::SPtr EntityManager::getComponent(Entity ent,
-	                                                      Component::Category cat) const
+	                                                      Component::Category cat,
+	                                                      bool force) const
 	{
-		if(componentIsActive(ent, cat))
+		if(componentIsActive(ent, cat) ||
+		   (force && componentExists(ent, cat)))
 		{
 			return entityComponents_.at(ent).at(cat);
 		}
@@ -138,14 +141,14 @@ namespace ecs
 
 
 	EntityManager::componentTable
-	EntityManager::getAllComponents(Entity ent)
+	EntityManager::getAllComponents(Entity ent, bool force)
 	{
 		componentTable table;
 		if(entityExists(ent))
 		{
 			for(auto& componentPair : entityComponents_[ent])
 			{
-				if(!(componentPair.second->isPaused()))
+				if(!componentPair.second->isPaused() || force)
 				{
 					table.insert(componentPair);
 				}
@@ -155,14 +158,14 @@ namespace ecs
 	}
 
 	const EntityManager::componentTable
-	EntityManager::getAllComponents(Entity ent) const
+	EntityManager::getAllComponents(Entity ent, bool force) const
 	{
 		componentTable table;
 		if(entityExists(ent))
 		{
 			for(const auto& componentPair : entityComponents_.at(ent))
 			{
-				if(!(componentPair.second->isPaused()))
+				if(!componentPair.second->isPaused() || force)
 				{
 					table.insert(componentPair);
 				}
@@ -173,12 +176,13 @@ namespace ecs
 
 
 	std::vector<ComponentBase::SPtr> 
-	EntityManager::getAllComponents(Component::Category cat)
+	EntityManager::getAllComponents(Component::Category cat, bool force)
 	{
 		std::vector<ComponentBase::SPtr> table;
 		for(auto& entityPair : entityComponents_)
 		{
-			if(componentIsActive(entityPair.first, cat))
+			if(componentIsActive(entityPair.first, cat) ||
+			   (force && componentExists(entityPair.first, cat)))
 			{
 				table.push_back(entityPair.second[cat]);
 			}
@@ -187,12 +191,13 @@ namespace ecs
 	}
 
 	const std::vector<ComponentBase::SPtr> 
-	EntityManager::getAllComponents(Component::Category cat) const
+	EntityManager::getAllComponents(Component::Category cat, bool force) const
 	{
 		std::vector<ComponentBase::SPtr> table;
 		for(auto& entityPair : entityComponents_)
 		{
-			if(componentIsActive(entityPair.first, cat))
+			if(componentIsActive(entityPair.first, cat) ||
+			   (force && componentExists(entityPair.first, cat)))
 			{
 				table.push_back(entityPair.second.at(cat));
 			}

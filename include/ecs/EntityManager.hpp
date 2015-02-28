@@ -109,8 +109,8 @@ namespace ecs
 		 * If ent doesn't exists or ent doesn't have a Component of category
 		 * cat, returns a nullptr.
 		 * */
-		ComponentBase::SPtr getComponent(Entity ent, Component::Category cat);
-		const ComponentBase::SPtr getComponent(Entity ent, Component::Category cat) const;
+		ComponentBase::SPtr getComponent(Entity ent, Component::Category cat, bool force=false);
+		const ComponentBase::SPtr getComponent(Entity ent, Component::Category cat, bool force=false) const;
 
 
 		/* (const) Getter for the std::map of Components of ent.
@@ -120,8 +120,8 @@ namespace ecs
 		 * If ent doesn't exists or doesn't have any Components, returns an
 		 * empty std::map.
 		 * */
-		componentTable getAllComponents(Entity ent);
-		const componentTable getAllComponents(Entity ent) const;
+		componentTable getAllComponents(Entity ent, bool force=false);
+		const componentTable getAllComponents(Entity ent, bool force=false) const;
 
 
 		/* (const) Getter for all Components of category cat.
@@ -131,8 +131,8 @@ namespace ecs
 		 * If there isn't any Components of this category, returns and empty
 		 * std::map.
 		 */
-		std::vector<ComponentBase::SPtr> getAllComponents(Component::Category cat);
-		const std::vector<ComponentBase::SPtr> getAllComponents(Component::Category cat) const;
+		std::vector<ComponentBase::SPtr> getAllComponents(Component::Category cat, bool force=false);
+		const std::vector<ComponentBase::SPtr> getAllComponents(Component::Category cat, bool force=false) const;
 
 
 

@@ -33,7 +33,7 @@ public:
 	ecs::Entity getLabel() const;
 	EntityID::Type getType() const;
 	
-	ecs::EntityManager::componentTable getComponents();
+	ecs::EntityManager::componentTable getComponents(bool force=false);
 
 	virtual void update(Time dt) =0;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
