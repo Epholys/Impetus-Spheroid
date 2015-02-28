@@ -16,10 +16,12 @@
 #include "ecs/Archetype.hpp"
 #include "core/Identifiers.hpp"
 #include "core/Modifier.hpp"
+#include "core/Modifiable.hpp"
 
 class World;
 
-class Entity : public sf::Drawable, public sf::Transformable
+class Entity : public sf::Drawable, public sf::Transformable,
+               public Modifiable<Entity>
 {
 public:
 	typedef std::unique_ptr<Entity> Ptr;
@@ -33,8 +35,6 @@ public:
 	
 	ecs::EntityManager::componentTable getComponents();
 
-	void addModifier(Modifier<Entity> modifier);
-	
 	virtual void update(Time dt) =0;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	
@@ -45,9 +45,6 @@ protected:
 	ecs::Entity label_;
 	
 	EntityID::Type type_;
-
-	std::vector<Modifier<Entity>> modifiers_;
-	std::vector<Modifier<Entity>> modifierBuffer_;
 };
 
 

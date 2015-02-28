@@ -19,9 +19,12 @@ public:
 	bool isExpired() const;
 	Time getTotalDuration() const;
 
+	void forceEnding(T& target, Time dt = Time());
+
 public:
 	Time duration_;
 	bool firstTimeExecuted_;
+	bool lastTimeExecuted_;
 
 	std::function<void(T&, Time dt)> preFunction_;
 	std::function<void(T&, Time dt)> mainFunction_;

@@ -46,8 +46,6 @@ namespace evt
 				projectileComponent->pause(seconds(PAUSE_DURATION));
 			}
 		}
-
-			
 	};
 
 

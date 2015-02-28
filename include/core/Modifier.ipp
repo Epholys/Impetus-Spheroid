@@ -2,6 +2,7 @@ template<typename T>
 Modifier<T>::Modifier()
 	: duration_()
 	, firstTimeExecuted_(true)
+	, lastTimeExecuted_(false)
 	, preFunction_()
 	, mainFunction_()
 	, postFunction_()
@@ -21,6 +22,15 @@ Time Modifier<T>::getTotalDuration() const
 	return duration_ + preDelay_;
 }
 
+template<typename T>
+void Modifier<T>::forceEnding(T& target, Time dt)
+{
+	if(postFunction_)
+	{
+		postFunction_(target, dt);
+		lastTimeExecuted_ = true;		
+	}
+}
 
 template<typename T>
 void Modifier<T>::operator() (T& target, Time dt)
@@ -52,8 +62,10 @@ void Modifier<T>::operator() (T& target, Time dt)
 
 	duration_ -= dt;
 
-	if(isExpired() && postFunction_)
+	if(isExpired() && postFunction_ && !lastTimeExecuted_)
 	{
 		postFunction_(target, dt);
+		lastTimeExecuted_ = true;
 	}
 }
+

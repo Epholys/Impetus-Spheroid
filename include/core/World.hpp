@@ -24,12 +24,14 @@
 #include "core/Ball.hpp"
 #include "core/Target.hpp"
 #include "core/Modifier.hpp"
+#include "core/Modifiable.hpp"
 #include "core/EventGenerator.hpp"
 #include "core/DifficultyManager.hpp"
 #include "data/DifficultyData.hpp"
 #include "data/BallData.hpp"
 
-class World : public sf::NonCopyable
+class World : public sf::NonCopyable,
+              public Modifiable<World>
 {
 public:
 	enum GameState
@@ -53,11 +55,10 @@ public:
 	Vector2u getWindowSize() const;
 	const std::vector<eg::PhysicEngine::entityPair>& getTrackedCollisions() const;
 
-	void addEntityModifier(Modifier<Entity> modifier);
-	void addModifier(Modifier<World> modifier);
 	void addEntity(Entity::Ptr entity);
 	template<typename T, typename... Args>
 	void addEntity(Args... args);
+	void addEntityModifier(Modifier<Entity> modifier);
 
 	bool isGameOver() const;
 	void setState(GameState state);
@@ -68,10 +69,10 @@ private:
 	void generateWorld();
 
 	void getEvent(Time dt);
-	void applyModifiers(Time dt);
+	virtual void applyModifiers(Time dt);
+	virtual void cleanModifiers();
 
 	void cleanEntities();
-	void cleanModifiers();
 
 // TODO: Replace all the input by a separate class
 	void createBall(Vector2f mousePosition);
@@ -94,9 +95,6 @@ private:
 	unsigned int ballType_;
 	Vector2f gravityVect_;
 	std::deque<BallData> ballBuffer_;
-
-	std::vector<Modifier<World>> modifiers_;
-	std::vector<Modifier<World>> modifierBuffer_;
 
 	// Temporary attributes to shift from Application to World
 	float ballMass_;

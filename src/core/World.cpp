@@ -25,8 +25,6 @@ World::World(sf::RenderWindow& window, int precision)
 	, ballType_(Ball::Normal)
 	, gravityVect_(0.f, 1000.f)
 	, ballBuffer_()
-	, modifiers_()
-	, modifierBuffer_()
 	, ballMass_(1.f)
 	, ballRadius_(10.f)
 {
@@ -82,19 +80,9 @@ Vector2u World::getWindowSize() const
 	return Vector2u(window_.getSize());
 }
 
-const eg::PhysicEngine& World::getPhysicEngine() const
-{
-	return physEng_;
-}
-
 void World::addEntityModifier(Modifier<Entity> modifier)
 {
 	entitiesModifiers_.push_back(modifier);
-}
-
-void World::addModifier(Modifier<World> modifier)
-{
-	modifierBuffer_.push_back(modifier);
 }
 
 void World::addEntity(Entity::Ptr entity)
@@ -292,32 +280,14 @@ void World::getEvent(Time dt)
 
 void World::cleanModifiers()
 {
-	entitiesModifiers_.clear();
+	Modifiable<World>::cleanModifiers();
 
-	auto itEnd = std::remove_if(modifiers_.begin(),
-	                            modifiers_.end(),
-	                            [](const Modifier<World>& modifier)
-	                            {
-		                            return modifier.isExpired();
-	                            });
-	
-	modifiers_.erase(itEnd, modifiers_.end());
+	entitiesModifiers_.clear();
 }
 
 void World::applyModifiers(Time dt)
 {
-	if(!modifierBuffer_.empty())
-	{
-		modifiers_.insert(modifiers_.begin(),
-		                  modifierBuffer_.begin(),
-		                  modifierBuffer_.end());
-		modifierBuffer_.clear();
-	}
-
-	for(auto& modifier : modifiers_)
-	{
-		modifier(*this, dt);
-	}
+	Modifiable<World>::applyModifiers(*this, dt);
 
 	for(auto& entity : entities_)
 	{
