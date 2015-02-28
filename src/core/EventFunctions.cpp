@@ -116,15 +116,12 @@ namespace evt
 		float yVelocity = normalRandFloat(MEAN_VEL, DVT_VEL);
 		float yGrav = normalRandFloat(MEAN_GRAV, DVT_GRAV);
 
-  		Entity::Ptr pObstacle (new Obstacle(&world, world.getEntityManager(),
-		                                    Vector2f(xPosition, yPosition),
-		                                    size,
-		                                    Vector2f(0.f, yVelocity),
-		                                    Vector2f(0.f, yGrav),
-		                                    COLOR));
-		
-		world.addEntity(std::move(pObstacle));
-	}
+ 		world.addEntity<Obstacle>(Vector2f(xPosition, yPosition),
+		                          size,
+		                          Vector2f(0.f, yVelocity),
+		                          Vector2f(0.f, yGrav),
+		                          COLOR);
+}
 
 	void createObstacleModifiers(World& world, Time)
 	{

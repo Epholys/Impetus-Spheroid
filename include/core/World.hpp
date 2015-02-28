@@ -50,13 +50,14 @@ public:
 
 	ecs::EntityManager& getEntityManager();
 	Vector2f& getGravityVect();
-	const eg::PhysicEngine& getPhysicEngine() const;
 	Vector2u getWindowSize() const;
 	const std::vector<eg::PhysicEngine::entityPair>& getTrackedCollisions() const;
 
 	void addEntityModifier(Modifier<Entity> modifier);
 	void addModifier(Modifier<World> modifier);
 	void addEntity(Entity::Ptr entity);
+	template<typename T, typename... Args>
+	void addEntity(Args... args);
 
 	bool isGameOver() const;
 	void setState(GameState state);
@@ -102,6 +103,8 @@ private:
 	float ballRadius_;
 	sf::Color ballColor_;
 };
+
+#include "World.ipp"
 
 
 #endif // WORLD_HPP
