@@ -19,6 +19,7 @@ public:
 protected:
 	std::vector<Modifier<T>> modifiers_;
 	// The buffer is necessary: a Modifier can add others Modifier.
+	// WARNING: do NOT make a modifier call forceEndingModifiers()!
 	std::vector<Modifier<T>> modifierBuffer_;
 };
 

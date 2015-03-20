@@ -6,7 +6,6 @@
 #include <functional>
 
 #include "utility/Time.hpp"
-#include "ecs/EntityManager.hpp"
 
 template <typename T>
 class Modifier
@@ -24,7 +23,6 @@ public:
 public:
 	Time duration_;
 	bool firstTimeExecuted_;
-	bool lastTimeExecuted_;
 
 	std::function<void(T&, Time dt)> preFunction_;
 	std::function<void(T&, Time dt)> mainFunction_;
