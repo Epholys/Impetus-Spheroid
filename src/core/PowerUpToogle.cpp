@@ -50,3 +50,7 @@ void PowerUpToogle::addDeactivateFunc(std::function<void(World&)> func)
 	deactivate_ = func;
 }
 
+bool PowerUpToogle::isActivated() const
+{
+	return isActivated_;
+}

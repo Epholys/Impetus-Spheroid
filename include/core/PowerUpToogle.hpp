@@ -18,6 +18,8 @@ public:
 	void addActivateFunc(std::function<void(World&)> func);
 	void addDeactivateFunc(std::function<void(World&)> func);
 
+	bool isActivated() const;
+
 private:
 	std::function<void(World&)> activate_;
 	std::function<void(World&)> deactivate_;

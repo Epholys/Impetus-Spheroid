@@ -14,5 +14,18 @@ namespace EntityID
 	};
 }
 
+namespace PowerUpID
+{
+	enum ID
+	{
+		None = 0,
+		PhantomBall,
+		NoGravBall,
+		CancelEvents,
+		AutoFire,
+		AddTime,
+	};
+}
+
 
 #endif // IDENTIFIERS_HPP
