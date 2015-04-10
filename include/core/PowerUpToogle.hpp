@@ -12,8 +12,8 @@ public:
 	PowerUpToogle();
 	virtual ~PowerUpToogle();
 
-	virtual void operator() (World& world);
-	virtual PowerUp::Type getType() const;
+	virtual void apply (World& world);
+	virtual PowerUpType::Type getType() const;
 
 	void addActivateFunc(std::function<void(World&)> func);
 	void addDeactivateFunc(std::function<void(World&)> func);

@@ -1,10 +1,12 @@
+#include "core/PowerUp.hpp"
 #include "core/PowerUpModifier.hpp"
 #include "core/World.hpp"
 
 //-----------------------------------------------------------------------------
 
 PowerUpModifier::PowerUpModifier()
-	: modifier_()
+	: PowerUp()
+	, modifier_()
 {
 }
 
@@ -15,12 +17,12 @@ PowerUpModifier::~PowerUpModifier()
 
 //-----------------------------------------------------------------------------
 
-PowerUp::Type PowerUpModifier::getType() const
+PowerUpType::Type PowerUpModifier::getType() const
 {
-	return PowerUp::Modifier;
+	return PowerUpType::Modifier;
 }
 
-void PowerUpModifier::operator() (World& world)
+void PowerUpModifier::apply (World& world)
 {
 	world.addModifier(modifier_);
 }

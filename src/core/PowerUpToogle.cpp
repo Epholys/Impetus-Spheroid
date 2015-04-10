@@ -4,7 +4,8 @@
 //-----------------------------------------------------------------------------
 
 PowerUpToogle::PowerUpToogle()
-	: activate_()
+	: PowerUp()
+	, activate_()
 	, deactivate_()
 	, isActivated_(false)
 
@@ -18,12 +19,12 @@ PowerUpToogle::~PowerUpToogle()
 
 //-----------------------------------------------------------------------------
 
-PowerUp::Type PowerUpToogle::getType() const
+PowerUpType::Type PowerUpToogle::getType() const
 {
-	return PowerUp::Toogle;
+ 	return PowerUpType::Toogle;
 }
 
-void PowerUpToogle::operator() (World& world)
+void PowerUpToogle::apply (World& world)
 {
 	if(!isActivated_ && activate_)
 	{

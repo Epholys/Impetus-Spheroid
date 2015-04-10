@@ -13,9 +13,7 @@
 #include "framework/StatePause.hpp"
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
-#include "core/World.hpp"
-#include "core/Ball.hpp"
-#include "core/Wall.hpp"
+#include "core/Inventory.hpp"
 
 /* The main object: the framework for everything else
  * 
@@ -37,6 +35,7 @@ private:
 
 private:
 	sf::RenderWindow window_;
+	Inventory inventory_;
 
 	StateStack stack_;
 };

@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 #include "ecs/ComponentBase.hpp"
 
@@ -19,6 +20,7 @@ std::shared_ptr<Child> dynCast(const ecs::ComponentBase::SPtr& pParent)
 	return std::dynamic_pointer_cast<Child>(pParent);
 }
 
+std::string	toString(sf::Keyboard::Key key);
 
 template<typename T>
 std::string toString(const T& var)

@@ -14,18 +14,28 @@ namespace EntityID
 	};
 }
 
+
+namespace PowerUpType
+{
+ 	enum Type
+ 	{
+ 		None = 0,
+ 		Modifier,
+ 		Toogle,
+ 	};
+}
+
 namespace PowerUpID
 {
 	enum ID
 	{
 		None = 0,
-		PhantomBall,
+		GhostBall,
 		NoGravBall,
 		CancelEvents,
 		AutoFire,
 		AddTime,
 	};
 }
-
 
 #endif // IDENTIFIERS_HPP

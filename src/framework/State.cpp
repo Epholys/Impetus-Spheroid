@@ -4,8 +4,9 @@
 
 //-----------------------------------------------------------------------------
 
-State::Context::Context(sf::RenderWindow& window)
+State::Context::Context(sf::RenderWindow& window, Inventory& inventory)
 	: window(&window)
+	, inventory(&inventory)
 {
 }
 

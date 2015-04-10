@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <deque>
+#include <map>
 #include <algorithm>
 
 #include <SFML/System/NonCopyable.hpp>
@@ -14,6 +15,7 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+// Maybe I should make some generic header, like "core.hpp"
 #include "utility/Time.hpp"
 #include "utility/utility.hpp"
 #include "utility/random.hpp"
@@ -30,6 +32,8 @@
 #include "data/DifficultyData.hpp"
 #include "data/BallData.hpp"
 
+class Inventory;
+
 class World : public sf::NonCopyable,
               public Modifiable<World>
 {
@@ -42,7 +46,7 @@ public:
 	};
 
 public:
-	World(sf::RenderWindow& window, int precision = 2);
+	World(sf::RenderWindow& window, Inventory& inventory, int precision = 2);
 	~World() {};
 
 	void handleInput(const sf::Event& event);
@@ -63,6 +67,8 @@ public:
 	bool isGameOver() const;
 	void setState(GameState state);
 
+	void switchBallType(unsigned int type);
+
 	void updateDifficulty(DifficultyWorld diff);
 
 private:
@@ -76,6 +82,7 @@ private:
 
 // TODO: Replace all the input by a separate class
 	void createBall(Vector2f mousePosition);
+	void applyBallType();
 	BallData genBallData() const;
 	void createTarget(Vector2f mousePosition);
 
@@ -85,6 +92,7 @@ private:
 	eg::PhysicEngine physEng_;
 	evt::EventGenerator evtGen_;
 	DifficultyManager difficulty_;
+	Inventory& inventory_;
 
 	GameState state_;
 
@@ -94,12 +102,11 @@ private:
 	std::vector<Modifier<Entity>> entitiesModifiers_;
 	unsigned int ballType_;
 	Vector2f gravityVect_;
-	std::deque<BallData> ballBuffer_;
+	std::deque<std::pair<BallData, unsigned int>> ballBuffer_;
 
 	// Temporary attributes to shift from Application to World
 	float ballMass_;
 	float ballRadius_;
-	sf::Color ballColor_;
 };
 
 #include "World.ipp"

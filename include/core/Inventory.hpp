@@ -5,16 +5,21 @@
 #include <map>
 #include <tuple>
 #include <memory>
+#include <algorithm>
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
+#include "utility/utility.hpp"
 #include "core/Identifiers.hpp"
 #include "core/World.hpp"
 #include "core/PowerUp.hpp"
+#include "core/PowerUpFunctions.hpp"
 
 
 class Inventory : public sf::NonCopyable,
@@ -35,8 +40,13 @@ public:
 	void increment(PowerUpID::ID id, int value);
 
 private:
+	sf::Font font_;
+
 	std::map<sf::Keyboard::Key, PowerUpID::ID> keyBindings_;
-	std::map<PowerUpID::ID, std::tuple<std::shared_ptr<PowerUp>, int>> powerUps_;
+	std::map<PowerUpID::ID, sf::Keyboard::Key> keys_;
+	std::map<PowerUpID::ID, std::shared_ptr<PowerUp>> powerUps_;
+	std::map<PowerUpID::ID, int> inventory_;
+	std::map<PowerUpID::ID, sf::Texture> textures_;
 
 	World* world_;
 };

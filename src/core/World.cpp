@@ -1,4 +1,5 @@
 #include "core/World.hpp"
+#include "core/Inventory.hpp"
 
 
 //-----------------------------------------------------------------------------
@@ -12,12 +13,13 @@ namespace
 //-----------------------------------------------------------------------------
 // *** constructor: ***
 
-World::World(sf::RenderWindow& window, int precision)
+World::World(sf::RenderWindow& window, Inventory& inventory, int precision)
 	: window_(window)
 	, ecs_()
 	, physEng_(ecs_, precision)
 	, evtGen_()
 	, difficulty_(DifficultyContext{this, &evtGen_})
+	, inventory_(inventory)
 	, state_(Waiting)
 	, speedCoeff_(1.f)
 	, entities_()
@@ -60,7 +62,7 @@ void World::generateWorld()
 
 	for(int i=0; i<10; ++i)
 	{
-		ballBuffer_.push_back(genBallData());
+	ballBuffer_.push_back(std::make_pair(genBallData(), Ball::Normal));
 	}
 }
 
@@ -100,6 +102,12 @@ void World::setState(GameState state)
 	state_ = state;
 }
 
+void World::switchBallType(unsigned int type)
+{
+	ballType_ ^= type;
+	applyBallType();
+}
+
 void World::updateDifficulty(DifficultyWorld diff)
 {
 	speedCoeff_ += diff.speedConstant;
@@ -125,10 +133,8 @@ void World::createBall(Vector2f mousePosition)
 	Entity::Ptr pBall (new Ball(this, ecs_,
 	                            CANON_POSITION,
 	                            ballRadius_, ballMass_, gravityVect_,
-	                            ballBuffer_.front(), ballType_));
-	ballBuffer_.pop_front();
-	ballBuffer_.push_back(genBallData());
-
+	                            ballBuffer_.front().first,
+	                            ballBuffer_.front().second));
 
 	auto velComp = dynCast<ecs::Velocity>
 		(ecs_.getComponent(pBall->getLabel(), ecs::Component::Velocity));
@@ -143,6 +149,32 @@ void World::createBall(Vector2f mousePosition)
 
 
 	entities_.push_back(std::move(pBall));
+
+
+	//Quick and dirty I
+	if(ballType_ & Ball::Ghost)
+		inventory_.decrement(PowerUpID::GhostBall);
+
+	ballBuffer_.pop_front();
+
+
+	ballBuffer_.push_back(std::make_pair(genBallData(), Ball::Normal));
+	
+	applyBallType();
+}
+
+
+// Quick and dirty II
+void World::applyBallType()
+{
+	ballBuffer_.front().first.color.a = 255;
+	ballBuffer_.front().second = Ball::Normal;
+
+	if(ballType_ & Ball::Ghost)
+	{
+		ballBuffer_.front().first.color.a = 155;
+		ballBuffer_.front().second = ballType_;
+	}
 }
 
 BallData World::genBallData() const
@@ -207,10 +239,10 @@ void World::handleInput(const sf::Event& event)
 		case sf::Keyboard::X:
 		{
 			ballType_ ^= Ball::Ghost;
-			if(ballType_ & Ball::Ghost)
-				ballColor_.a = 130;
-			else
-				ballColor_.a = 255;
+			// if(ballType_ & Ball::Ghost)
+			// 	ballColor_.a = 130;
+			// else
+			// 	ballColor_.a = 255;
 			break;
 		}
 
@@ -356,10 +388,11 @@ void World::drawFutureBalls() const
 	for (const auto& data : ballBuffer_)
 	{
 		sf::CircleShape circ (ballRadius_);
-		circ.setFillColor(data.color);
+		circ.setFillColor(data.first.color);
 		circ.setPosition(firstBallPos);
 		firstBallPos.y -= 60.f;
 		window_.draw(circ);
 	}
 }
+
 

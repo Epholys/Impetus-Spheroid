@@ -264,7 +264,6 @@ void DifficultyManager::updateObjective()
 		{
 			int ballMaxPoints = (*it).first;
 			excess = std::max(0, excess - (ballMaxPoints / 10) * ballCount_[ballMaxPoints]);
-			ballCount_.erase(it);
 		}
 	}
 

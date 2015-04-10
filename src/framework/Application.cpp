@@ -10,7 +10,8 @@ Application::Application()
 	          "Impetus Spheroid",
 	          sf::Style::Titlebar | sf::Style::Close,
 	          sf::ContextSettings(0, 0, 4))
-	, stack_(State::Context(window_))
+	, inventory_(true)
+	, stack_(State::Context(window_, inventory_))
 {
 	window_.setFramerateLimit(0);
 	window_.setVerticalSyncEnabled(false);

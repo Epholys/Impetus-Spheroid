@@ -1,18 +1,20 @@
 #ifndef POWER_UP_MODIFIER_HPP
 #define POWER_UP_MODIFIER_HPP
 
+
 #include "core/PowerUp.hpp"
+#include "core/Modifier.hpp"
 
 class World;
 
-class PowerUpModifier
+class PowerUpModifier : public PowerUp
 {
 public:
 	PowerUpModifier();
 	virtual ~PowerUpModifier();
 
-	virtual void operator() (World& world);
-	virtual PowerUp::Type getType() const;
+	virtual void apply (World& world);
+	virtual PowerUpType::Type getType() const;
 
 	void addModifier(Modifier<World> modifier);
 
