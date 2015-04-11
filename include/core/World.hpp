@@ -68,6 +68,7 @@ public:
 	void setState(GameState state);
 
 	void switchBallType(unsigned int type);
+	void cancelEvents(bool comeFromInventory);
 
 	void updateDifficulty(DifficultyWorld diff);
 

@@ -75,12 +75,12 @@ namespace evt
 		Vector2f zoneSize (windowSize.x - LEFT_MARGIN, windowSize.y);
 
 		Modifier<Entity> stopTimeMod;
-		stopTimeMod.preFunction_ = std::bind(stopTimeBall,
-		                                     zoneUpperLeftCorner,
-		                                     zoneSize,
-		                                     pause,
-		                                     std::placeholders::_1,
-		                                     std::placeholders::_2);
+		stopTimeMod.postFunction_ = std::bind(stopTimeBall,
+		                                      zoneUpperLeftCorner,
+		                                      zoneSize,
+		                                      pause,
+		                                      std::placeholders::_1,
+		                                      std::placeholders::_2);
 		stopTimeMod.duration_ = Time();
 
 		world.addEntityModifier(stopTimeMod);
@@ -90,9 +90,9 @@ namespace evt
 		[](World& world, Time)
 	{
 		Modifier<Entity> resumeTimeMod;
-		resumeTimeMod.preFunction_ = std::bind(resumeTimeBall,
-		                                       std::placeholders::_1,
-		                                       std::placeholders::_2);
+		resumeTimeMod.postFunction_ = std::bind(resumeTimeBall,
+		                                        std::placeholders::_1,
+		                                        std::placeholders::_2);
 		resumeTimeMod.duration_ = Time();
 
 		world.addEntityModifier(resumeTimeMod);
@@ -242,7 +242,6 @@ namespace evt
 		createObstacleWorldEvt.worldModifiers.push_back(generateObstaclesMod);
 
 		Event addWindWorldEvt;
-		addWindWorldEvt.chance = 5;
 		addWindWorldEvt.diff = Event::Easy;
 		addWindWorldEvt.worldModifiers.push_back(addWindWorldMod);
 
@@ -257,7 +256,7 @@ namespace evt
 		
 		// Create and return all the Events
 		std::vector<Event> events
-			{stopTimeEvt, chgGravUpWorldEvt, createObstacleWorldEvt,
+			{chgGravUpWorldEvt, stopTimeEvt, createObstacleWorldEvt,
 			addWindWorldEvt, gravAndTimeEvt};
 		return events;
 	}

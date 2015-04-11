@@ -30,11 +30,15 @@ void Inventory::initKeyBinding(bool isAzerty)
 	if(isAzerty)
 	{
 		keyBindings_[sf::Keyboard::A] = GhostBall;
+		keyBindings_[sf::Keyboard::Z] = NoGravBall;
 	}
 	else
 	{
 		keyBindings_[sf::Keyboard::Q] = GhostBall;
+		keyBindings_[sf::Keyboard::W] = NoGravBall;
 	}
+
+	keyBindings_[sf::Keyboard::E] = CancelEvents;
 
 	for(auto it = keyBindings_.begin(); it != keyBindings_.end(); ++it) 
 	{
@@ -118,36 +122,40 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		PowerUpID::ID id = it->first;
 
-		sf::Sprite sprite;
-		sprite.setTexture(it->second);
-		sprite.setPosition(xCoord, yCoord);
-		target.draw(sprite);
+		if(inventory_.at(id)>0) 
+		{
+			sf::Text num;
+			num.setFont(font_);
+			num.setString(toString(inventory_.at(id)));
+			num.setPosition(xCoord, yCoord + POWERUP_ICON_SIZE.y / 1.5);
+			num.setCharacterSize(20);
 
-		sf::Text num;
-		num.setFont(font_);
-		num.setString(toString(inventory_.at(id)));
-		num.setPosition(xCoord, yCoord + POWERUP_ICON_SIZE.y / 1.5);
-		num.setCharacterSize(20);
-		target.draw(num);
+			sf::Sprite sprite;
+			sprite.setTexture(it->second);
+			sprite.setPosition(xCoord, yCoord);
 
-		sf::Text key;
-		key.setFont(font_);
-		key.setString(toString(keys_.at(id)));
-		key.setPosition(xCoord, yCoord - POWERUP_ICON_SIZE.y);
-		key.setCharacterSize(20);
-		target.draw(key);
+			sf::Text key;
+			key.setFont(font_);
+			key.setString(toString(keys_.at(id)));
+			key.setPosition(xCoord, yCoord - POWERUP_ICON_SIZE.y);
+			key.setCharacterSize(20);
 
-		++nTextureDrawn;
+			target.draw(key);
+			target.draw(sprite);
+			target.draw(num);
+
+			++nTextureDrawn;
 		
-		int nextPositionInLine = nTextureDrawn % nPowerUp;
-		if(nextPositionInLine != 0)
-		{
-			xCoord += POWERUP_ICON_SIZE.x + SPACE_BEETWEEN_ICONS;
-		}
-		else
-		{
-			xCoord = targetSize.x / 2 - (POWERUP_ICON_SIZE.x + SPACE_BEETWEEN_ICONS) * (POWERUP_PER_LINE) / 2;
-			yCoord += POWERUP_ICON_SIZE.y + SPACE_BEETWEEN_ICONS;
+			int nextPositionInLine = nTextureDrawn % nPowerUp;
+			if(nextPositionInLine != 0)
+			{
+				xCoord += POWERUP_ICON_SIZE.x + SPACE_BEETWEEN_ICONS;
+			}
+			else
+			{
+				xCoord = targetSize.x / 2 - (POWERUP_ICON_SIZE.x + SPACE_BEETWEEN_ICONS) * (POWERUP_PER_LINE) / 2;
+				yCoord += POWERUP_ICON_SIZE.y + SPACE_BEETWEEN_ICONS;
+			}
 		}
 	}
 }
@@ -174,8 +182,12 @@ bool Inventory::decrement(PowerUpID::ID id)
 	   count == 0 &&
 	   world_)
 	{
-		// Launch the deactivate_() of powerUpToogle
-		powerUp->apply(*world_);
+		// Launch the deactivate_() of powerUpToogle, if it is active
+		auto powerUpToogle = std::dynamic_pointer_cast<PowerUpToogle>(powerUp);
+		if(powerUpToogle && powerUpToogle->isActivated())
+		{
+			powerUp->apply(*world_);
+		}
 	}
 	
 	return true;

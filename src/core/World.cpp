@@ -108,6 +108,15 @@ void World::switchBallType(unsigned int type)
 	applyBallType();
 }
 
+void World::cancelEvents(bool comeFromInventory)
+{
+	Modifiable<World>::forceEndingModifiers(*this);
+	if(comeFromInventory)
+	{
+		inventory_.decrement(PowerUpID::CancelEvents);
+	}
+}
+
 void World::updateDifficulty(DifficultyWorld diff)
 {
 	speedCoeff_ += diff.speedConstant;
@@ -154,6 +163,8 @@ void World::createBall(Vector2f mousePosition)
 	//Quick and dirty I
 	if(ballType_ & Ball::Ghost)
 		inventory_.decrement(PowerUpID::GhostBall);
+	if(ballType_ & Ball::Massless)
+		inventory_.decrement(PowerUpID::NoGravBall);
 
 	ballBuffer_.pop_front();
 
@@ -173,6 +184,10 @@ void World::applyBallType()
 	if(ballType_ & Ball::Ghost)
 	{
 		ballBuffer_.front().first.color.a = 155;
+		ballBuffer_.front().second = ballType_;
+	}
+	else if(ballType_ & Ball::Massless)
+	{
 		ballBuffer_.front().second = ballType_;
 	}
 }

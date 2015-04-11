@@ -13,6 +13,18 @@ namespace
 	{
 		w.switchBallType(Ball::Ghost);
 	};
+
+	auto switchNoGravBalls =
+		[](World& w)
+	{
+		w.switchBallType(Ball::Massless);
+	};
+
+	auto cancelEvents =
+		[](World& w)
+	{
+		w.cancelEvents(true);
+	};
 }
 
 
@@ -24,14 +36,34 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 {
 	using namespace PowerUpID;
 
+// WARNING: WE DO NOT VERIFY IF THE TEXTURE IS SUCCESSFULLY LOADED
+
 	PowerUpToogle* putGhost = new PowerUpToogle();
 	putGhost->addActivateFunc(switchGhostBalls);
 	putGhost->addDeactivateFunc(switchGhostBalls);
 	std::shared_ptr<PowerUp> pPutGhost (putGhost);
 	sf::Texture txtGhost;
-// DO NOT VERIFY IF THE TEXTURE IS SUCCESSFULLY LOADED
 	txtGhost.loadFromFile("./media/sprites/GhostBall.png");
 	powerUps[GhostBall] = pPutGhost;
 	numbers[GhostBall] = 10;
 	textures[GhostBall] = txtGhost;
+
+	PowerUpToogle* putNoGrav = new PowerUpToogle();
+	putNoGrav->addActivateFunc(switchNoGravBalls);
+	putNoGrav->addDeactivateFunc(switchNoGravBalls);
+	std::shared_ptr<PowerUp> pPutNoGrav (putNoGrav);
+	sf::Texture txtNoGrav;
+	txtGhost.loadFromFile("./media/sprites/NoGravBall.png");
+	powerUps[NoGravBall] = pPutNoGrav;
+	numbers[NoGravBall] = 10;
+	textures[NoGravBall] = txtGhost;
+
+	PowerUpToogle* putCancel = new PowerUpToogle();
+	putCancel->addActivateFunc(cancelEvents);
+	std::shared_ptr<PowerUp> pPutCancel (putCancel);
+	sf::Texture txtCancel;
+	txtCancel.loadFromFile("./media/sprites/CancelEvents.png");
+	powerUps[CancelEvents] = pPutCancel;
+	numbers[CancelEvents] = 10;
+	textures[CancelEvents] = txtCancel;
 }

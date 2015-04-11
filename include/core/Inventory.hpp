@@ -19,6 +19,7 @@
 #include "core/Identifiers.hpp"
 #include "core/World.hpp"
 #include "core/PowerUp.hpp"
+#include "core/PowerUpToogle.hpp"
 #include "core/PowerUpFunctions.hpp"
 
 

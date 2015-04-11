@@ -8,7 +8,7 @@ namespace evt
 	EventGenerator::EventGenerator()
 		: events_()
 		, timeUntilNextEvent_()
-		, timeBeetweenEvents_(10.f)
+		, timeBeetweenEvents_(3.f)
 		, chanceSum_(0)
 	{
 		events_ = generateEvents();

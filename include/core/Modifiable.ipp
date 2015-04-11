@@ -39,8 +39,9 @@ void Modifiable<T>::applyModifiers(T& t, Time dt)
 template<typename T>
 void Modifiable<T>::forceEndingModifiers(T& t, Time dt)
 {
-	for(auto modifier : modifiers_)
+	for(auto& modifier : modifiers_)
 	{
 		modifier.forceEnding(t, dt);
 	}
+	modifiers_.clear();
 }

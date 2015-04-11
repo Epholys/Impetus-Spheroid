@@ -29,7 +29,12 @@ void PowerUpToogle::apply (World& world)
 	if(!isActivated_ && activate_)
 	{
 		activate_(world);
-		isActivated_ = true;
+		
+		// If there isn't any deactivate_, act quite like a PowerUpModifier
+		if(deactivate_)
+		{
+			isActivated_ = true;
+		}
 	}
 	else if(isActivated_ && deactivate_)
 	{
