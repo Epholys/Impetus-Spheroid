@@ -37,6 +37,8 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	void handleInput(const sf::Event& event);
 
+	void addTime(Time adding);
+	
 	void reset();
 	void mask();
 	

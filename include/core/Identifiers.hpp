@@ -35,6 +35,7 @@ namespace PowerUpID
 		CancelEvents,
 		AutoFire,
 		AddTime,
+		AddTarget,
 	};
 }
 

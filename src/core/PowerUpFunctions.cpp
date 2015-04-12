@@ -31,6 +31,33 @@ namespace
 	{
 		w.switchAutoFire();
 	};
+	
+	auto addTime = 
+		[](World& w, Time)
+	{
+		Time TIME_TO_ADD = seconds(5);
+
+		w.addTime(TIME_TO_ADD);
+	};
+
+	auto addTarget =
+		[](World& w, Time)
+	{
+		Time DURATION_OF_TARGET = seconds(20);
+		
+		auto windowSize = w.getWindowSize();
+		auto label = w.createTarget(Vector2f(windowSize.x * 0.75f, windowSize.y * 0.5f));
+		
+		Modifier<World> removeTarget;
+		removeTarget.preDelay_ = DURATION_OF_TARGET;
+		removeTarget.postFunction_ =
+			[label](World& w, Time)
+			{
+				w.removeEntity(label);
+			};
+
+		w.addModifier(removeTarget);
+	};
 }
 
 
@@ -83,4 +110,27 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	numbers[AutoFire] = 100;
 	textures[AutoFire] = txtAutoFire;
 	
+	Modifier<World> modTime;
+	modTime.postFunction_ = addTime;
+	modTime.duration_ = Time();
+	PowerUpModifier* pumTime = new PowerUpModifier();
+	pumTime->addModifier(modTime);
+	std::shared_ptr<PowerUp> pPumTime (pumTime);
+	sf::Texture txtTime;
+	txtTime.loadFromFile("./media/sprites/AddTime.png");
+	powerUps[AddTime] = pPumTime;
+	numbers[AddTime] = 3;
+	textures[AddTime] = txtTime;
+
+	Modifier<World> modTarget;
+	modTarget.postFunction_ = addTarget;
+	modTarget.duration_ = Time();
+	PowerUpModifier* pumTarget = new PowerUpModifier();
+	pumTarget->addModifier(modTarget);
+	std::shared_ptr<PowerUp> pPumTarget (pumTarget);
+	sf::Texture txtTarget;
+	txtTarget.loadFromFile("./media/sprites/AddTarget.png");
+	powerUps[AddTarget] = pPumTarget;
+	numbers[AddTarget] = 3;
+	textures[AddTarget] = txtTarget;
 }

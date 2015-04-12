@@ -41,6 +41,8 @@ void Inventory::initKeyBinding(bool isAzerty)
 	}
 
 	keyBindings_[sf::Keyboard::E] = CancelEvents;
+	keyBindings_[sf::Keyboard::S] = AddTime;
+	keyBindings_[sf::Keyboard::D] = AddTarget;
 
 	for(auto it = keyBindings_.begin(); it != keyBindings_.end(); ++it) 
 	{
@@ -101,8 +103,8 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 	
 	const Vector2u POWERUP_ICON_SIZE (20, 20);
-	const int SPACE_BEETWEEN_ICONS = 10;
-	const int POWERUP_PER_LINE = 5;
+	const Vector2u SPACE_BEETWEEN_ICONS (10, 30);
+	const int POWERUP_PER_LINE = 10;
 	auto targetSize = target.getSize();
 
 	int nPowerUp = std::count_if(inventory_.begin(),
@@ -116,8 +118,8 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	if(nPowerUp == 0)
 		return;
 
-	int xCoord = targetSize.x / 2 - (POWERUP_ICON_SIZE.x + SPACE_BEETWEEN_ICONS) * (POWERUP_PER_LINE) / 2;
-	int yCoord = targetSize.y - (POWERUP_ICON_SIZE.y + SPACE_BEETWEEN_ICONS) * ((nPowerUp / POWERUP_PER_LINE) + 2);
+	int xCoord = targetSize.x / 2 - (POWERUP_ICON_SIZE.x + SPACE_BEETWEEN_ICONS.x) * (POWERUP_PER_LINE) / 2;
+	int yCoord = targetSize.y * 0.90f - (POWERUP_ICON_SIZE.y + SPACE_BEETWEEN_ICONS.y) * ((nPowerUp-1) / POWERUP_PER_LINE);
 
 	int nTextureDrawn=0;
 	for(auto it = textures_.begin(); it != textures_.end(); ++it)
@@ -148,15 +150,15 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 			++nTextureDrawn;
 		
-			int nextPositionInLine = nTextureDrawn % nPowerUp;
+			int nextPositionInLine = nTextureDrawn % POWERUP_PER_LINE;
 			if(nextPositionInLine != 0)
 			{
-				xCoord += POWERUP_ICON_SIZE.x + SPACE_BEETWEEN_ICONS;
+				xCoord += POWERUP_ICON_SIZE.x + SPACE_BEETWEEN_ICONS.x;
 			}
 			else
 			{
-				xCoord = targetSize.x / 2 - (POWERUP_ICON_SIZE.x + SPACE_BEETWEEN_ICONS) * (POWERUP_PER_LINE) / 2;
-				yCoord += POWERUP_ICON_SIZE.y + SPACE_BEETWEEN_ICONS;
+				xCoord = targetSize.x / 2 - (POWERUP_ICON_SIZE.x + SPACE_BEETWEEN_ICONS.x) * (POWERUP_PER_LINE) / 2;
+				yCoord += POWERUP_ICON_SIZE.y + SPACE_BEETWEEN_ICONS.y;
 			}
 		}
 	}

@@ -96,6 +96,20 @@ void World::addEntity(Entity::Ptr entity)
 	entities_.push_back(std::move(entity));
 }
 
+void World::removeEntity(ecs::Entity label)
+{
+	ecs_.removeEntity(label);
+	
+	entities_.erase(
+		std::remove_if(entities_.begin(),
+		               entities_.end(),
+		               [label](const Entity::Ptr& pe)
+		               {
+			               return pe->getLabel() == label;
+		               }),
+		entities_.end());
+}
+
 bool World::isGameOver() const
 {
 	return state_ == GameOver;
@@ -126,6 +140,11 @@ void World::switchAutoFire()
 	autoFireOn_ = !autoFireOn_;
 }
 
+void World::addTime(Time adding)
+{
+	difficulty_.addTime(adding);
+}
+
 void World::updateDifficulty(DifficultyWorld diff)
 {
 	speedCoeff_ += diff.speedConstant;
@@ -143,7 +162,7 @@ World::getTrackedCollisions() const
 
 //-----------------------------------------------------------------------------
 // *** gameloop functions: ***
-void World::createBall(Vector2f mousePosition)
+ecs::Entity World::createBall(Vector2f mousePosition)
 {
 	const Vector2f CANON_POSITION {40.f, 580.f};
 	const float IMPULSE_COEFF = 3.f;
@@ -165,6 +184,7 @@ void World::createBall(Vector2f mousePosition)
 
 	velComp->velocity_ += IMPULSE_COEFF * impulse * direction / ballMass_;
 
+	ecs::Entity label = pBall->getLabel();
 
 	entities_.push_back(std::move(pBall));
 
@@ -181,6 +201,8 @@ void World::createBall(Vector2f mousePosition)
 	ballBuffer_.push_back(std::make_pair(genBallData(), Ball::Normal));
 	
 	applyBallType();
+
+	return label;
 }
 
 
@@ -215,7 +237,7 @@ BallData World::genBallData() const
 	return ballDatas[0];
 }
 
-void World::createTarget(Vector2f position)
+ecs::Entity World::createTarget(Vector2f position)
 {
 	const Vector2f TARGET_DIMENSION {15.f, 75.f};
 	const sf::Color TARGET_COLOR {sf::Color::Yellow};
@@ -225,8 +247,11 @@ void World::createTarget(Vector2f position)
 	                                position,
 	                                TARGET_DIMENSION,
 	                                TARGET_COLOR));
+	ecs::Entity label = pTarget->getLabel();
+
 	entities_.push_back(std::move(pTarget));
 
+	return label;
 }
 
 void World::handleInput(const sf::Event& event)
@@ -360,6 +385,7 @@ void World::applyModifiers(Time dt)
 void World::cleanEntities()
 {
 	auto it = entities_.begin();
+
 	while(it != entities_.end())
 	{
 		auto posPtr = ecs_.getComponent((*it)->getLabel(),

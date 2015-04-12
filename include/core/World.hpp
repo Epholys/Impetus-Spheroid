@@ -62,16 +62,21 @@ public:
 	void addEntity(Entity::Ptr entity);
 	template<typename T, typename... Args>
 	void addEntity(Args... args);
+	void removeEntity(ecs::Entity label);
 	void addEntityModifier(Modifier<Entity> modifier);
-
+	
 	bool isGameOver() const;
 	void setState(GameState state);
 
 	void switchBallType(unsigned int type);
 	void cancelEvents(bool comeFromInventory);
 	void switchAutoFire();
+	void addTime(Time adding);
 
 	void updateDifficulty(DifficultyWorld diff);
+
+	ecs::Entity createBall(Vector2f mousePosition);
+	ecs::Entity createTarget(Vector2f mousePosition);
 
 private:
 	void generateWorld();
@@ -84,10 +89,8 @@ private:
 	void cleanEntities();
 
 // TODO: Replace all the input by a separate class
-	void createBall(Vector2f mousePosition);
 	void applyBallType();
 	BallData genBallData() const;
-	void createTarget(Vector2f mousePosition);
 
 private:
 	sf::RenderWindow& window_;

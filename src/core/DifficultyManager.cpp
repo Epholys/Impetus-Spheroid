@@ -177,6 +177,13 @@ void DifficultyManager::mask()
 	maskGui_ = !maskGui_;
 }
 
+
+void DifficultyManager::addTime(Time adding)
+{
+	phaseTime_ -= adding;
+}
+
+
 //-----------------------------------------------------------------------------
 
 void DifficultyManager::updateDifficulty()
@@ -203,10 +210,11 @@ void DifficultyManager::updateScore()
 		auto targetComp =
 			dynCast<ecs::Target>(ecs.getComponent(pair.second,
 			                                      ecs::Component::Target));
-		assert(projectileComp);
-		assert(targetComp);
-		points += projectileComp->getPoints() * targetComp->getPointMultiplier();
-		++ballCount_[projectileComp->getPoints()];
+		if(projectileComp && targetComp) 
+		{
+			points += projectileComp->getPoints() * targetComp->getPointMultiplier();
+			++ballCount_[projectileComp->getPoints()];
+		}
 	}
 
 	score_ += points;
