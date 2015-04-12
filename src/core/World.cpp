@@ -13,6 +13,8 @@ namespace
 //-----------------------------------------------------------------------------
 // *** constructor: ***
 
+const Time World::TIME_BEETWEEN_FIRE = milliseconds(200);
+
 World::World(sf::RenderWindow& window, Inventory& inventory, int precision)
 	: window_(window)
 	, ecs_()
@@ -21,6 +23,8 @@ World::World(sf::RenderWindow& window, Inventory& inventory, int precision)
 	, difficulty_(DifficultyContext{this, &evtGen_})
 	, inventory_(inventory)
 	, state_(Waiting)
+	, autoFireOn_(false)
+	, untilNextFire_(Time::Zero)
 	, speedCoeff_(1.f)
 	, entities_()
 	, entitiesModifiers_()
@@ -115,6 +119,11 @@ void World::cancelEvents(bool comeFromInventory)
 	{
 		inventory_.decrement(PowerUpID::CancelEvents);
 	}
+}
+
+void World::switchAutoFire()
+{
+	autoFireOn_ = !autoFireOn_;
 }
 
 void World::updateDifficulty(DifficultyWorld diff)
@@ -247,20 +256,6 @@ void World::handleInput(const sf::Event& event)
 			difficulty_.mask();
 			break;
 
-		case sf::Keyboard::W:
-			ballType_ ^= Ball::Massless;
-			break;
-
-		case sf::Keyboard::X:
-		{
-			ballType_ ^= Ball::Ghost;
-			// if(ballType_ & Ball::Ghost)
-			// 	ballColor_.a = 130;
-			// else
-			// 	ballColor_.a = 255;
-			break;
-		}
-
 		default:
 			break;
 		}
@@ -269,6 +264,7 @@ void World::handleInput(const sf::Event& event)
 	         event.mouseButton.button == sf::Mouse::Left)
 	{
 		createBall(Vector2f(sf::Mouse::getPosition(window_)));
+		untilNextFire_ = TIME_BEETWEEN_FIRE;
 	}
 
 	difficulty_.handleInput(event);
@@ -287,9 +283,13 @@ void World::update(Time dt)
 
 	getEvent(dt);
 
-
 	// All the objects that requires the faster time below:
 	dt *= speedCoeff_;
+
+	if(autoFireOn_)
+	{
+		applyAutoFire(dt);
+	}
 
 	ecs_.update(dt);
 	applyModifiers(dt);
@@ -322,6 +322,18 @@ void World::getEvent(Time dt)
 		modifiers_.insert(modifiers_.begin(),
 		                  evt.worldModifiers.begin(),
 		                  evt.worldModifiers.end());
+	}
+}
+
+void World::applyAutoFire(Time dt)
+{
+	untilNextFire_ -= dt;
+
+	if(untilNextFire_ <= Time() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		createBall(Vector2f(sf::Mouse::getPosition(window_)));
+		untilNextFire_ = TIME_BEETWEEN_FIRE;
+		inventory_.decrement(PowerUpID::AutoFire);
 	}
 }
 

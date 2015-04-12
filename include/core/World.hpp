@@ -69,6 +69,7 @@ public:
 
 	void switchBallType(unsigned int type);
 	void cancelEvents(bool comeFromInventory);
+	void switchAutoFire();
 
 	void updateDifficulty(DifficultyWorld diff);
 
@@ -76,6 +77,7 @@ private:
 	void generateWorld();
 
 	void getEvent(Time dt);
+	void applyAutoFire(Time dt);
 	virtual void applyModifiers(Time dt);
 	virtual void cleanModifiers();
 
@@ -96,6 +98,10 @@ private:
 	Inventory& inventory_;
 
 	GameState state_;
+
+	bool autoFireOn_;
+	Time untilNextFire_;
+	static const Time TIME_BEETWEEN_FIRE;
 
 	float speedCoeff_;
 
