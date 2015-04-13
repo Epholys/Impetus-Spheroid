@@ -104,7 +104,7 @@ namespace ecs
 
 		/* (const) Getter for the Component of category cat of ent.
 		 *
-		 * Doesn't return it if the Component is paused.
+		 * Returns the Component if it is paused only if force == true.
 		 *
 		 * If ent doesn't exists or ent doesn't have a Component of category
 		 * cat, returns a nullptr.
@@ -115,7 +115,7 @@ namespace ecs
 
 		/* (const) Getter for the std::map of Components of ent.
 		 *
-		 * Doesn't return a Component if it is paused.
+		 * Returns a Component if it is paused only if force == true
 		 *
 		 * If ent doesn't exists or doesn't have any Components, returns an
 		 * empty std::map.
@@ -126,9 +126,9 @@ namespace ecs
 
 		/* (const) Getter for all Components of category cat.
 		 * 
-		 * Doesn't return a Component if it is paused.
+		 * Returns a Component if it is paused only if force == true.
 		 *
-		 * If there isn't any Components of this category, returns and empty
+		 * If there isn't any Components of this category, returns an empty
 		 * std::map.
 		 */
 		std::vector<ComponentBase::SPtr> getAllComponents(Component::Category cat, bool force=false);

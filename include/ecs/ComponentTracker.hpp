@@ -30,6 +30,7 @@ namespace ecs
 		bool reset();
 
 		float getPointMultiplier() const;
+		void setPointMultiplier(float pMul);
 
 		virtual Component::Category getCategory() const;
 

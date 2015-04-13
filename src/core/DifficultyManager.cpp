@@ -201,7 +201,7 @@ void DifficultyManager::updateScore()
 {
 	auto collisions = context_.world->getTrackedCollisions();
 	auto ecs = context_.world->getEntityManager();
-	float points = 0;
+	int points = 0;
 	for(const auto& pair : collisions)
 	{
 		auto projectileComp =

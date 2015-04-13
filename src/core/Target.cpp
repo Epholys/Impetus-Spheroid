@@ -68,6 +68,38 @@ void Target::draw(sf::RenderTarget& target,
 
 
 //-----------------------------------------------------------------------------
+
+void Target::updateColor()
+{
+
+	const float EPSILON = 0.01f;
+	const float MULTIPLIER = 1.5f;	
+	std::vector<sf::Color> colors
+			{sf::Color::Yellow,
+			sf::Color::Green,
+			sf::Color(0,255,255),
+			sf::Color::Blue,
+			sf::Color(125,0,255),
+			sf::Color::Red,
+			sf::Color(255,175,0)};
+	auto targetComp = dynCast<ecs::Target>
+		(ecs_.getComponent(label_, ecs::Component::Target));
+	if(targetComp)
+	{
+		auto mult = targetComp->getPointMultiplier();
+		//Arbitrary big value
+		for(int i=0; i<50; ++i)
+		{
+			if(std::abs(mult - std::pow(MULTIPLIER, i)) < EPSILON)
+			{
+				rect_.setFillColor(colors[((i)%(colors.size()))]);
+				break;
+			}
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
 // *** special functions: ***
 
 void Target::updateObjective()

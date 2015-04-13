@@ -36,6 +36,7 @@ namespace PowerUpID
 		AutoFire,
 		AddTime,
 		AddTarget,
+		PointMultiplier,
 	};
 }
 

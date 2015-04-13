@@ -34,6 +34,11 @@ namespace ecs
 		return pointMultiplier_;
 	}
 
+	void Target::setPointMultiplier(float pMul)
+	{
+		pointMultiplier_ = pMul;
+	}
+
 //-----------------------------------------------------------------------------
 	// *** Projectile: ***
 
