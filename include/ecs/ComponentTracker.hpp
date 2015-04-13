@@ -44,7 +44,7 @@ namespace ecs
 	class Projectile : public ComponentBase
 	{
 	public:
-		Projectile(int points);
+		Projectile(int points, int nTouching);
 		
 		void touchTarget();
 		bool hasTouchedTarget() const;
@@ -55,6 +55,7 @@ namespace ecs
 
 	private:
 		bool hasTouchedTarget_;
+		int nTouching_;
 		int points_;
 	};
 

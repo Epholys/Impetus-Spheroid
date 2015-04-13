@@ -12,7 +12,8 @@ namespace ecs
 	                  float radius,
 	                  float mass,
 	                  Vector2f gravVect,
-	                  int points)
+	                  int points,
+	                  int nTouching)
 	{
 		Entity ball = ecs.addEntity();
 
@@ -26,7 +27,7 @@ namespace ecs
 		ecs.addComponent<Mass>(ball, mass, gravVect);
 		ecs.addComponent<Solid>(ball, 1.f / mass, 2.f);
 		ecs.addComponent<CollidableSphere>(ball, radius);
-		ecs.addComponent<Projectile>(ball, points);
+		ecs.addComponent<Projectile>(ball, points, nTouching);
 
 		return ball;
 	}

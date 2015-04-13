@@ -45,6 +45,7 @@ void Inventory::initKeyBinding(bool isAzerty)
 	keyBindings_[sf::Keyboard::E] = CancelEvents;
 	keyBindings_[sf::Keyboard::S] = AddTime;
 	keyBindings_[sf::Keyboard::D] = AddTarget;
+	keyBindings_[sf::Keyboard::X] = BallTouchDouble;
 
 	for(auto it = keyBindings_.begin(); it != keyBindings_.end(); ++it) 
 	{

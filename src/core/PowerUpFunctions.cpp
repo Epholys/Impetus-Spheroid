@@ -121,6 +121,12 @@ namespace
 		mod.duration_ = Time();
 		w.addEntityModifier(mod);
 	};
+
+	auto changeNTouching =
+		[](World& w, int nTouching)
+	{
+		w.setNTouching(nTouching);
+	};
 }
 
 
@@ -210,4 +216,18 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	powerUps[PointMultiplier] = pPumMult;
 	numbers[PointMultiplier] = 3;
 	textures[PointMultiplier] = txtMult;
+
+	PowerUpToogle* putTouching = new PowerUpToogle();
+	putTouching->addActivateFunc(std::bind(changeNTouching,
+	                                       std::placeholders::_1,
+	                                       2));
+	putTouching->addDeactivateFunc(std::bind(changeNTouching,
+	                                         std::placeholders::_1,
+	                                         1));
+	std::shared_ptr<PowerUp> pPutTouching (putTouching);
+	sf::Texture txtTouching;
+	txtTouching.loadFromFile("./media/sprites/BallTouchDouble.png");
+	powerUps[BallTouchDouble] = pPutTouching;
+	numbers[BallTouchDouble] = 100;
+	textures[BallTouchDouble] = txtTouching;
 }

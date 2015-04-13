@@ -19,7 +19,8 @@ namespace ecs
 	                  float radius,
 	                  float mass,
 	                  Vector2f gravVect,
-	                  int points = 1);
+	                  int points = 1,
+	                  int nTouching = 1);
 	
 	Entity createWall(EntityManager& ecs,
 	                  Vector2f position,

@@ -12,11 +12,12 @@ Ball::Ball(World* world,
            float mass, 
            Vector2f gravVect,
            BallData data,
+           int nTouching,
            unsigned int type)
 	: Entity(world, entm, EntityID::Ball)
 	, ball_(radius)
 {
-	label_ = ecs::createBall(entm, position, radius, mass, gravVect, data.point);
+	label_ = ecs::createBall(entm, position, radius, mass, gravVect, data.point, nTouching);
 
 	if(type & Massless)
 	{

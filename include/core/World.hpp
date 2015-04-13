@@ -72,6 +72,7 @@ public:
 	void cancelEvents(bool comeFromInventory);
 	void switchAutoFire();
 	void addTime(Time adding);
+	void setNTouching(int n);
 
 	void updateDifficulty(DifficultyWorld diff);
 
@@ -111,6 +112,7 @@ private:
 	std::vector<Entity::Ptr> entities_;
 	std::vector<Modifier<Entity>> entitiesModifiers_;
 	unsigned int ballType_;
+	int nTouchingBall_;
 	Vector2f gravityVect_;
 	std::deque<std::pair<BallData, unsigned int>> ballBuffer_;
 

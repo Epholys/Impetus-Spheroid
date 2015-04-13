@@ -29,6 +29,7 @@ public:
 	     float mass,
 	     Vector2f gravVect,
 	     BallData data,
+	     int nTouching = 1,
 	     unsigned int type = 0);
 	virtual ~Ball();
 

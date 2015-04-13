@@ -29,6 +29,7 @@ World::World(sf::RenderWindow& window, Inventory& inventory, int precision)
 	, entities_()
 	, entitiesModifiers_()
 	, ballType_(Ball::Normal)
+	, nTouchingBall_(1)
 	, gravityVect_(0.f, 1000.f)
 	, ballBuffer_()
 	, ballMass_(1.f)
@@ -145,6 +146,11 @@ void World::addTime(Time adding)
 	difficulty_.addTime(adding);
 }
 
+void World::setNTouching(int n)
+{
+	nTouchingBall_ = n;
+}
+
 void World::updateDifficulty(DifficultyWorld diff)
 {
 	speedCoeff_ += diff.speedConstant;
@@ -171,6 +177,7 @@ ecs::Entity World::createBall(Vector2f mousePosition)
 	                            CANON_POSITION,
 	                            ballRadius_, ballMass_, gravityVect_,
 	                            ballBuffer_.front().first,
+	                            nTouchingBall_,
 	                            ballBuffer_.front().second));
 
 	auto velComp = dynCast<ecs::Velocity>
@@ -194,6 +201,8 @@ ecs::Entity World::createBall(Vector2f mousePosition)
 		inventory_.decrement(PowerUpID::GhostBall);
 	if(ballType_ & Ball::Massless)
 		inventory_.decrement(PowerUpID::NoGravBall);
+	if(nTouchingBall_ != 1)
+		inventory_.decrement(PowerUpID::BallTouchDouble);
 
 	ballBuffer_.pop_front();
 

@@ -42,15 +42,20 @@ namespace ecs
 //-----------------------------------------------------------------------------
 	// *** Projectile: ***
 
-	Projectile::Projectile(int points)
+	Projectile::Projectile(int points, int nTouching)
 		: hasTouchedTarget_(false)
+		, nTouching_(nTouching)
 		, points_(points)
 	{
 	}
 
 	void Projectile::touchTarget()
 	{
-		hasTouchedTarget_ = true;
+		--nTouching_;
+		if(nTouching_ < 1)
+		{
+			hasTouchedTarget_ = true;
+		}
 	}
 
 	bool Projectile::hasTouchedTarget() const
