@@ -77,7 +77,7 @@ namespace
 
 
 	auto multiplyPoints =
-		[](World& w, Time)
+		[](World& w, Time, bool undo)
 	{
 		const float MULTIPLIER = 1.5f;
 
@@ -88,30 +88,15 @@ namespace
 			auto targetComponent = dynCast<ecs::Target>(*it);
 			if(targetComponent)
 			{
-				float mult = targetComponent->getPointMultiplier() * MULTIPLIER;
-				targetComponent->setPointMultiplier(mult);
-			}
-		}
-
-		Modifier<Entity> mod;
-		mod.postFunction_ = updateColor;
-		mod.duration_ = Time();
-		w.addEntityModifier(mod);
-	};
-
-	auto deMultiplyPoints =
-		[](World& w, Time)
-	{
-		const float MULTIPLIER = 1.5f;
-
-		auto& em = w.getEntityManager();
-		auto targetComps = em.getAllComponents(ecs::Component::Target);
-		for (auto it=targetComps.begin(); it!=targetComps.end(); ++it)
-		{
-			auto targetComponent = dynCast<ecs::Target>(*it);
-			if(targetComponent)
-			{
-				float mult = targetComponent->getPointMultiplier() / MULTIPLIER;
+				float mult = 0.f;
+				if(!undo)
+				{
+				    mult = targetComponent->getPointMultiplier() * MULTIPLIER;
+				}
+				else
+				{
+					mult = targetComponent->getPointMultiplier() / MULTIPLIER;
+				}
 				targetComponent->setPointMultiplier(mult);
 			}
 		}
@@ -206,8 +191,8 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	const Time MULTIPLIER_TIME = seconds(10);
 	Modifier<World> modMult;
 	modMult.duration_ = MULTIPLIER_TIME;
-	modMult.preFunction_ = multiplyPoints;
-	modMult.postFunction_ = deMultiplyPoints;
+	modMult.preFunction_ = std::bind(multiplyPoints, std::placeholders::_1, std::placeholders::_2, false);
+	modMult.postFunction_ = std::bind(multiplyPoints, std::placeholders::_1, std::placeholders::_2, true);
 	PowerUpModifier* pumMult = new PowerUpModifier();
 	pumMult->addModifier(modMult);
 	std::shared_ptr<PowerUp> pPumMult (pumMult);
