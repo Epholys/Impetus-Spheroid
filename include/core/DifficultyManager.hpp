@@ -58,6 +58,7 @@ private:
 private:
 	Time phaseDuration_;
 	static const int baseObjective_ = 20;
+	static const int baseCeiling_ = 20;
 
 private:
 	Time phaseTime_;
@@ -71,6 +72,7 @@ private:
 	float score_;
 	int objective_;
 	int objectiveIncrement_;
+	int ceiling_;
 	sf::Text scoreText_;
 	std::map<int, int> ballCount_;
 	

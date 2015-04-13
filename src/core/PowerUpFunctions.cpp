@@ -79,7 +79,7 @@ namespace
 	auto multiplyPoints =
 		[](World& w, Time, bool undo)
 	{
-		const float MULTIPLIER = 1.5f;
+		const float MULTIPLIER = 1.2f;
 
 		auto& em = w.getEntityManager();
 		auto targetComps = em.getAllComponents(ecs::Component::Target);

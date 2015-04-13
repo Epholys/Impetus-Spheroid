@@ -29,6 +29,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, score_(0.f)
 	, objective_(baseObjective_)
 	, objectiveIncrement_(2)
+	, ceiling_(baseCeiling_)
 	, scoreText_()
 	, ballCount_()
 	, diffGui_(nullptr)
@@ -201,7 +202,7 @@ void DifficultyManager::updateScore()
 {
 	auto collisions = context_.world->getTrackedCollisions();
 	auto ecs = context_.world->getEntityManager();
-	int points = 0;
+	float points = 0;
 	for(const auto& pair : collisions)
 	{
 		auto projectileComp =
@@ -230,8 +231,9 @@ void DifficultyManager::updateScore()
 void DifficultyManager::updateObjective()
 {
 	const int ATTENUATION = 2;
-	const int CUTTING = 2;
-	const int MODULATION = 1;
+	// const int CUTTING = 2;
+	// const int MODULATION = 1;
+	const float CEILING_MUL = 1.5f;
 		
 	int excess = score_ - objective_;
 
@@ -242,40 +244,48 @@ void DifficultyManager::updateObjective()
 		return;
 	}
 	
-	auto datas = ballDatas;
-	// Eliminated from the excess all the CUTTING most valuable balls.
-	for(int i=0; i<CUTTING; ++i)
-	{
-		auto it  = std::max_element(datas.begin(),
-		                            datas.end(),
-		                            [](BallData data1, BallData data2)
-		                            {
-			                            return data1.point < data2.point;
-		                            });
-		assert(it!=ballDatas.end());
-		int count = ballCount_.count(it->point);
-		excess = std::max(0, excess - it->point*count);
-		ballCount_.erase(it->point);
-		datas.erase(it);
-	}
+	// auto datas = ballDatas;
+	// // Eliminated from the excess all the CUTTING most valuable balls.
+	// for(int i=0; i<CUTTING; ++i)
+	// {
+	// 	auto it  = std::max_element(datas.begin(),
+	// 	                            datas.end(),
+	// 	                            [](BallData data1, BallData data2)
+	// 	                            {
+	// 		                            return data1.point < data2.point;
+	// 	                            });
+	// 	assert(it!=ballDatas.end());
+	// 	int count = ballCount_.count(it->point);
+	// 	excess = std::max(0, excess - it->point*count);
+	// 	ballCount_.erase(it->point);
+	// 	datas.erase(it);
+	// }
 	
-	// Try to modulate remaining big points balls : 
-	for(int i=0; i<MODULATION; ++i)
+	// // Try to modulate remaining big points balls : 
+	// for(int i=0; i<MODULATION; ++i)
+	// {
+	// 	auto it  = std::max_element(ballCount_.begin(),
+	// 	                            ballCount_.end(),
+	// 	                            [](std::pair<const int,int> p1, std::pair<const int,int> p2)
+	// 	                            {
+	// 		                            return p1.first < p2.first;
+	// 	                            });
+	// 	if(it != ballCount_.end())
+	// 	{
+	// 		int ballMaxPoints = (*it).first;
+	// 		excess = std::max(0, excess - (ballMaxPoints / 10) * ballCount_[ballMaxPoints]);
+	// 	}
+	// }
+
+	int increment = objectiveIncrement_ + excess / ATTENUATION;
+	if (increment >= ceiling_)
 	{
-		auto it  = std::max_element(ballCount_.begin(),
-		                            ballCount_.end(),
-		                            [](std::pair<const int,int> p1, std::pair<const int,int> p2)
-		                            {
-			                            return p1.first < p2.first;
-		                            });
-		if(it != ballCount_.end())
-		{
-			int ballMaxPoints = (*it).first;
-			excess = std::max(0, excess - (ballMaxPoints / 10) * ballCount_[ballMaxPoints]);
-		}
+		increment = ceiling_;
+		float ceiling = ceiling_ * CEILING_MUL;
+		ceiling_ = int(ceiling);
 	}
 
-	objective_ += objectiveIncrement_ + excess / ATTENUATION;
+	objective_ += increment;
 	
 	score_ = 0.f;
 	ballCount_.clear();
