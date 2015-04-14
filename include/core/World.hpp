@@ -33,6 +33,7 @@
 #include "data/BallData.hpp"
 
 class Inventory;
+class TransGamesData;
 
 class World : public sf::NonCopyable,
               public Modifiable<World>
@@ -46,7 +47,7 @@ public:
 	};
 
 public:
-	World(sf::RenderWindow& window, Inventory& inventory, int precision = 2);
+	World(sf::RenderWindow& window, TransGamesData& datas, int precision = 2);
 	~World() {};
 
 	void handleInput(const sf::Event& event);

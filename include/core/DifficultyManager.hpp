@@ -18,11 +18,15 @@ class World;
 namespace evt {
 	class EventGenerator;
 }
+class Inventory;
+class TransGamesData;
 
 struct DifficultyContext
 {
 	World* world;
 	evt::EventGenerator* eventGenerator;
+	TransGamesData* datas;
+	Inventory* inventory;
 };
 
 
@@ -57,7 +61,6 @@ private:
 
 private:
 	Time phaseDuration_;
-	static const int baseObjective_ = 20;
 	static const int baseCeiling_ = 20;
 
 private:

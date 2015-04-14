@@ -30,6 +30,7 @@ public:
 	Inventory(bool isAzerty = false);
 	virtual ~Inventory();
 
+	void switchKeyboard(bool isAzerty);
 	void initKeyBinding(bool isAzerty);
 	void addWorld(World* world);
 	void removeWorld();
@@ -40,8 +41,15 @@ public:
 	bool decrement(PowerUpID::ID id);
 	void increment(PowerUpID::ID id, int value);
 
+	void addCoins(int n);
+	bool removeCoins(int n);
+	int getCoins() const;
+
 private:
 	sf::Font font_;
+	mutable sf::Text coinsText_;
+
+	int coins_;
 
 	std::map<sf::Keyboard::Key, PowerUpID::ID> keyBindings_;
 	std::map<PowerUpID::ID, sf::Keyboard::Key> keys_;

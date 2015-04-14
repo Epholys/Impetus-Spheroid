@@ -13,7 +13,7 @@
 #include "framework/StatePause.hpp"
 #include "ecs/EntityManager.hpp"
 #include "engine/PhysicEngine.hpp"
-#include "core/Inventory.hpp"
+#include "core/TransGamesData.hpp"
 
 /* The main object: the framework for everything else
  * 
@@ -35,7 +35,7 @@ private:
 
 private:
 	sf::RenderWindow window_;
-	Inventory inventory_;
+	TransGamesData datas_;
 
 	StateStack stack_;
 };

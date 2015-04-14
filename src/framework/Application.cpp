@@ -10,11 +10,14 @@ Application::Application()
 	          "Impetus Spheroid",
 	          sf::Style::Titlebar | sf::Style::Close,
 	          sf::ContextSettings(0, 0, 4))
-	, inventory_(true)
-	, stack_(State::Context(window_, inventory_))
+	, datas_()
+	, stack_(State::Context(window_, datas_))
 {
 	window_.setFramerateLimit(0);
 	window_.setVerticalSyncEnabled(false);
+
+	datas_.inventory.switchKeyboard(true);
+	datas_.highScore = 0;
 
 	stack_.registerState<StateGame>(StateID::Game);
 	stack_.registerState<StateOver>(StateID::GameOver);

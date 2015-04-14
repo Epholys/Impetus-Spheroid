@@ -2,6 +2,8 @@
 #define STATE_OVER_HPP
 
 
+#include <sstream>
+
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 
@@ -13,6 +15,17 @@
 class StateOver : public State
 {
 public:
+	enum Text
+	{
+		HighScore = 0,
+		Score,
+		Money,
+		GameOver,
+		Retry,
+		TextCount
+	};
+
+public:
 	StateOver(StateStack& stack, Context context);
 	virtual ~StateOver();
 
@@ -21,9 +34,13 @@ public:
 	virtual bool handleInput(const sf::Event& event);
 
 private:
+	void initStaticTexts(Context context);
+	void initVariableTexts(Context context);
+	void updateDatas(Context context);
+
+private:
 	sf::Font font_;
-	sf::Text gameOver_;
-	sf::Text retry_;
+	std::vector<sf::Text> texts_;
 };
 
 

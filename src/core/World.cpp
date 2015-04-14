@@ -1,5 +1,5 @@
 #include "core/World.hpp"
-#include "core/Inventory.hpp"
+#include "core/TransGamesData.hpp"
 
 
 //-----------------------------------------------------------------------------
@@ -15,13 +15,13 @@ namespace
 
 const Time World::TIME_BEETWEEN_FIRE = milliseconds(200);
 
-World::World(sf::RenderWindow& window, Inventory& inventory, int precision)
+World::World(sf::RenderWindow& window, TransGamesData& datas, int precision)
 	: window_(window)
 	, ecs_()
 	, physEng_(ecs_, precision)
 	, evtGen_()
-	, difficulty_(DifficultyContext{this, &evtGen_})
-	, inventory_(inventory)
+	, difficulty_(DifficultyContext{this, &evtGen_, &datas, &(datas.inventory)})
+	, inventory_(datas.inventory)
 	, state_(Waiting)
 	, autoFireOn_(false)
 	, untilNextFire_(Time::Zero)
@@ -285,10 +285,10 @@ void World::handleInput(const sf::Event& event)
 			generateWorld();
 			break;
 
-		case sf::Keyboard::M:
-			// Mask/UnMask
-			difficulty_.mask();
-			break;
+		// case sf::Keyboard::M:
+		// 	// Mask/UnMask
+		// 	difficulty_.mask();
+		// 	break;
 
 		default:
 			break;

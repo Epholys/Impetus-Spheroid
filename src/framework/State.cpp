@@ -4,9 +4,9 @@
 
 //-----------------------------------------------------------------------------
 
-State::Context::Context(sf::RenderWindow& window, Inventory& inventory)
+State::Context::Context(sf::RenderWindow& window, TransGamesData& datas)
 	: window(&window)
-	, inventory(&inventory)
+	, datas(&datas)
 {
 }
 

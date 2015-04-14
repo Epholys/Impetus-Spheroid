@@ -6,7 +6,7 @@
 
 #include <SFML/Window/Event.hpp>
 
-#include "core/Inventory.hpp"
+#include "core/TransGamesData.hpp"
 #include "utility/Time.hpp"
 
 namespace sf
@@ -35,10 +35,10 @@ class State
 public:
 	struct Context
 	{
-		Context(sf::RenderWindow& window, Inventory& inventory);
+		Context(sf::RenderWindow& window, TransGamesData& datas);
 		
 		sf::RenderWindow* window;
-		Inventory* inventory;
+		TransGamesData* datas;
 	};
 
 public:

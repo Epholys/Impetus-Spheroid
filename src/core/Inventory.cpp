@@ -4,16 +4,23 @@
 //-----------------------------------------------------------------------------
 
 Inventory::Inventory(bool isAzerty)
-	: keyBindings_(),
-	  keys_(),
-	  powerUps_(),
-	  inventory_(),
-	  textures_(),
-	  world_(nullptr)
+	: font_()
+	, coins_(0)
+	, keyBindings_()
+	, keys_()
+	, powerUps_()
+	, inventory_()
+	, textures_()
+	, world_(nullptr)
 {
 	initKeyBinding(isAzerty);
 	genPowerUps(powerUps_, inventory_, textures_);
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
+	const Vector2f COINS_POSITION (710.f, 40.f);
+	coinsText_.setFont(font_);
+	coinsText_.setPosition(COINS_POSITION);
+	coinsText_.setString(toString(coins_));
+	coinsText_.setColor(sf::Color::Yellow);
 }
 
 Inventory::~Inventory()
@@ -22,6 +29,11 @@ Inventory::~Inventory()
 
 
 //-----------------------------------------------------------------------------
+
+void Inventory::switchKeyboard(bool isAzerty)
+{
+	initKeyBinding(isAzerty);
+}
 
 void Inventory::initKeyBinding(bool isAzerty)
 {
@@ -103,6 +115,11 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		return;
 	
 	states.transform *= getTransform();
+
+
+	const std::string str = toString(coins_);
+	coinsText_.setString(str);
+	target.draw(coinsText_);
 
 	
 	const Vector2u POWERUP_ICON_SIZE (20, 20);
@@ -209,4 +226,30 @@ void Inventory::increment(PowerUpID::ID id, int value)
 	int& count = gotNumber->second;
 	
 	count += value;
+}
+
+
+//-----------------------------------------------------------------------------
+
+void Inventory::addCoins(int n)
+{
+	coins_ += n;
+}
+
+bool Inventory::removeCoins(int n)
+{
+	if(coins_ - n < 0)
+	{
+		return false;
+	}
+	else
+	{
+		coins_ -= n;
+		return true;
+	}
+}
+
+int Inventory::getCoins() const
+{
+	return coins_;
 }

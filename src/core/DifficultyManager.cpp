@@ -4,6 +4,7 @@
 #include "core/DifficultyManager.hpp"
 #include "core/World.hpp"
 #include "core/EventGenerator.hpp"
+#include "core/TransGamesData.hpp"
 
 
 //-----------------------------------------------------------------------------
@@ -27,7 +28,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, font_()
 	, timer_()
 	, score_(0.f)
-	, objective_(baseObjective_)
+	, objective_(context.datas->BASE_OBJECTIVE)
 	, objectiveIncrement_(2)
 	, ceiling_(baseCeiling_)
 	, scoreText_()
@@ -200,6 +201,8 @@ void DifficultyManager::updateDifficulty()
 
 void DifficultyManager::updateScore()
 {
+	int COINS_PER_EXCESS = 1;
+
 	auto collisions = context_.world->getTrackedCollisions();
 	auto ecs = context_.world->getEntityManager();
 	float points = 0;
@@ -211,14 +214,22 @@ void DifficultyManager::updateScore()
 		auto targetComp =
 			dynCast<ecs::Target>(ecs.getComponent(pair.second,
 			                                      ecs::Component::Target));
-		if(projectileComp && targetComp) 
+		if(projectileComp && targetComp)
 		{
 			points += projectileComp->getPoints() * targetComp->getPointMultiplier();
 			++ballCount_[projectileComp->getPoints()];
 		}
 	}
 
+
+	if(score_ + points > objective_)
+	{
+		int coins = (points - std::max(0.f, objective_ - score_)) * COINS_PER_EXCESS;
+		context_.inventory->addCoins(coins);
+	}
+
 	score_ += points;
+
 	std::stringstream ss;
 	ss << int(score_);
 	ss << "/";
@@ -234,12 +245,13 @@ void DifficultyManager::updateObjective()
 	// const int CUTTING = 2;
 	// const int MODULATION = 1;
 	const float CEILING_MUL = 1.5f;
-		
+
 	int excess = score_ - objective_;
 
 	if(excess < 0)
 	{
 		context_.world->setState(World::GameState::GameOver);
+		context_.datas->lastHighScore = objective_;
 		reset();
 		return;
 	}
@@ -301,7 +313,7 @@ void DifficultyManager::reset()
 {
 	phaseNumber_ = 0;
 	score_ = 0.f;
-	objective_ = baseObjective_;
+	objective_ = context_.datas->BASE_OBJECTIVE;
 	phaseTime_ = Time::Zero;
 	context_.eventGenerator->updateDifficulty(eventDatas[0]);
 }

@@ -6,30 +6,93 @@
 StateOver::StateOver(StateStack& stack, Context context)
 	: State(stack, context)
 	, font_()
-	, gameOver_()
-	, retry_()
+	, texts_(TextCount)
+{
+	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
+	for(int i=0; i<TextCount; i++)
+	{
+		texts_[i].setFont(font_);
+	}
+
+	initStaticTexts(context);
+	initVariableTexts(context);
+	updateDatas(context);
+}
+
+StateOver::~StateOver()
+{
+}
+
+
+//-----------------------------------------------------------------------------
+
+void StateOver::initStaticTexts(Context context)
 {
 	Vector2u winSize = Vector2u(context.window->getSize());
 	const Vector2f GAME_OVER_POS (winSize.x / 2, winSize.y / 2);
 	const Vector2f RETRY_POS (winSize.x / 2, 2 * winSize.y / 3); 
 
-	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
+	texts_[GameOver].setString("G A M E  O V E R");
+	centerOrigin(texts_[GameOver]);
+	texts_[GameOver].setPosition(GAME_OVER_POS);
 
-	gameOver_.setFont(font_);
-	gameOver_.setString("G A M E  O V E R");
-	gameOver_.setColor(sf::Color::White);
-	centerOrigin(gameOver_);
-	gameOver_.setPosition(GAME_OVER_POS);
-
-	retry_.setFont(font_);
-	retry_.setString("Press SPACE to retry");
-	retry_.setColor(sf::Color::White);
-	centerOrigin(retry_);
-	retry_.setPosition(RETRY_POS);
+	texts_[Retry].setString("Press SPACE to retry");
+	centerOrigin(texts_[Retry]);
+	texts_[Retry].setPosition(RETRY_POS);
 }
 
-StateOver::~StateOver()
+void StateOver::initVariableTexts(Context context)
 {
+	Vector2u winSize = Vector2u(context.window->getSize());
+	
+	std::stringstream ss;
+
+	const Vector2f HIGH_SCORE_POS (winSize.x / 2, winSize.y / 10);
+	ss << "High Score: ";
+	ss << std::max(context_.datas->highScore, context_.datas->lastHighScore);
+	texts_[HighScore].setString(ss.str());
+	centerOrigin(texts_[HighScore]);
+	texts_[HighScore].setPosition(HIGH_SCORE_POS);
+	ss.str("");
+
+	const Vector2f SCORE_POS (winSize.x / 4, winSize.y / 5);
+	ss << "Your Score: ";
+	ss << context_.datas->lastHighScore;
+	ss << ": +";
+	ss << std::max(0, context_.datas->lastHighScore - context_.datas->BASE_OBJECTIVE) * context.datas->COINS_PER_POINTS;
+	ss << " coins";
+	texts_[Score].setString(ss.str());
+	centerOrigin(texts_[Score]);
+	texts_[Score].setPosition(SCORE_POS);
+	ss.str("");	
+
+	const Vector2f MONEY_POS (3* winSize.x / 4, winSize.y / 5);
+	ss <<  "C O I N S : ";
+	ss << context_.datas->inventory.getCoins() + std::max(0, context_.datas->lastHighScore - context_.datas->BASE_OBJECTIVE) * context.datas->COINS_PER_POINTS;
+	texts_[Money].setString(ss.str());
+	centerOrigin(texts_[Money]);
+	texts_[Money].setPosition(MONEY_POS);
+	texts_[Money].setColor(sf::Color::Yellow);
+	ss.str("");	
+}
+
+
+//-----------------------------------------------------------------------------
+
+void StateOver::updateDatas(Context context)
+{
+	int newScore = context_.datas->lastHighScore;
+	if(newScore > context_.datas->highScore)
+	{
+		texts_[HighScore].setColor(sf::Color::Green);
+		context_.datas->highScore = newScore;
+	}
+	else
+	{
+		texts_[HighScore].setColor(sf::Color::Red);
+	}
+	context_.datas->inventory.addCoins(std::max(0, context_.datas->lastHighScore - context_.datas->BASE_OBJECTIVE) * context.datas->COINS_PER_POINTS);
+
 }
 
 
@@ -40,8 +103,10 @@ void StateOver::draw()
 	sf::RectangleShape rect (Vector2f(context_.window->getSize()));
 	rect.setFillColor(sf::Color(0,0,0,200));
 	context_.window->draw(rect);
-	context_.window->draw(gameOver_);
-	context_.window->draw(retry_);
+	for(int i=0; i<TextCount; ++i)
+	{
+		context_.window->draw(texts_[i]);
+	}
 }
 
 bool StateOver::update(Time)
