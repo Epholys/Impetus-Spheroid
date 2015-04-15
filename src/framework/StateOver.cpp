@@ -93,6 +93,7 @@ void StateOver::updateDatas(Context context)
 	}
 	context_.datas->inventory.addCoins(std::max(0, context_.datas->lastHighScore - context_.datas->BASE_OBJECTIVE) * context.datas->COINS_PER_POINTS);
 
+	DataSaver::saveDatas(*context_.datas);
 }
 
 

@@ -17,7 +17,13 @@ Application::Application()
 	window_.setVerticalSyncEnabled(false);
 
 	datas_.inventory.switchKeyboard(true);
-	datas_.highScore = 0;
+	if(!DataSaver::retrieveDatas(datas_))
+	{
+		std::cout << "NEW FILE\n";
+		DataSaver::makeDefaultFile();
+		DataSaver::retrieveDatas(datas_);
+	}
+	
 
 	stack_.registerState<StateGame>(StateID::Game);
 	stack_.registerState<StateOver>(StateID::GameOver);

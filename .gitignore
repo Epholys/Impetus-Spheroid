@@ -20,7 +20,11 @@
 *.out
 *.app
 *.bin
-ImpetusSpheroid*
+*.debug
+ImpetusSpheroid
+
+# Saves
+*.db
 
 # Emacs saves
 *~

@@ -38,6 +38,7 @@ namespace PowerUpID
 		AddTarget,
 		PointMultiplier,
 		BallTouchDouble,
+		PowerUpCount,
 	};
 }
 

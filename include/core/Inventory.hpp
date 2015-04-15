@@ -38,6 +38,9 @@ public:
 	void handleInput(const sf::Event& event);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+	bool setPowerUp(PowerUpID::ID id, int value);
+	// Warning : return -1 if id isn't valid.
+	int getPowerUp(PowerUpID::ID id) const;
 	bool decrement(PowerUpID::ID id);
 	void increment(PowerUpID::ID id, int value);
 

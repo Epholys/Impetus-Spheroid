@@ -187,6 +187,31 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 //-----------------------------------------------------------------------------
 
+bool Inventory::setPowerUp(PowerUpID::ID id, int value)
+{
+	if(value < 0)
+		return false;
+
+	auto gotCount = inventory_.find(id);
+	if(gotCount == inventory_.end())
+		return false;
+
+	int& count = inventory_[id];
+	count = value;
+
+	return true;
+}
+
+int Inventory::getPowerUp(PowerUpID::ID id) const
+{
+	auto gotCount = inventory_.find(id);
+	if(gotCount == inventory_.end())
+		return -1;
+
+	return inventory_.at(id);
+}
+
+
 bool Inventory::decrement(PowerUpID::ID id)
 {
 

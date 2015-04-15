@@ -8,6 +8,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 
 #include "framework/State.hpp"
+#include "framework/DataSaver.hpp"
 #include "utility/utility.hpp"
 #include "utility/Vector2.hpp"
 
