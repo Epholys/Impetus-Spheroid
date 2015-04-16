@@ -58,71 +58,71 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 
 void DifficultyManager::createGui()
 {
-	const Vector2f SLIDER_SIZE(40.f,20.f);
-	Vector2f sliderPos(0.f,25.f);
-	const Vector2f sliderMov(0.f, SLIDER_SIZE.y);
-	float i = 0.f;
+	// const Vector2f SLIDER_SIZE(40.f,20.f);
+	// Vector2f sliderPos(0.f,25.f);
+	// const Vector2f sliderMov(0.f, SLIDER_SIZE.y);
+	// float i = 0.f;
 
-	gui::Menu::SPtr pMainMenu (new gui::Menu(gui::Menu::Horizontal, "Main Menu", true, true));
-	pMainMenu->move(5.f, 5.f);
+	// gui::Menu::SPtr pMainMenu (new gui::Menu(gui::Menu::Horizontal, "Main Menu", true, true));
+	// pMainMenu->move(5.f, 5.f);
 
-	//---
+	// //---
 	
-	gui::Menu::SPtr pGlobalDiff (new gui::Menu(gui::Menu::Vertical, "Global Difficulty"));
+	// gui::Menu::SPtr pGlobalDiff (new gui::Menu(gui::Menu::Vertical, "Global Difficulty"));
 	
-	gui::Slider<Time>::SPtr pDurationSlider 
-		(new gui::Slider<Time>(phaseDuration_, seconds(5.f), SLIDER_SIZE, "Phase Duration", true, seconds(5), seconds(900)));
-	pDurationSlider->move(sliderPos);
-	pGlobalDiff->pack(std::move(pDurationSlider));
+	// gui::Slider<Time>::SPtr pDurationSlider 
+	// 	(new gui::Slider<Time>(phaseDuration_, seconds(5.f), SLIDER_SIZE, "Phase Duration", true, seconds(5), seconds(900)));
+	// pDurationSlider->move(sliderPos);
+	// pGlobalDiff->pack(std::move(pDurationSlider));
 	
-	pMainMenu->pack(std::move(pGlobalDiff));
+	// pMainMenu->pack(std::move(pGlobalDiff));
 
-	//---
-
-	
-	gui::Menu::SPtr worldDiff (new gui::Menu(gui::Menu::Vertical, "World Difficulty"));
-	
-	gui::Slider<float>::SPtr pSpeedSlider
-		(new gui::Slider<float>(worldSeed_.speedConstant, 0.05f, SLIDER_SIZE, "SpeedCoeff", true, 0.f, 1.f));
-	pSpeedSlider->move(sliderPos);
-	worldDiff->pack(std::move(pSpeedSlider));
-
-	pMainMenu->pack(std::move(worldDiff));
-
-	//---
-
-	gui::Menu::SPtr eventDiff (new gui::Menu(gui::Menu::Vertical, "Event Difficulty"));
-
-	gui::Slider<float>::SPtr eventDelay
-		(new gui::Slider<float>(eventSeed_.delay, 1, SLIDER_SIZE, "Event Delay", true, 0, 60));
-	eventDelay->move(sliderPos + i * sliderMov); ++i;
-	eventDiff->pack(std::move(eventDelay));
-
-    pMainMenu->pack(std::move(eventDiff)); i=0;
-
-	//---
-
-	gui::Menu::SPtr advEventDiff (new gui::Menu(gui::Menu::Vertical, "Advanced Event Diff"));
-
-	gui::Slider<int>::SPtr attenuation
-		(new gui::Slider<int>(eventSeed_.attenuation, 1, SLIDER_SIZE, "Attenuation", true, 1, 16));
-	attenuation->move(sliderPos + i * sliderMov); ++i;
-	advEventDiff->pack(std::move(attenuation));
-
-	gui::Slider<int>::SPtr offset
-		(new gui::Slider<int>(eventSeed_.offset, 2, SLIDER_SIZE, "Offset", true, 0, 30));
-    offset->move(sliderPos + i * sliderMov); ++i;
-    advEventDiff->pack(std::move(offset));
-
-    pMainMenu->pack(std::move(advEventDiff)); i=0;
+	// //---
 
 	
-	//---
+	// gui::Menu::SPtr worldDiff (new gui::Menu(gui::Menu::Vertical, "World Difficulty"));
+	
+	// gui::Slider<float>::SPtr pSpeedSlider
+	// 	(new gui::Slider<float>(worldSeed_.speedConstant, 0.05f, SLIDER_SIZE, "SpeedCoeff", true, 0.f, 1.f));
+	// pSpeedSlider->move(sliderPos);
+	// worldDiff->pack(std::move(pSpeedSlider));
 
-	diffGui_ = std::move(pMainMenu);
+	// pMainMenu->pack(std::move(worldDiff));
 
-	// Important
-	diffGui_->select();
+	// //---
+
+	// gui::Menu::SPtr eventDiff (new gui::Menu(gui::Menu::Vertical, "Event Difficulty"));
+
+	// gui::Slider<float>::SPtr eventDelay
+	// 	(new gui::Slider<float>(eventSeed_.delay, 1, SLIDER_SIZE, "Event Delay", true, 0, 60));
+	// eventDelay->move(sliderPos + i * sliderMov); ++i;
+	// eventDiff->pack(std::move(eventDelay));
+
+    // pMainMenu->pack(std::move(eventDiff)); i=0;
+
+	// //---
+
+	// gui::Menu::SPtr advEventDiff (new gui::Menu(gui::Menu::Vertical, "Advanced Event Diff"));
+
+	// gui::Slider<int>::SPtr attenuation
+	// 	(new gui::Slider<int>(eventSeed_.attenuation, 1, SLIDER_SIZE, "Attenuation", true, 1, 16));
+	// attenuation->move(sliderPos + i * sliderMov); ++i;
+	// advEventDiff->pack(std::move(attenuation));
+
+	// gui::Slider<int>::SPtr offset
+	// 	(new gui::Slider<int>(eventSeed_.offset, 2, SLIDER_SIZE, "Offset", true, 0, 30));
+    // offset->move(sliderPos + i * sliderMov); ++i;
+    // advEventDiff->pack(std::move(offset));
+
+    // pMainMenu->pack(std::move(advEventDiff)); i=0;
+
+	
+	// //---
+
+	// diffGui_ = std::move(pMainMenu);
+
+	// // Important
+	// diffGui_->select();
 }
 
 DifficultyManager::~DifficultyManager()

@@ -60,7 +60,7 @@ void Menu::pack(Component::SPtr component, bool overrideFirst)
 	}
 
 	auto childMenu = std::dynamic_pointer_cast<Menu>(component);
-	if(childMenu)
+	if(childMenu && isMeta_)
 	{
 		childMenu->pack(children_[0], true);
 		childMenu->menuSlider_ = menuSlider_;
@@ -171,7 +171,8 @@ void Menu::handleEvent(const sf::Event& event)
 	/* A mouse can select everything in the screen, so the children must take
 	   care of this */
 	if(event.type == sf::Event::MouseButtonPressed ||
-	   event.type == sf::Event::MouseButtonReleased)
+	   event.type == sf::Event::MouseButtonReleased ||
+	   event.type == sf::Event::MouseMoved)
 	{
 		for(auto& child : children_)
 		{

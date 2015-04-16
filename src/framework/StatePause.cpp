@@ -47,6 +47,7 @@ bool StatePause::handleInput(const sf::Event& event)
 	{
 		requestStackPop();
 	}
+
 	return false;
 }
 

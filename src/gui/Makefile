@@ -7,7 +7,8 @@ OPTFLAGS := -O2
 BUGFLAGS := 
 
 TARGETDIR = ../
-OBJECTS = Component.o Menu.o Slider.o
+OBJECTS = Component.o Menu.o Slider.o Button.o \
+		  TextureGenerator.o
 
 empty :=
 space := $(empty) $(empty)
