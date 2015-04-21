@@ -8,7 +8,6 @@
 #include "utility/utility.hpp"
 #include "utility/Vector2.hpp"
 
-
 class StatePause : public State
 {
 public:

@@ -15,12 +15,13 @@ namespace gui
 	namespace TextureGenerator
 	{
 		std::unique_ptr<sf::Texture> marketButton(unsigned int width,
-		                                         unsigned int height,
-		                                         const std::string& icon,
-		                                         const std::string& fontPath,
-		                                         int number,
-		                                         const std::string& legend,
-		                                         int price);
+		                                          unsigned int height,
+		                                          const std::string& icon,
+		                                          const std::string& fontPath,
+		                                          int number,
+		                                          const std::string& legend,
+		                                          int price,
+		                                          const std::string& shortcut);
 	}
 }
 

@@ -13,7 +13,8 @@ namespace gui
 		                                          const std::string& fontPath,
 		                                          int number,
 		                                          const std::string& legend,
-		                                          int price)
+		                                          int price,
+		                                          const std::string& shortcut)
 		{
 			sf::RenderTexture rTexture;
 			
@@ -65,7 +66,23 @@ namespace gui
 			rTexture.draw(priceText);
 			rTexture.display();
 
-			std::unique_ptr<sf::Texture> textPtr (new sf::Texture(rTexture.getTexture()));
+
+			sf::RenderTexture rTextureShortcut;
+			
+			assert(rTextureShortcut.create(width + height, height));
+
+			sf::Sprite firstPart(rTexture.getTexture());
+				
+			sf::Text shortcutText(shortcut, font);
+			centerOrigin(shortcutText);
+			shortcutText.setPosition(width + height / 2.f, (height - shortcutText.getCharacterSize()) / 2.f);
+			
+			rTextureShortcut.clear(sf::Color::Black);
+			rTextureShortcut.draw(firstPart);
+			rTextureShortcut.draw(shortcutText);
+			rTextureShortcut.display();
+			
+			std::unique_ptr<sf::Texture> textPtr (new sf::Texture(rTextureShortcut.getTexture()));
 			return std::move(textPtr);
 		}
 	}
