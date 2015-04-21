@@ -72,6 +72,22 @@ void Inventory::addWorld(World* world)
 
 void Inventory::removeWorld()
 {
+	// Do some clean-up
+	for(auto& puPair : powerUps_)
+	{
+		auto& powerUp = puPair.second;
+		if(powerUp->getType() == PowerUpType::Toogle &&
+			world_)
+		{
+			// Launch the deactivate_() of powerUpToogle, if it is active
+			auto powerUpToogle = std::dynamic_pointer_cast<PowerUpToogle>(powerUp);
+			if(powerUpToogle && powerUpToogle->isActivated())
+			{
+				powerUp->apply(*world_);
+			}
+		}
+	}
+
 	world_ = nullptr;
 }
 

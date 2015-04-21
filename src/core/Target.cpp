@@ -73,7 +73,7 @@ void Target::updateColor()
 {
 
 	const float EPSILON = 0.01f;
-	const float MULTIPLIER = 1.2f;	
+	const float MULTIPLIER = 1.5f;	
 	std::vector<sf::Color> colors
 			{sf::Color::Yellow,
 			sf::Color::Green,
