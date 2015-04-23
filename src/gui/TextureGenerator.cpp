@@ -3,6 +3,11 @@
 
 //-----------------------------------------------------------------------------
 
+namespace
+{
+	auto datas = genMarketData();
+}
+
 namespace gui 
 {
 	namespace TextureGenerator
@@ -27,7 +32,6 @@ namespace gui
 
 			sf::Texture iconTexture;
 			iconTexture.loadFromFile(icon);
-			iconTexture.setSmooth(true);
 			auto iconSize = iconTexture.getSize();
 			sf::Sprite iconSprite(iconTexture);
 			float scale = float(height) / iconSize.y;
@@ -66,7 +70,6 @@ namespace gui
 			rTexture.draw(priceText);
 			rTexture.display();
 
-
 			sf::RenderTexture rTextureShortcut;
 			
 			assert(rTextureShortcut.create(width + height, height));
@@ -84,6 +87,25 @@ namespace gui
 			
 			std::unique_ptr<sf::Texture> textPtr (new sf::Texture(rTextureShortcut.getTexture()));
 			return std::move(textPtr);
+		}
+
+		void createMarketButtons(const std::map<PowerUpID::ID, sf::Keyboard::Key>& KEYS)
+		{
+			const sf::Vector2u BUTTON_SIZE (600, 50);
+			for(auto it=datas.begin(); it!=datas.end(); ++it)
+			{
+				(*(gui::TextureGenerator::marketButton(
+					BUTTON_SIZE.x,
+					BUTTON_SIZE.y,
+					it->texturePath,
+					"./media/font/FORCEDSQUARE.ttf",
+					it->number,
+					it->description,
+					it->price,
+					toString(KEYS.at(it->id)))))
+					.copyToImage()
+					.saveToFile(it->texturePath + ".button.png");
+			}
 		}
 	}
 }

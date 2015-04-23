@@ -25,7 +25,7 @@ namespace gui
 		virtual ~Button();
 
 		void setCallback(Callback callback);
-		void setTexture(std::unique_ptr<sf::Texture> texture);
+		void setTexture(sf::Texture texture);
 		void setKey(sf::Keyboard::Key key);
 
 		virtual bool isSelectable() const;
@@ -43,7 +43,7 @@ namespace gui
 		sf::Keyboard::Key shortcut_;
 
 		sf::Sprite sprite_;
-		std::unique_ptr<sf::Texture> texture_;
+		sf::Texture texture_;
 	};
 }
 

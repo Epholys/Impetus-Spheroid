@@ -185,23 +185,21 @@ void Menu::handleEvent(const sf::Event& event)
 		if(!hasSelection() || !isSelected())
 			return;
 
-		/* An _active_ child has the exclusivity of the Event */
-		if (children_[selectedChild_]->isActive())
-		{
-			children_[selectedChild_]->handleEvent(event);
-		}
-		
-		else if (event.key.code == sf::Keyboard::Return &&
-		         children_[selectedChild_]->isActive())
+		if (event.key.code == sf::Keyboard::Return &&
+		         !children_[selectedChild_]->isActive())
 		{
 			children_[selectedChild_]->activate();
 		}
 		else if (event.key.code == sf::Keyboard::Return &&
-		         !children_[selectedChild_]->isActive())
+		         children_[selectedChild_]->isActive())
 		{
 			children_[selectedChild_]->deactivate();
 		}
 
+		else if (children_[selectedChild_]->isActive())
+		{
+			children_[selectedChild_]->handleEvent(event);
+		}
 
 		else if( (!isMeta_ || children_[0]->isSelected()) &&
 		         event.key.code == previousKey_)
@@ -222,8 +220,16 @@ void Menu::handleEvent(const sf::Event& event)
 				child->handleEvent(event);
 			}
 		}	
-
 	}
+
+	else
+	{
+		for(auto& child : children_)
+		{
+			child->handleEvent(event);
+		}
+	}	
+
 }
 
 

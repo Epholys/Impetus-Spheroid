@@ -28,10 +28,10 @@ namespace gui
 		callback_ = callback;
 	}
 
-	void Button::setTexture(std::unique_ptr<sf::Texture> texture)
+	void Button::setTexture(sf::Texture texture)
 	{
-		texture_ = std::move(texture);
-		sprite_.setTexture(*texture_);
+		texture_ = texture;
+		sprite_.setTexture(texture_);
 	}
 
 	void Button::setKey(sf::Keyboard::Key key)
@@ -82,6 +82,7 @@ namespace gui
 	void Button::handleEvent(const sf::Event& event)
 	{
 		sf::FloatRect spriteRect = sprite_.getGlobalBounds();
+		spriteRect = getTransform().transformRect(spriteRect);
 		bool isMouseOver = false;
 
 		if(event.type == sf::Event::MouseMoved)
@@ -130,6 +131,7 @@ namespace gui
 
 	void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
+		states.transform *= getTransform();
 		target.draw(sprite_, states);
-	}
+ 	}
 }
