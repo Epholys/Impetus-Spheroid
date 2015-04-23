@@ -132,7 +132,7 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	sf::Texture txtGhost;
 	txtGhost.loadFromFile("./media/sprites/GhostBall.png");
 	powerUps[GhostBall] = pPutGhost;
-	numbers[GhostBall] = 10;
+	numbers[GhostBall] = 0;
 	textures[GhostBall] = txtGhost;
 
 	PowerUpToogle* putNoGrav = new PowerUpToogle();
@@ -142,7 +142,7 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	sf::Texture txtNoGrav;
 	txtGhost.loadFromFile("./media/sprites/NoGravBall.png");
 	powerUps[NoGravBall] = pPutNoGrav;
-	numbers[NoGravBall] = 10;
+	numbers[NoGravBall] = 0;
 	textures[NoGravBall] = txtGhost;
 
 	PowerUpToogle* putCancel = new PowerUpToogle();
@@ -151,7 +151,7 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	sf::Texture txtCancel;
 	txtCancel.loadFromFile("./media/sprites/CancelEvents.png");
 	powerUps[CancelEvents] = pPutCancel;
-	numbers[CancelEvents] = 10;
+	numbers[CancelEvents] = 0;
 	textures[CancelEvents] = txtCancel;
 	
 	PowerUpToogle* putAutoFire = new PowerUpToogle();
@@ -161,7 +161,7 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	sf::Texture txtAutoFire;
 	txtAutoFire.loadFromFile("./media/sprites/AutoFire.png");
 	powerUps[AutoFire] = pPutAutoFire;
-	numbers[AutoFire] = 100;
+	numbers[AutoFire] = 0;
 	textures[AutoFire] = txtAutoFire;
 	
 	Modifier<World> modTime;
@@ -173,7 +173,7 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	sf::Texture txtTime;
 	txtTime.loadFromFile("./media/sprites/AddTime.png");
 	powerUps[AddTime] = pPumTime;
-	numbers[AddTime] = 3;
+	numbers[AddTime] = 0;
 	textures[AddTime] = txtTime;
 
 	Modifier<World> modTarget;
@@ -185,7 +185,7 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	sf::Texture txtTarget;
 	txtTarget.loadFromFile("./media/sprites/AddTarget.png");
 	powerUps[AddTarget] = pPumTarget;
-	numbers[AddTarget] = 3;
+	numbers[AddTarget] = 0;
 	textures[AddTarget] = txtTarget;
 
 	const Time MULTIPLIER_TIME = seconds(10);
@@ -199,7 +199,7 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	sf::Texture txtMult;
 	txtMult.loadFromFile("./media/sprites/MultiplyPoints.png");
 	powerUps[PointMultiplier] = pPumMult;
-	numbers[PointMultiplier] = 3;
+	numbers[PointMultiplier] = 0;
 	textures[PointMultiplier] = txtMult;
 
 	PowerUpToogle* putTouching = new PowerUpToogle();
@@ -213,6 +213,6 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	sf::Texture txtTouching;
 	txtTouching.loadFromFile("./media/sprites/BallTouchDouble.png");
 	powerUps[BallTouchDouble] = pPutTouching;
-	numbers[BallTouchDouble] = 100;
+	numbers[BallTouchDouble] = 0;
 	textures[BallTouchDouble] = txtTouching;
 }

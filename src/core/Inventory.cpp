@@ -294,3 +294,11 @@ int Inventory::getCoins() const
 {
 	return coins_;
 }
+
+
+//-----------------------------------------------------------------------------
+
+const std::map<PowerUpID::ID, sf::Keyboard::Key>& Inventory::getKeys() const
+{
+	return keys_;
+}

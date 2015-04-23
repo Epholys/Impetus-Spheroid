@@ -19,7 +19,6 @@ Application::Application()
 	datas_.inventory.switchKeyboard(true);
 	if(!DataSaver::retrieveDatas(datas_))
 	{
-		std::cout << "NEW FILE\n";
 		DataSaver::makeDefaultFile();
 		DataSaver::retrieveDatas(datas_);
 	}
@@ -28,6 +27,7 @@ Application::Application()
 	stack_.registerState<StateGame>(StateID::Game);
 	stack_.registerState<StateOver>(StateID::GameOver);
 	stack_.registerState<StatePause>(StateID::Pause);
+	stack_.registerState<StateMarket>(StateID::Market);
 	
 	stack_.pushState(StateID::Game);
 }

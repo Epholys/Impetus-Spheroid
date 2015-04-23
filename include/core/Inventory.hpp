@@ -48,6 +48,8 @@ public:
 	bool removeCoins(int n);
 	int getCoins() const;
 
+	const std::map<PowerUpID::ID, sf::Keyboard::Key>& getKeys() const;
+
 private:
 	sf::Font font_;
 	mutable sf::Text coinsText_;
@@ -55,6 +57,7 @@ private:
 	int coins_;
 
 	std::map<sf::Keyboard::Key, PowerUpID::ID> keyBindings_;
+// TODO: change all std::map below to something like std::map<PowerUpID::ID, PowerUpStruct>
 	std::map<PowerUpID::ID, sf::Keyboard::Key> keys_;
 	std::map<PowerUpID::ID, std::shared_ptr<PowerUp>> powerUps_;
 	std::map<PowerUpID::ID, int> inventory_;

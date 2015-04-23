@@ -26,6 +26,7 @@ namespace StateID
 		Game,
 		GameOver,
 		Pause,
+		Market,
 	};
 }
 

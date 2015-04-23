@@ -10,7 +10,8 @@ TARGETDIR = ../
 OBJECTS = 	Entity.o Ball.o Wall.o Target.o World.o Obstacle.o \
 			Event.o EventFunctions.o EventGenerator.o \
 			DifficultyManager.o PowerUp.o PowerUpModifier.o \
-			PowerUpToogle.o Inventory.o PowerUpFunctions.o
+			PowerUpToogle.o Inventory.o PowerUpFunctions.o \
+			Market.o
 
 empty :=
 space := $(empty) $(empty)

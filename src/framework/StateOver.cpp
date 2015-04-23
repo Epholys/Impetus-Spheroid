@@ -30,11 +30,16 @@ void StateOver::initStaticTexts(Context context)
 {
 	Vector2u winSize = Vector2u(context.window->getSize());
 	const Vector2f GAME_OVER_POS (winSize.x / 2, winSize.y / 2);
-	const Vector2f RETRY_POS (winSize.x / 2, 2 * winSize.y / 3); 
+	const Vector2f MARKET_POS (winSize.x / 2, 2 * winSize.y / 3);
+	const Vector2f RETRY_POS (winSize.x / 2, 4 * winSize.y / 5); 
 
 	texts_[GameOver].setString("G A M E  O V E R");
 	centerOrigin(texts_[GameOver]);
 	texts_[GameOver].setPosition(GAME_OVER_POS);
+
+	texts_[Market].setString("Press CTRL to go to the Market");
+	centerOrigin(texts_[Market]);
+	texts_[Market].setPosition(MARKET_POS);
 
 	texts_[Retry].setString("Press SPACE to retry");
 	centerOrigin(texts_[Retry]);
@@ -124,6 +129,15 @@ bool StateOver::handleInput(const sf::Event& event)
 		requestStackPop();
 		requestStackPush(StateID::Game);
 	}
+
+	if(event.type == sf::Event::KeyReleased &&
+	   (event.key.code == sf::Keyboard::LControl ||
+		event.key.code == sf::Keyboard::RControl))
+	{ 
+		requestStackPop();
+		requestStackPush(StateID::Market);
+	}
+
 	return false;
 }
 

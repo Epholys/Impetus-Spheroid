@@ -23,6 +23,7 @@ public:
 		Money,
 		GameOver,
 		Retry,
+		Market,
 		TextCount
 	};
 

@@ -1,5 +1,5 @@
-#ifndef STATE_PAUSE
-#define STATE_PAUSE
+#ifndef STATE_PAUSE_HPP
+#define STATE_PAUSE_HPP
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -24,4 +24,4 @@ private:
 };
 
 
-#endif // STATE_PAUSE
+#endif // STATE_PAUSE_HPP
