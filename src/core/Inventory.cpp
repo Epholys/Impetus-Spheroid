@@ -169,6 +169,7 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			num.setString(toString(inventory_.at(id)));
 			num.setPosition(xCoord, yCoord + POWERUP_ICON_SIZE.y / 1.5);
 			num.setCharacterSize(20);
+			num.setColor(sf::Color::Black);
 
 			sf::Sprite sprite;
 			sprite.setTexture(it->second);
@@ -179,6 +180,7 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			key.setString(toString(keys_.at(id)));
 			key.setPosition(xCoord, yCoord - POWERUP_ICON_SIZE.y);
 			key.setCharacterSize(20);
+			key.setColor(sf::Color::Black);
 
 			target.draw(key);
 			target.draw(sprite);
