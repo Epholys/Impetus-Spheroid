@@ -130,7 +130,7 @@ namespace evt
 		const float DVT_VEL = 150.f;
 		const float MEAN_GRAV = 250.f;
 		const float DVT_GRAV = 50.f;
-		const sf::Color COLOR = sf::Color::Green;
+		const sf::Color COLOR = sf::Color::Black;
 
 		Vector2f size (15.f, normalRandFloat(MEAN_HEIGHT, DVT_HEIGHT));
 		

@@ -46,6 +46,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	timer_.setFont(font_);
 	timer_.setPosition(TIMER_POSITION);
 	timer_.setString("0:00");
+	timer_.setColor(sf::Color::Black);
 
 	scoreText_.setFont(font_);
 	scoreText_.setPosition(SCORE_POSITION);
