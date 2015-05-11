@@ -43,14 +43,12 @@ void Inventory::initKeyBinding(bool isAzerty)
 	{
 		keyBindings_[sf::Keyboard::A] = GhostBall;
 		keyBindings_[sf::Keyboard::Z] = NoGravBall;
-		keyBindings_[sf::Keyboard::Q] = AutoFire;
 		keyBindings_[sf::Keyboard::W] = PointMultiplier;
 	}
 	else
 	{
 		keyBindings_[sf::Keyboard::Q] = GhostBall;
 		keyBindings_[sf::Keyboard::W] = NoGravBall;
-		keyBindings_[sf::Keyboard::A] = AutoFire;
 		keyBindings_[sf::Keyboard::Z] = PointMultiplier;
 	}
 

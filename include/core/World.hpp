@@ -71,7 +71,6 @@ public:
 
 	void switchBallType(unsigned int type);
 	void cancelEvents(bool comeFromInventory);
-	void switchAutoFire();
 	void addTime(Time adding);
 	void setNTouching(int n);
 

@@ -29,12 +29,6 @@ namespace
 	{
 		w.cancelEvents(true);
 	};
-
-	auto switchAutoFire =
-		[](World& w)
-	{
-		w.switchAutoFire();
-	};
 	
 	auto addTime = 
 		[](World& w, Time)
@@ -153,17 +147,7 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	powerUps[CancelEvents] = pPutCancel;
 	numbers[CancelEvents] = 0;
 	textures[CancelEvents] = txtCancel;
-	
-	PowerUpToogle* putAutoFire = new PowerUpToogle();
-	putAutoFire->addActivateFunc(switchAutoFire);
-	putAutoFire->addDeactivateFunc(switchAutoFire);
-	std::shared_ptr<PowerUp> pPutAutoFire (putAutoFire);
-	sf::Texture txtAutoFire;
-	txtAutoFire.loadFromFile("./media/sprites/AutoFire.png");
-	powerUps[AutoFire] = pPutAutoFire;
-	numbers[AutoFire] = 0;
-	textures[AutoFire] = txtAutoFire;
-	
+		
 	Modifier<World> modTime;
 	modTime.postFunction_ = addTime;
 	modTime.duration_ = Time();

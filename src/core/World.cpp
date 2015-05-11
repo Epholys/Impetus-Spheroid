@@ -136,11 +136,6 @@ void World::cancelEvents(bool comeFromInventory)
 	}
 }
 
-void World::switchAutoFire()
-{
-	autoFireOn_ = !autoFireOn_;
-}
-
 void World::addTime(Time adding)
 {
 	difficulty_.addTime(adding);
@@ -273,27 +268,6 @@ void World::handleInput(const sf::Event& event)
 			return;
 	}
 
-	if (event.type == sf::Event::KeyReleased)
-	{
-		switch (event.key.code)
-		{
-		case sf::Keyboard::O:
-			// Reset
-			difficulty_.reset();
-			entities_.clear();
-			speedCoeff_ = 1.f;
-			generateWorld();
-			break;
-
-		// case sf::Keyboard::M:
-		// 	// Mask/UnMask
-		// 	difficulty_.mask();
-		// 	break;
-
-		default:
-			break;
-		}
-	}
 	else if (event.type == sf::Event::MouseButtonPressed &&
 	         event.mouseButton.button == sf::Mouse::Left)
 	{
@@ -320,10 +294,7 @@ void World::update(Time dt)
 	// All the objects that requires the faster time below:
 	dt *= speedCoeff_;
 
-	if(autoFireOn_)
-	{
-		applyAutoFire(dt);
-	}
+	applyAutoFire(dt);
 
 	ecs_.update(dt);
 	applyModifiers(dt);
@@ -367,7 +338,6 @@ void World::applyAutoFire(Time dt)
 	{
 		createBall(Vector2f(sf::Mouse::getPosition(window_)));
 		untilNextFire_ = TIME_BEETWEEN_FIRE;
-		inventory_.decrement(PowerUpID::AutoFire);
 	}
 }
 
