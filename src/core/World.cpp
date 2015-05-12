@@ -13,7 +13,7 @@ namespace
 //-----------------------------------------------------------------------------
 // *** constructor: ***
 
-const Time World::TIME_BEETWEEN_FIRE = milliseconds(200);
+const Time World::TIME_BEETWEEN_FIRE = milliseconds(333);
 
 World::World(sf::RenderWindow& window, TransGamesData& datas, int precision)
 	: window_(window)
@@ -22,6 +22,7 @@ World::World(sf::RenderWindow& window, TransGamesData& datas, int precision)
 	, evtGen_()
 	, difficulty_(DifficultyContext{this, &evtGen_, &datas, &(datas.inventory)})
 	, inventory_(datas.inventory)
+	, cannon_(Vector2f(window.getSize()))
 	, state_(Waiting)
 	, autoFireOn_(false)
 	, untilNextFire_(Time::Zero)
@@ -158,10 +159,6 @@ World::getTrackedCollisions() const
 }
 
 //-----------------------------------------------------------------------------
-// *** TEMPORARY FUNCTIONS: ***
-// TODO: Replace all the input by a separate class
-
-//-----------------------------------------------------------------------------
 // *** gameloop functions: ***
 ecs::Entity World::createBall(Vector2f mousePosition)
 {
@@ -208,7 +205,6 @@ ecs::Entity World::createBall(Vector2f mousePosition)
 
 	return label;
 }
-
 
 // Quick and dirty II
 void World::applyBallType()
@@ -334,7 +330,8 @@ void World::applyAutoFire(Time dt)
 {
 	untilNextFire_ -= dt;
 
-	if(untilNextFire_ <= Time() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	if(state_ != Waiting && state_ != GameOver &&
+	   untilNextFire_ <= Time() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		createBall(Vector2f(sf::Mouse::getPosition(window_)));
 		untilNextFire_ = TIME_BEETWEEN_FIRE;
