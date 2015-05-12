@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <SFML/Window/Event.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
 
 #include "core/TransGamesData.hpp"
 #include "utility/Time.hpp"
@@ -36,9 +37,11 @@ class State
 public:
 	struct Context
 	{
-		Context(sf::RenderWindow& window, TransGamesData& datas);
+		Context(sf::RenderWindow& window, sf::Transform& transform, TransGamesData& datas);
 		
 		sf::RenderWindow* window;
+		const Vector2f originalWindowSize;
+		sf::Transform* globalTransform;
 		TransGamesData* datas;
 	};
 

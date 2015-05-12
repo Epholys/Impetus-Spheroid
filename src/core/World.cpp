@@ -14,17 +14,22 @@ namespace
 // *** constructor: ***
 
 const Time World::TIME_BEETWEEN_FIRE = milliseconds(333);
+Vector2f World::CANON_POSITION {40.f, 580.f};
 
-World::World(sf::RenderWindow& window, TransGamesData& datas, int precision)
-	: window_(window)
+
+World::World(const Vector2f& originalSize,
+             const sf::Transform& globalTransform,
+             TransGamesData& datas,
+             int precision)
+	: originalSize_(originalSize)
+	, globalTransform_(globalTransform)
 	, ecs_()
 	, physEng_(ecs_, precision)
 	, evtGen_()
 	, difficulty_(DifficultyContext{this, &evtGen_, &datas, &(datas.inventory)})
 	, inventory_(datas.inventory)
-	, cannon_(Vector2f(window.getSize()))
+	, cannon_(originalSize)
 	, state_(Waiting)
-	, autoFireOn_(false)
 	, untilNextFire_(Time::Zero)
 	, speedCoeff_(1.f)
 	, entities_()
@@ -43,32 +48,30 @@ World::World(sf::RenderWindow& window, TransGamesData& datas, int precision)
 
 void World::generateWorld()
 {
-	auto winSize = window_.getSize();
-
 	Entity::Ptr ceiling (new Wall(this, ecs_,
-	                              Vector2f(winSize.x / 2.f, 0.f),
-	                              Vector2f(winSize.x, 10.f),
+	                              Vector2f(originalSize_.x / 2.f, 0.f),
+	                              Vector2f(originalSize_.x, 10.f),
 	                              sf::Color(80,80,80)));
 	
 	Entity::Ptr leftWall (new Wall(this, ecs_,
-	                               Vector2f(12.5f, winSize.y / 2.f),
-	                               Vector2f(25.f, winSize.y),
+	                               Vector2f(12.5f, originalSize_.y / 2.f),
+	                               Vector2f(25.f, originalSize_.y),
 	                               sf::Color(80,80,80)));
 
 	Entity::Ptr rightWall (new Wall(this, ecs_,
-	                                Vector2f(winSize.x, winSize.y / 2.f),
-	                                Vector2f(10.f, winSize.y),
+	                                Vector2f(originalSize_.x, originalSize_.y / 2.f),
+	                                Vector2f(10.f, originalSize_.y),
 	                                sf::Color(80,80,80)));
 
 	entities_.push_back(std::move(ceiling));
 	entities_.push_back(std::move(leftWall));
 	entities_.push_back(std::move(rightWall));
 
-	createTarget(Vector2f(3* window_.getSize().x / 4.f, window_.getSize().y / 2.f));
+	createTarget(Vector2f(3* originalSize_.x / 4.f, originalSize_.y / 2.f));
 
 	for(int i=0; i<10; ++i)
 	{
-	ballBuffer_.push_back(std::make_pair(genBallData(), Ball::Normal));
+		ballBuffer_.push_back(std::make_pair(genBallData(), Ball::Normal));
 	}
 }
 
@@ -82,10 +85,9 @@ Vector2f& World::getGravityVect()
 {
 	return gravityVect_;
 }
-
 Vector2u World::getWindowSize() const
 {
-	return Vector2u(window_.getSize());
+	return Vector2u(originalSize_);
 }
 
 void World::addEntityModifier(Modifier<Entity> modifier)
@@ -160,13 +162,15 @@ World::getTrackedCollisions() const
 
 //-----------------------------------------------------------------------------
 // *** gameloop functions: ***
-ecs::Entity World::createBall(Vector2f mousePosition)
+ecs::Entity World::createBall()
 {
-	const Vector2f CANON_POSITION {40.f, 580.f};
 	const float IMPULSE_COEFF = 3.f;
+	Vector2f canonPosition = CANON_POSITION;
+	Vector2f mousePosition { std::min(mousePosition_.x, originalSize_.x)
+						   , std::min(mousePosition_.y, originalSize_.y) };
 
 	Entity::Ptr pBall (new Ball(this, ecs_,
-	                            CANON_POSITION,
+	                            canonPosition,
 	                            ballRadius_, ballMass_, gravityVect_,
 	                            ballBuffer_.front().first,
 	                            nTouchingBall_,
@@ -176,7 +180,7 @@ ecs::Entity World::createBall(Vector2f mousePosition)
 		(ecs_.getComponent(pBall->getLabel(), ecs::Component::Velocity));
 	assert(velComp);
 
-	Vector2f direction = mousePosition - CANON_POSITION;
+	Vector2f direction = mousePosition - canonPosition;
 	float impulse = std::max(direction.x, -direction.y);
 	direction.normalize();
 			
@@ -264,10 +268,16 @@ void World::handleInput(const sf::Event& event)
 			return;
 	}
 
+	else if(event.type == sf::Event::MouseMoved)
+	{
+		mousePosition_ = Vector2f(event.mouseMove.x, event.mouseMove.y);
+		mousePosition_ = Vector2f(globalTransform_.getInverse().transformPoint(mousePosition_));
+	}
+
 	else if (event.type == sf::Event::MouseButtonPressed &&
 	         event.mouseButton.button == sf::Mouse::Left)
 	{
-		createBall(Vector2f(sf::Mouse::getPosition(window_)));
+		createBall();
 		untilNextFire_ = TIME_BEETWEEN_FIRE;
 	}
 
@@ -330,12 +340,12 @@ void World::applyAutoFire(Time dt)
 {
 	untilNextFire_ -= dt;
 
-	if(state_ != Waiting && state_ != GameOver &&
-	   untilNextFire_ <= Time() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	if(untilNextFire_ <= Time() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
-		createBall(Vector2f(sf::Mouse::getPosition(window_)));
+		createBall();
 		untilNextFire_ = TIME_BEETWEEN_FIRE;
 	}
+
 }
 
 void World::cleanModifiers()
@@ -370,8 +380,6 @@ void World::cleanEntities()
 		                                 ecs::Component::Collidable);
 		if(posPtr && collPtr)
 		{
-			sf::Vector2f windowSize (window_.getSize());
-
 			auto posComp = dynCast<ecs::Position>(posPtr);
 			assert(posComp);
 
@@ -379,14 +387,14 @@ void World::cleanEntities()
 			auto rectCollComp = dynCast<ecs::CollidableRect>(collPtr);
 
 			if((sphereCollComp &&
-			    (posComp->position_.y - sphereCollComp->radius_ > windowSize.y ||
+			    (posComp->position_.y - sphereCollComp->radius_ > originalSize_.y ||
 			     posComp->position_.y + sphereCollComp->radius_ < 0 ||
-			     posComp->position_.x - sphereCollComp->radius_ > windowSize.x ||
+			     posComp->position_.x - sphereCollComp->radius_ > originalSize_.x ||
 			     posComp->position_.x + sphereCollComp->radius_ < 0)) ||
 			   (rectCollComp &&
-			    (posComp->position_.y - rectCollComp->size_.y/2.f > windowSize.y ||
+			    (posComp->position_.y - rectCollComp->size_.y/2.f > originalSize_.y ||
 			     posComp->position_.y + rectCollComp->size_.y/2.f < 0 ||
-			     posComp->position_.x - rectCollComp->size_.y/2.f > windowSize.x ||
+			     posComp->position_.x - rectCollComp->size_.y/2.f > originalSize_.x ||
 			     posComp->position_.x + rectCollComp->size_.y/2.f < 0)))
 			{
 				entities_.erase(it);
@@ -401,17 +409,35 @@ void World::cleanEntities()
 }
 
 
-void World::draw() const
+void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	// sf::RectangleShape rectMouse (Vector2f(5.f,5.f));
+	// rectMouse.setPosition(mousePosition_);
+	// rectMouse.setFillColor(sf::Color::Blue);
+	// target.draw(rectMouse, states);
+
+	// sf::RectangleShape rectCanon (Vector2f(5.f,5.f));
+	// rectCanon.setPosition(CANON_POSITION);
+	// rectCanon.setFillColor(sf::Color::Red);
+	// target.draw(rectCanon, states);
+
+	states.transform *= globalTransform_;
+
+	// rectMouse.setFillColor(sf::Color::Cyan);
+	// target.draw(rectMouse, states);
+
+	// rectCanon.setFillColor(sf::Color::Yellow);
+	// target.draw(rectCanon, states);
+
 	for(auto it = entities_.begin(); it != entities_.end(); ++it)
 	{
-		window_.draw(*(*it));
+		(*it)->draw(target, states);
 	}
-	window_.draw(difficulty_);
-	drawFutureBalls();
+	difficulty_.draw(target, states);
+	drawFutureBalls(target, states);
 }
 
-void World::drawFutureBalls() const
+void World::drawFutureBalls(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	Vector2f firstBallPos {2.5f, 570.f};
 	for (const auto& data : ballBuffer_)
@@ -420,7 +446,7 @@ void World::drawFutureBalls() const
 		circ.setFillColor(data.first.color);
 		circ.setPosition(firstBallPos);
 		firstBallPos.y -= 60.f;
-		window_.draw(circ);
+		target.draw(circ, states);
 	}
 }
 

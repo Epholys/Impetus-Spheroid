@@ -96,7 +96,6 @@ void Inventory::handleInput(const sf::Event& event)
 {
 	if (event.type == sf::Event::KeyReleased)
 	{
-		// TODO Modify later for the market
 		if(!world_)
 			return;
 
@@ -180,9 +179,9 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			key.setCharacterSize(20);
 			key.setColor(sf::Color::Black);
 
-			target.draw(key);
-			target.draw(sprite);
-			target.draw(num);
+			target.draw(key, states);
+			target.draw(sprite, states);
+			target.draw(num, states);
 
 			++nTextureDrawn;
 		
@@ -222,7 +221,7 @@ int Inventory::getPowerUp(PowerUpID::ID id) const
 {
 	auto gotCount = inventory_.find(id);
 	if(gotCount == inventory_.end())
-		return -1;
+	return -1;
 
 	return inventory_.at(id);
 }
