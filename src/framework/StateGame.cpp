@@ -20,9 +20,8 @@ StateGame::~StateGame()
 
 void StateGame::draw()
 {
-	sf::RenderStates states;
-	context_.window->draw(world_, states);
-	context_.window->draw(context_.datas->inventory, states);
+	context_.window->draw(context_.datas->inventory);
+	context_.window->draw(world_);
 }
 
 bool StateGame::update(Time dt)

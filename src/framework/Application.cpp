@@ -12,13 +12,12 @@ Application::Application()
 	          sf::Style::Resize | sf::Style::Close,
 	          sf::ContextSettings(0, 0, 4))
 	, globalTransform_(sf::Transform::Identity)
-	, datas_()
+	, datas_(Vector2f(windowSize_), globalTransform_, true)
 	, stack_(State::Context(window_, globalTransform_, datas_))
 {
 	window_.setFramerateLimit(0);
 	window_.setVerticalSyncEnabled(false);
 
-	datas_.inventory.switchKeyboard(true);
 	if(!DataSaver::retrieveDatas(datas_))
 	{
 		DataSaver::makeDefaultFile();
