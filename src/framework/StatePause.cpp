@@ -8,7 +8,7 @@ StatePause::StatePause(StateStack& stack, Context context)
 	, font_()
 	, pause_()
 {
-	Vector2u winSize = Vector2u(context.window->getSize());
+	Vector2u winSize = Vector2u(context_.originalWindowSize);
 	const Vector2f PAUSE_POS (winSize.x / 2, winSize.y / 2);
 
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
@@ -29,10 +29,12 @@ StatePause::~StatePause()
 
 void StatePause::draw()
 {
+	sf::RenderStates states;
+	states.transform *= *context_.globalTransform;
 	sf::RectangleShape rect (Vector2f(context_.window->getSize()));
 	rect.setFillColor(sf::Color(0,0,0,200));
 	context_.window->draw(rect);
-	context_.window->draw(pause_);
+	context_.window->draw(pause_, states);
 }
 
 bool StatePause::update(Time)

@@ -24,7 +24,7 @@ Market::Market(State::Context context)
 
 void Market::initText()
 {
-	const sf::Vector2f TEXT_POSITION (context_.window->getSize().x / 2.f, 50);
+	const sf::Vector2f TEXT_POSITION (context_.originalWindowSize.x / 2.f, 50);
 
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
 	coinsText_.setFont(font_);
@@ -70,7 +70,6 @@ void Market::initGUI()
 }
 
 
-
 //-----------------------------------------------------------------------------
 
 void Market::buy(PowerUpID::ID id, int number, int price)
@@ -95,11 +94,35 @@ void Market::updateCoinsText()
 
 void Market::handleEvent(const sf::Event& event)
 {
-	menu_->handleEvent(event);
+	// Quite a dirty hack 
+	sf::Event modifiedEvent = event;
+	if(event.type == sf::Event::MouseMoved)
+	{
+		Vector2f mousePos = Vector2f(context_
+		                             .globalTransform
+		                             ->getInverse()
+		                             .transformPoint(Vector2f(event.mouseMove.x,
+		                                                      event.mouseMove.y)));
+		modifiedEvent.mouseMove.x = mousePos.x;
+		modifiedEvent.mouseMove.y = mousePos.y;
+	}
+	else if(event.type == sf::Event::MouseButtonPressed ||
+	        event.type == sf::Event::MouseButtonReleased )
+	{
+		Vector2f mousePos = Vector2f(context_
+		                             .globalTransform
+		                             ->getInverse()
+		                             .transformPoint(Vector2f(event.mouseButton.x,
+		                                                      event.mouseButton.y)));
+		modifiedEvent.mouseButton.x = mousePos.x;
+		modifiedEvent.mouseButton.y = mousePos.y;
+	}
+	menu_->handleEvent(modifiedEvent);
 }
 
 void Market::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	states.transform *= *context_.globalTransform;
 	target.draw(*menu_, states);
 	target.draw(coinsText_, states);
 }

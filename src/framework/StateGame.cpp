@@ -20,8 +20,8 @@ StateGame::~StateGame()
 
 void StateGame::draw()
 {
-	context_.window->draw(context_.datas->inventory);
 	context_.window->draw(world_);
+	context_.window->draw(context_.datas->inventory);
 }
 
 bool StateGame::update(Time dt)
