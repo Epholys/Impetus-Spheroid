@@ -260,18 +260,18 @@ ecs::Entity World::createTarget(Vector2f position)
 
 void World::handleInput(const sf::Event& event)
 {
-	if(state_ == Waiting || state_ == GameOver)
+	if(event.type == sf::Event::MouseMoved)
+	{
+		mousePosition_ = Vector2f(event.mouseMove.x, event.mouseMove.y);
+		mousePosition_ = Vector2f(globalTransform_.getInverse().transformPoint(mousePosition_));
+	}
+
+	else if(state_ == Waiting || state_ == GameOver)
 	{
 		if(event.type == sf::Event::MouseButtonPressed)
 			state_ = Playing;
 		else
 			return;
-	}
-
-	else if(event.type == sf::Event::MouseMoved)
-	{
-		mousePosition_ = Vector2f(event.mouseMove.x, event.mouseMove.y);
-		mousePosition_ = Vector2f(globalTransform_.getInverse().transformPoint(mousePosition_));
 	}
 
 	else if (event.type == sf::Event::MouseButtonPressed &&
@@ -338,6 +338,9 @@ void World::getEvent(Time dt)
 
 void World::applyAutoFire(Time dt)
 {
+	if(state_ == Waiting || state_ == GameOver)
+		return;
+
 	untilNextFire_ -= dt;
 
 	if(untilNextFire_ <= Time() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
