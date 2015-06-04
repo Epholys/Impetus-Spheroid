@@ -1,4 +1,5 @@
-# Impetus Spheroid
+![Logo](../master/media/images/logo.png)
+
 ## A rapid-paced game about spheroid with high momentum and a target
 
 ### TODO
