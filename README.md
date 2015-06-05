@@ -13,7 +13,9 @@ You'll only need two things :
 
 If you're on GNU/Linux, you can then just type 
 
-   make install
+```
+make install
+```
 
 and you'll have a game freshly installed from source!
 
