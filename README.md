@@ -17,7 +17,7 @@ If you're on GNU/Linux, you can then just type
 $ sudo apt-get install g++ make libsfml-dev
 $ git clone https://github.com/Epholys/Impetus-Spheroid
 $ cd Impetus-Spheroid
-$ make install
+$ make
 $ ./Impetus-Spheroid
 ```
 
