@@ -14,7 +14,11 @@ You'll only need two things :
 If you're on GNU/Linux, you can then just type 
 
 ```
-make install
+$ sudo apt-get install g++ make libsfml-dev
+$ git clone https://github.com/Epholys/Impetus-Spheroid
+$ cd Impetus-Spheroid
+$ make install
+$ ./Impetus-Spheroid
 ```
 
 and you'll have a game freshly installed from source!
