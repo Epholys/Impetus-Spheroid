@@ -24,10 +24,6 @@ std::vector<MarketData> genMarketData()
 		     "Powerful Event Canceler",
 		     folderPath + "CancelEvents" + end},
 
-		    {AutoFire, 100, 200,
-		     "Auto-Fire to save your mouse",
-		     folderPath + "AutoFire" + end},
-
 		    {AddTime, 1, 2500,
 		     "Add 5 seconds to the timer",
 		     folderPath + "AddTime" + end},

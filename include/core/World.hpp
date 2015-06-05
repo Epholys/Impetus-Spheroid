@@ -26,9 +26,9 @@
 #include "core/Ball.hpp"
 #include "core/Target.hpp"
 #include "core/Modifier.hpp"
-#include "core/Modifiable.hpp"
 #include "core/EventGenerator.hpp"
 #include "core/DifficultyManager.hpp"
+#include "core/Cannon.hpp"
 #include "data/DifficultyData.hpp"
 #include "data/BallData.hpp"
 
@@ -36,6 +36,7 @@ class Inventory;
 class TransGamesData;
 
 class World : public sf::NonCopyable,
+              public sf::Drawable,
               public Modifiable<World>
 {
 public:
@@ -47,13 +48,16 @@ public:
 	};
 
 public:
-	World(sf::RenderWindow& window, TransGamesData& datas, int precision = 2);
+	World(const Vector2f& originalSize,
+	      const sf::Transform& globalTransform,
+	      TransGamesData& datas,
+	      int precision = 2);
 	~World() {};
 
 	void handleInput(const sf::Event& event);
 	void update(Time dt);
-	void draw() const;
-	void drawFutureBalls() const;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	void drawFutureBalls(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	ecs::EntityManager& getEntityManager();
 	Vector2f& getGravityVect();
@@ -71,13 +75,12 @@ public:
 
 	void switchBallType(unsigned int type);
 	void cancelEvents(bool comeFromInventory);
-	void switchAutoFire();
 	void addTime(Time adding);
 	void setNTouching(int n);
 
 	void updateDifficulty(DifficultyWorld diff);
 
-	ecs::Entity createBall(Vector2f mousePosition);
+	ecs::Entity createBall();
 	ecs::Entity createTarget(Vector2f mousePosition);
 
 private:
@@ -95,18 +98,21 @@ private:
 	BallData genBallData() const;
 
 private:
-	sf::RenderWindow& window_;
+	const Vector2f originalSize_;
+	const sf::Transform& globalTransform_;
 	ecs::EntityManager ecs_;
 	eg::PhysicEngine physEng_;
 	evt::EventGenerator evtGen_;
 	DifficultyManager difficulty_;
 	Inventory& inventory_;
+	Cannon cannon_;
+	static Vector2f CANON_POSITION;
 
 	GameState state_;
 
-	bool autoFireOn_;
 	Time untilNextFire_;
 	static const Time TIME_BEETWEEN_FIRE;
+	Vector2f mousePosition_;
 
 	float speedCoeff_;
 

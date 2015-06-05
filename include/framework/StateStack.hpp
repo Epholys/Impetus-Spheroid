@@ -5,6 +5,8 @@
 #include <vector>
 #include <map>
 
+#include <SFML/Graphics/RenderStates.hpp>
+
 #include "framework/State.hpp"
 
 

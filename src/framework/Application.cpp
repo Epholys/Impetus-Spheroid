@@ -6,17 +6,18 @@
 // *** Contructor: ***
 
 Application::Application()
-	: window_(sf::VideoMode(800, 600),
+	: windowSize_(800, 600) 
+	, window_(sf::VideoMode(windowSize_.x, windowSize_.y),
 	          "Impetus Spheroid",
-	          sf::Style::Titlebar | sf::Style::Close,
+	          sf::Style::Resize | sf::Style::Close,
 	          sf::ContextSettings(0, 0, 4))
-	, datas_()
-	, stack_(State::Context(window_, datas_))
+	, globalTransform_(sf::Transform::Identity)
+	, datas_(Vector2f(windowSize_), globalTransform_, true)
+	, stack_(State::Context(window_, globalTransform_, datas_))
 {
 	window_.setFramerateLimit(0);
 	window_.setVerticalSyncEnabled(false);
 
-	datas_.inventory.switchKeyboard(true);
 	if(!DataSaver::retrieveDatas(datas_))
 	{
 		DataSaver::makeDefaultFile();
@@ -59,12 +60,37 @@ void Application::handleInput()
 	sf::Event event;
 	while (window_.pollEvent(event))
 	{
-		stack_.handleEvent(event);
-
 		if (event.type == sf::Event::Closed)
 		{
 			window_.close();
 		}
+
+		else if (event.type == sf::Event::Resized)
+		{
+			globalTransform_ = sf::Transform::Identity;
+			float originalRatio = windowSize_.x / float(windowSize_.y);
+			float newRatio = event.size.width / float(event.size.height);
+			if(newRatio > originalRatio)
+			{
+				float scale = event.size.height / float(windowSize_.y);
+				float margin = std::abs(float(windowSize_.x) * scale - float(event.size.width)) / 2.f;
+				globalTransform_.translate(margin, 0.f);
+				globalTransform_.scale(scale, scale);
+			}
+			else
+			{
+				float scale = event.size.width / float(windowSize_.x);
+				float margin = std::abs(float(windowSize_.y) * scale - float(event.size.height)) / 2.f;
+				globalTransform_.translate(0.f, margin);
+				globalTransform_.scale(scale, scale);
+			}
+
+			window_.setView(
+				sf::View(
+					sf::FloatRect(0, 0, event.size.width, event.size.height)));
+		}
+
+		stack_.handleEvent(event);
 	}
 }
 

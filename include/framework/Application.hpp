@@ -7,6 +7,7 @@
 
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Transform.hpp>
 
 #include "framework/StateStack.hpp"
 #include "framework/StateGame.hpp"
@@ -37,7 +38,9 @@ private:
 	void render();
 
 private:
+	const sf::Vector2u windowSize_;
 	sf::RenderWindow window_;
+	sf::Transform globalTransform_;
 	TransGamesData datas_;
 
 	StateStack stack_;

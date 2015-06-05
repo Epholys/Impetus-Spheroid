@@ -5,7 +5,7 @@
 
 StateGame::StateGame(StateStack& stack, Context context)
 	: State(stack, context)
-	, world_(*context.window, *context.datas)
+	, world_(context.originalWindowSize, *context.globalTransform, *context.datas)
 	, overScreenUp_(false)
 {
 	context_.datas->inventory.addWorld(&world_);
@@ -20,7 +20,7 @@ StateGame::~StateGame()
 
 void StateGame::draw()
 {
-	world_.draw();
+	context_.window->draw(world_);
 	context_.window->draw(context_.datas->inventory);
 }
 

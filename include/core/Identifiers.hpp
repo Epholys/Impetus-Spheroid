@@ -33,7 +33,6 @@ namespace PowerUpID
 		GhostBall,
 		NoGravBall,
 		CancelEvents,
-		AutoFire,
 		AddTime,
 		AddTarget,
 		PointMultiplier,

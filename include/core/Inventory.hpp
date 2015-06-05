@@ -13,6 +13,7 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
 #include "utility/utility.hpp"
@@ -27,7 +28,10 @@ class Inventory : public sf::NonCopyable,
                   public sf::Drawable, public sf::Transformable
 {
 public:
-	Inventory(bool isAzerty = false);
+	Inventory();
+	Inventory(const Vector2f& originalSize,
+	          const sf::Transform& globalTransform,
+	          bool isAzerty);
 	virtual ~Inventory();
 
 	void switchKeyboard(bool isAzerty);
@@ -39,7 +43,7 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	bool setPowerUp(PowerUpID::ID id, int value);
-	// Warning : return -1 if id isn't valid.
+	// Warning : return -1 if ID isn't valid.
 	int getPowerUp(PowerUpID::ID id) const;
 	bool decrement(PowerUpID::ID id);
 	void increment(PowerUpID::ID id, int value);
@@ -51,6 +55,9 @@ public:
 	const std::map<PowerUpID::ID, sf::Keyboard::Key>& getKeys() const;
 
 private:
+	const Vector2f originalSize_;
+	const sf::Transform& globalTransform_;
+
 	sf::Font font_;
 	mutable sf::Text coinsText_;
 

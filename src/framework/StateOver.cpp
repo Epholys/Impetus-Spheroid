@@ -28,7 +28,7 @@ StateOver::~StateOver()
 
 void StateOver::initStaticTexts(Context context)
 {
-	Vector2u winSize = Vector2u(context.window->getSize());
+	Vector2u winSize = Vector2u(context.originalWindowSize);
 	const Vector2f GAME_OVER_POS (winSize.x / 2, winSize.y / 2);
 	const Vector2f MARKET_POS (winSize.x / 2, 2 * winSize.y / 3);
 	const Vector2f RETRY_POS (winSize.x / 2, 4 * winSize.y / 5); 
@@ -48,7 +48,7 @@ void StateOver::initStaticTexts(Context context)
 
 void StateOver::initVariableTexts(Context context)
 {
-	Vector2u winSize = Vector2u(context.window->getSize());
+	Vector2u winSize = Vector2u(context.originalWindowSize );
 	
 	std::stringstream ss;
 
@@ -109,9 +109,11 @@ void StateOver::draw()
 	sf::RectangleShape rect (Vector2f(context_.window->getSize()));
 	rect.setFillColor(sf::Color(0,0,0,200));
 	context_.window->draw(rect);
+	sf::RenderStates states;
+	states.transform *= *context_.globalTransform;
 	for(int i=0; i<TextCount; ++i)
 	{
-		context_.window->draw(texts_[i]);
+		context_.window->draw(texts_[i], states);
 	}
 }
 

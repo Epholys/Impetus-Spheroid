@@ -3,8 +3,17 @@
 
 //-----------------------------------------------------------------------------
 
-Inventory::Inventory(bool isAzerty)
-	: font_()
+Inventory::Inventory()
+	: Inventory(Vector2f(800, 600), sf::Transform::Identity, true)
+{
+}
+
+Inventory::Inventory(const Vector2f& originalSize,
+                     const sf::Transform& globalTransform,
+                     bool isAzerty)
+	: originalSize_(originalSize)
+	, globalTransform_(globalTransform)
+	, font_()
 	, coins_(0)
 	, keyBindings_()
 	, keys_()
@@ -43,14 +52,12 @@ void Inventory::initKeyBinding(bool isAzerty)
 	{
 		keyBindings_[sf::Keyboard::A] = GhostBall;
 		keyBindings_[sf::Keyboard::Z] = NoGravBall;
-		keyBindings_[sf::Keyboard::Q] = AutoFire;
 		keyBindings_[sf::Keyboard::W] = PointMultiplier;
 	}
 	else
 	{
 		keyBindings_[sf::Keyboard::Q] = GhostBall;
 		keyBindings_[sf::Keyboard::W] = NoGravBall;
-		keyBindings_[sf::Keyboard::A] = AutoFire;
 		keyBindings_[sf::Keyboard::Z] = PointMultiplier;
 	}
 
@@ -98,7 +105,6 @@ void Inventory::handleInput(const sf::Event& event)
 {
 	if (event.type == sf::Event::KeyReleased)
 	{
-		// TODO Modify later for the market
 		if(!world_)
 			return;
 
@@ -130,18 +136,18 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	if(!world_)
 		return;
 	
-	states.transform *= getTransform();
+	states.transform *= globalTransform_;
 
 
 	const std::string str = toString(coins_);
 	coinsText_.setString(str);
-	target.draw(coinsText_);
+	target.draw(coinsText_, states);
 
 	
 	const Vector2u POWERUP_ICON_SIZE (20, 20);
 	const Vector2u SPACE_BEETWEEN_ICONS (10, 30);
 	const int POWERUP_PER_LINE = 10;
-	auto targetSize = target.getSize();
+	auto targetSize = originalSize_;
 
 	int nPowerUp = std::count_if(inventory_.begin(),
 	                             inventory_.end(),
@@ -182,9 +188,9 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			key.setCharacterSize(20);
 			key.setColor(sf::Color::Black);
 
-			target.draw(key);
-			target.draw(sprite);
-			target.draw(num);
+			target.draw(key, states);
+			target.draw(sprite, states);
+			target.draw(num, states);
 
 			++nTextureDrawn;
 		
@@ -224,7 +230,7 @@ int Inventory::getPowerUp(PowerUpID::ID id) const
 {
 	auto gotCount = inventory_.find(id);
 	if(gotCount == inventory_.end())
-		return -1;
+	return -1;
 
 	return inventory_.at(id);
 }
