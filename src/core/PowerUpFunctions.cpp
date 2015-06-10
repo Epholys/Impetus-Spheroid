@@ -15,13 +15,27 @@ namespace
 	auto switchGhostBalls =
 		[](World& w)
 	{
-		w.switchBallType(Ball::Ghost);
+		Modifier<Cannon> ghostBalls;
+		ghostBalls.duration_ = Time();
+		ghostBalls.postFunction_ =
+			[](Cannon& c, Time)
+			{
+				c.switchBallType(Ball::Ghost);
+			};
+		w.addCannonModifier(ghostBalls);
 	};
 
 	auto switchNoGravBalls =
 		[](World& w)
 	{
-		w.switchBallType(Ball::Massless);
+		Modifier<Cannon> masslessBalls;
+		masslessBalls.duration_ = Time();
+		masslessBalls.postFunction_ =
+			[](Cannon& c, Time)
+			{
+				c.switchBallType(Ball::Massless);
+			};
+		w.addCannonModifier(masslessBalls);
 	};
 
 	auto cancelEvents =
@@ -104,7 +118,14 @@ namespace
 	auto changeNTouching =
 		[](World& w, int nTouching)
 	{
-		w.setNTouching(nTouching);
+		Modifier<Cannon> multipleTouch;
+		multipleTouch.duration_ = Time();
+		multipleTouch.postFunction_ =
+			[nTouching](Cannon& c, Time)
+			{
+				c.setNTouching(nTouching);
+			};
+		w.addCannonModifier(multipleTouch);
 	};
 }
 
@@ -117,7 +138,7 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 {
 	using namespace PowerUpID;
 
-// WARNING: WE DO NOT VERIFY IF THE TEXTURE IS SUCCESSFULLY LOADED
+// WARNING: WE DO NOT VERIFY IF THE TEXTUREs ARE SUCCESSFULLY LOADED
 
 	PowerUpToogle* putGhost = new PowerUpToogle();
 	putGhost->addActivateFunc(switchGhostBalls);

@@ -152,16 +152,16 @@ void DifficultyManager::update(Time dt)
 	timer_.setString(ssSeconds.str() + ":" + ssCentiSecs.str());
 }
 
-void DifficultyManager::handleInput(const sf::Event& event)
+void DifficultyManager::handleInput(const sf::Event&)
 {
-	if(event.type == sf::Event::KeyReleased
-	   && event.key.code == sf::Keyboard::P)
-		reloadDifficulty();
+	// if(event.type == sf::Event::KeyReleased
+	//    && event.key.code == sf::Keyboard::P)
+	// 	reloadDifficulty();
 
-	if(!maskGui_)
-	{
-		diffGui_->handleEvent(event);
-	}
+	// if(!maskGui_)
+	// {
+	// 	diffGui_->handleEvent(event);
+	// }
 }
 
 
