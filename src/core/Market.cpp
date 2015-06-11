@@ -44,7 +44,7 @@ void Market::initGUI()
 	const sf::Vector2u BUTTON_SIZE (600, 50);
 	const sf::Vector2u BEGIN_MIDDLE (400, 100);
 	const int SPACE_SIZE = 10;
-	const auto& KEYS = inventory_.getKeys();
+	const auto KEYS = inventory_.getKeys();
 	int buttonPosition = 0;
 	
 	for(auto it=datas.begin(); it!=datas.end(); ++it)

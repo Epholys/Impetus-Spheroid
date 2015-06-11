@@ -23,6 +23,13 @@
 #include "core/PowerUpToogle.hpp"
 #include "core/PowerUpFunctions.hpp"
 
+struct PowerUpEntry
+{
+	sf::Keyboard::Key key;
+	std::shared_ptr<PowerUp> powerUp;
+	int stock;
+	sf::Texture texture;
+};
 
 class Inventory : public sf::NonCopyable,
                   public sf::Drawable, public sf::Transformable
@@ -52,7 +59,7 @@ public:
 	bool removeCoins(int n);
 	int getCoins() const;
 
-	const std::map<PowerUpID::ID, sf::Keyboard::Key>& getKeys() const;
+    std::map<PowerUpID::ID, sf::Keyboard::Key> getKeys() const;
 
 private:
 	const Vector2f originalSize_;
@@ -64,11 +71,13 @@ private:
 	int coins_;
 
 	std::map<sf::Keyboard::Key, PowerUpID::ID> keyBindings_;
-// TODO: change all std::map below to something like std::map<PowerUpID::ID, PowerUpStruct>
-	std::map<PowerUpID::ID, sf::Keyboard::Key> keys_;
-	std::map<PowerUpID::ID, std::shared_ptr<PowerUp>> powerUps_;
-	std::map<PowerUpID::ID, int> inventory_;
-	std::map<PowerUpID::ID, sf::Texture> textures_;
+
+	std::map<PowerUpID::ID, PowerUpEntry> powerUpTable_;
+	// std::map<PowerUpID::ID, sf::Keyboard::Key> keys_;
+	// std::map<PowerUpID::ID, std::shared_ptr<PowerUp>> powerUps_;
+	// std::map<PowerUpID::ID, int> inventory_;
+	// std::map<PowerUpID::ID, sf::Texture> textures_;
+   
 
 	World* world_;
 };

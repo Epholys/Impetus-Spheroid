@@ -16,14 +16,11 @@ Inventory::Inventory(const Vector2f& originalSize,
 	, font_()
 	, coins_(0)
 	, keyBindings_()
-	, keys_()
-	, powerUps_()
-	, inventory_()
-	, textures_()
+	, powerUpTable_()
 	, world_(nullptr)
 {
 	initKeyBinding(isAzerty);
-	genPowerUps(powerUps_, inventory_, textures_);
+	genPowerUps(powerUpTable_);
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
 	const Vector2f COINS_POSITION (710.f, 40.f);
 	coinsText_.setFont(font_);
@@ -68,7 +65,7 @@ void Inventory::initKeyBinding(bool isAzerty)
 
 	for(auto it = keyBindings_.begin(); it != keyBindings_.end(); ++it) 
 	{
-		keys_[it->second] = it->first;
+		powerUpTable_[it->second].key = it->first;
 	}
 }
 
@@ -80,11 +77,11 @@ void Inventory::addWorld(World* world)
 void Inventory::removeWorld()
 {
 	// Do some clean-up
-	for(auto& puPair : powerUps_)
+	for (auto& entry : powerUpTable_)
 	{
-		auto& powerUp = puPair.second;
+		auto& powerUp = entry.second.powerUp;
 		if(powerUp->getType() == PowerUpType::Toogle &&
-			world_)
+		   world_)
 		{
 			// Launch the deactivate_() of powerUpToogle, if it is active
 			auto powerUpToogle = std::dynamic_pointer_cast<PowerUpToogle>(powerUp);
@@ -113,12 +110,13 @@ void Inventory::handleInput(const sf::Event& event)
 			return;
 		
 		auto id = gotId->second;
-		auto gotPowerUp = powerUps_.find(id);
-		if(gotPowerUp == powerUps_.end())
+		auto gotEntry = powerUpTable_.find(id);
+		if(gotEntry == powerUpTable_.end())
 			return;
 
-		auto& powerUp = gotPowerUp->second;
-		int& count = inventory_[id];
+		auto& powerUp = gotEntry->second.powerUp;
+		int& count = gotEntry->second.stock;
+
 		if(count == 0)
 			return;
 
@@ -149,12 +147,12 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	const int POWERUP_PER_LINE = 10;
 	auto targetSize = originalSize_;
 
-	int nPowerUp = std::count_if(inventory_.begin(),
-	                             inventory_.end(),
+	int nPowerUp = std::count_if(powerUpTable_.begin(),
+	                             powerUpTable_.end(),
 //	                             [](const auto& pair)
-	                             [](const std::pair<PowerUpID::ID, int> pair)
+	                             [](const std::pair<PowerUpID::ID, PowerUpEntry> entry)
 	                             {
-		                             return pair.second > 0;
+		                             return entry.second.stock > 0;
 	                             });
 
 	if(nPowerUp == 0)
@@ -164,26 +162,24 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	int yCoord = targetSize.y * 0.90f - (POWERUP_ICON_SIZE.y + SPACE_BEETWEEN_ICONS.y) * ((nPowerUp-1) / POWERUP_PER_LINE);
 
 	int nTextureDrawn=0;
-	for(auto it = textures_.begin(); it != textures_.end(); ++it)
+	for(auto it = powerUpTable_.begin(); it != powerUpTable_.end(); ++it)
 	{
-		PowerUpID::ID id = it->first;
-
-		if(inventory_.at(id)>0) 
+		if(it->second.stock > 0) 
 		{
 			sf::Text num;
 			num.setFont(font_);
-			num.setString(toString(inventory_.at(id)));
+			num.setString(toString(it->second.stock));
 			num.setPosition(xCoord, yCoord + POWERUP_ICON_SIZE.y / 1.5);
 			num.setCharacterSize(20);
 			num.setColor(sf::Color::Black);
 
 			sf::Sprite sprite;
-			sprite.setTexture(it->second);
+			sprite.setTexture(it->second.texture);
 			sprite.setPosition(xCoord, yCoord);
 
 			sf::Text key;
 			key.setFont(font_);
-			key.setString(toString(keys_.at(id)));
+			key.setString(toString(it->second.key));
 			key.setPosition(xCoord, yCoord - POWERUP_ICON_SIZE.y);
 			key.setCharacterSize(20);
 			key.setColor(sf::Color::Black);
@@ -216,11 +212,11 @@ bool Inventory::setPowerUp(PowerUpID::ID id, int value)
 	if(value < 0)
 		return false;
 
-	auto gotCount = inventory_.find(id);
-	if(gotCount == inventory_.end())
+	auto gotEntry = powerUpTable_.find(id);
+	if(gotEntry == powerUpTable_.end())
 		return false;
 
-	int& count = inventory_[id];
+	int& count = gotEntry->second.stock;
 	count = value;
 
 	return true;
@@ -228,23 +224,22 @@ bool Inventory::setPowerUp(PowerUpID::ID id, int value)
 
 int Inventory::getPowerUp(PowerUpID::ID id) const
 {
-	auto gotCount = inventory_.find(id);
-	if(gotCount == inventory_.end())
-	return -1;
+	auto gotEntry = powerUpTable_.find(id);
+	if(gotEntry == powerUpTable_.end())
+		return -1;
 
-	return inventory_.at(id);
+	return gotEntry->second.stock;
 }
 
 
 bool Inventory::decrement(PowerUpID::ID id)
 {
-
-	auto gotPowerUp = powerUps_.find(id);
-	if(gotPowerUp == powerUps_.end())
+	auto gotEntry = powerUpTable_.find(id);
+	if(gotEntry == powerUpTable_.end())
 		return false;
 
-	auto& powerUp = gotPowerUp->second;
-	int& count = inventory_[id];
+	auto& powerUp = gotEntry->second.powerUp;
+	int& count = gotEntry->second.stock;
 	// Absorb the error
 	if(count == 0)
 		return false;
@@ -268,12 +263,12 @@ bool Inventory::decrement(PowerUpID::ID id)
 
 void Inventory::increment(PowerUpID::ID id, int value)
 {
-	auto gotNumber = inventory_.find(id);
-	if(gotNumber == inventory_.end())
+	auto gotEntry = powerUpTable_.find(id);
+	if(gotEntry == powerUpTable_.end())
 		return;
-
-	int& count = gotNumber->second;
 	
+	int& count = gotEntry->second.stock;
+
 	count += value;
 }
 
@@ -306,7 +301,12 @@ int Inventory::getCoins() const
 
 //-----------------------------------------------------------------------------
 
-const std::map<PowerUpID::ID, sf::Keyboard::Key>& Inventory::getKeys() const
+std::map<PowerUpID::ID, sf::Keyboard::Key> Inventory::getKeys() const
 {
-	return keys_;
+	std::map<PowerUpID::ID, sf::Keyboard::Key> keys;
+	for(auto cit=keyBindings_.cbegin(); cit!=keyBindings_.cend(); ++cit)
+	{
+		keys[cit->second] = cit->first;
+	}
+	return keys;
 }

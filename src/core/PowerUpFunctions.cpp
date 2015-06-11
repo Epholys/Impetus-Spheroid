@@ -6,7 +6,7 @@
 #include "core/PowerUpToogle.hpp"
 #include "core/PowerUpFunctions.hpp"
 #include "core/Ball.hpp"
-
+#include "core/Inventory.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -132,9 +132,7 @@ namespace
 
 //-----------------------------------------------------------------------------
 
-void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
-                 std::map<PowerUpID::ID, int>& numbers,
-                 std::map<PowerUpID::ID, sf::Texture>& textures)
+void genPowerUps(std::map<PowerUpID::ID, PowerUpEntry>& powerUpTable)
 {
 	using namespace PowerUpID;
 
@@ -146,9 +144,10 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	std::shared_ptr<PowerUp> pPutGhost (putGhost);
 	sf::Texture txtGhost;
 	txtGhost.loadFromFile("./media/sprites/GhostBall.png");
-	powerUps[GhostBall] = pPutGhost;
-	numbers[GhostBall] = 0;
-	textures[GhostBall] = txtGhost;
+	auto* entry = &powerUpTable[GhostBall];
+	entry->powerUp = pPutGhost;
+	entry->stock = 0;
+	entry->texture = txtGhost;
 
 	PowerUpToogle* putNoGrav = new PowerUpToogle();
 	putNoGrav->addActivateFunc(switchNoGravBalls);
@@ -156,18 +155,20 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	std::shared_ptr<PowerUp> pPutNoGrav (putNoGrav);
 	sf::Texture txtNoGrav;
 	txtGhost.loadFromFile("./media/sprites/NoGravBall.png");
-	powerUps[NoGravBall] = pPutNoGrav;
-	numbers[NoGravBall] = 0;
-	textures[NoGravBall] = txtGhost;
+	entry = &powerUpTable[NoGravBall];
+	entry->powerUp = pPutNoGrav;
+	entry->stock = 0;
+	entry->texture = txtGhost;
 
 	PowerUpToogle* putCancel = new PowerUpToogle();
 	putCancel->addActivateFunc(cancelEvents);
 	std::shared_ptr<PowerUp> pPutCancel (putCancel);
 	sf::Texture txtCancel;
 	txtCancel.loadFromFile("./media/sprites/CancelEvents.png");
-	powerUps[CancelEvents] = pPutCancel;
-	numbers[CancelEvents] = 0;
-	textures[CancelEvents] = txtCancel;
+	entry = &powerUpTable[CancelEvents];
+	entry->powerUp = pPutCancel;
+	entry->stock = 0;
+	entry->texture = txtCancel;
 		
 	Modifier<World> modTime;
 	modTime.postFunction_ = addTime;
@@ -177,9 +178,10 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	std::shared_ptr<PowerUp> pPumTime (pumTime);
 	sf::Texture txtTime;
 	txtTime.loadFromFile("./media/sprites/AddTime.png");
-	powerUps[AddTime] = pPumTime;
-	numbers[AddTime] = 0;
-	textures[AddTime] = txtTime;
+	entry = &powerUpTable[AddTime];
+	entry->powerUp = pPumTime;
+	entry->stock = 0;
+	entry->texture = txtTime;
 
 	Modifier<World> modTarget;
 	modTarget.postFunction_ = addTarget;
@@ -189,9 +191,10 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	std::shared_ptr<PowerUp> pPumTarget (pumTarget);
 	sf::Texture txtTarget;
 	txtTarget.loadFromFile("./media/sprites/AddTarget.png");
-	powerUps[AddTarget] = pPumTarget;
-	numbers[AddTarget] = 0;
-	textures[AddTarget] = txtTarget;
+	entry = &powerUpTable[AddTarget];
+	entry->powerUp = pPumTarget;
+	entry->stock = 0;
+	entry->texture = txtTarget;
 
 	const Time MULTIPLIER_TIME = seconds(10);
 	Modifier<World> modMult;
@@ -203,9 +206,10 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	std::shared_ptr<PowerUp> pPumMult (pumMult);
 	sf::Texture txtMult;
 	txtMult.loadFromFile("./media/sprites/MultiplyPoints.png");
-	powerUps[PointMultiplier] = pPumMult;
-	numbers[PointMultiplier] = 0;
-	textures[PointMultiplier] = txtMult;
+	entry = &powerUpTable[PointMultiplier];
+	entry->powerUp = pPumMult;
+	entry->stock = 0;
+	entry->texture = txtMult;
 
 	PowerUpToogle* putTouching = new PowerUpToogle();
 	putTouching->addActivateFunc(std::bind(changeNTouching,
@@ -217,7 +221,8 @@ void genPowerUps(std::map<PowerUpID::ID, std::shared_ptr<PowerUp>>& powerUps,
 	std::shared_ptr<PowerUp> pPutTouching (putTouching);
 	sf::Texture txtTouching;
 	txtTouching.loadFromFile("./media/sprites/BallTouchDouble.png");
-	powerUps[BallTouchDouble] = pPutTouching;
-	numbers[BallTouchDouble] = 0;
-	textures[BallTouchDouble] = txtTouching;
+	entry = &powerUpTable[BallTouchDouble];
+	entry->powerUp = pPutTouching;
+	entry->stock = 0;
+	entry->texture = txtTouching;
 }
