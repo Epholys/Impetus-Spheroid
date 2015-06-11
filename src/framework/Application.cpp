@@ -12,8 +12,8 @@ Application::Application()
 	          sf::Style::Resize | sf::Style::Close,
 	          sf::ContextSettings(0, 0, 4))
 	, globalTransform_(sf::Transform::Identity)
-	, datas_(Vector2f(windowSize_), globalTransform_, true)
-	, stack_(State::Context(window_, globalTransform_, datas_))
+	, datas_(Vector2f(windowSize_), true)
+	, stack_(State::Context(window_, datas_))
 {
 	window_.setFramerateLimit(0);
 	window_.setVerticalSyncEnabled(false);
@@ -90,6 +90,28 @@ void Application::handleInput()
 					sf::FloatRect(0, 0, event.size.width, event.size.height)));
 		}
 
+		// Quite a dirty hack
+		else if(event.type == sf::Event::MouseMoved)
+		{
+			Vector2f mousePos = Vector2f(globalTransform_
+			                             .getInverse()
+			                             .transformPoint(Vector2f(event.mouseMove.x,
+			                                                      event.mouseMove.y)));
+			event.mouseMove.x = mousePos.x;
+			event.mouseMove.y = mousePos.y;
+		}
+		else if(event.type == sf::Event::MouseButtonPressed ||
+		        event.type == sf::Event::MouseButtonReleased )
+		{
+			Vector2f mousePos = Vector2f(globalTransform_
+			                             .getInverse()
+			                             .transformPoint(Vector2f(event.mouseButton.x,
+			                                                      event.mouseButton.y)));
+			event.mouseButton.x = mousePos.x;
+			event.mouseButton.y = mousePos.y;
+		}
+
+
 		stack_.handleEvent(event);
 	}
 }
@@ -103,7 +125,9 @@ void Application::render()
 {
 	window_.clear(sf::Color(230,230,230));
 
-	stack_.draw();
+	sf::RenderStates states;
+	states.transform *= globalTransform_;
+	stack_.draw(states);
 
 	window_.display();
 }

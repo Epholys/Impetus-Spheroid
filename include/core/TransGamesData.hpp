@@ -13,9 +13,8 @@ struct TransGamesData
 
 	TransGamesData(
 		const Vector2f& originalSize,
-		const sf::Transform& globalTransform,
 		bool isAzerty)
-		: inventory(originalSize, globalTransform, isAzerty)
+		: inventory(originalSize, isAzerty)
 		{}
 
 	int highScore;

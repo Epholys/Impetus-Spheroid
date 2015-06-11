@@ -18,11 +18,9 @@ Vector2f World::CANON_POSITION {40.f, 580.f};
 
 
 World::World(const Vector2f& originalSize,
-             const sf::Transform& globalTransform,
              TransGamesData& datas,
              int precision)
 	: originalSize_(originalSize)
-	, globalTransform_(globalTransform)
 	, ecs_()
 	, physEng_(ecs_, precision)
 	, evtGen_()
@@ -173,7 +171,6 @@ void World::handleInput(const sf::Event& event)
 	if(event.type == sf::Event::MouseMoved)
 	{
 		mousePosition_ = Vector2f(event.mouseMove.x, event.mouseMove.y);
-		mousePosition_ = Vector2f(globalTransform_.getInverse().transformPoint(mousePosition_));
 	}
 
 	else if(state_ == Waiting || state_ == GameOver)
@@ -310,9 +307,6 @@ void World::cleanEntities()
 
 void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	states.transform *= globalTransform_;
-
-
 	difficulty_.draw(target, states);
 
 	for(auto it = entities_.begin(); it != entities_.end(); ++it)

@@ -31,7 +31,7 @@ public:
 	StateOver(StateStack& stack, Context context);
 	virtual ~StateOver();
 
-	virtual void draw();
+	virtual void draw(sf::RenderStates states);
 	virtual bool update(Time dt);
 	virtual bool handleInput(const sf::Event& event);
 

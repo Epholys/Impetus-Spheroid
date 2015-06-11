@@ -104,13 +104,12 @@ void StateOver::updateDatas(Context context)
 
 //-----------------------------------------------------------------------------
 
-void StateOver::draw()
+void StateOver::draw(sf::RenderStates states)
 {
 	sf::RectangleShape rect (Vector2f(context_.window->getSize()));
 	rect.setFillColor(sf::Color(0,0,0,200));
 	context_.window->draw(rect);
-	sf::RenderStates states;
-	states.transform *= *context_.globalTransform;
+
 	for(int i=0; i<TextCount; ++i)
 	{
 		context_.window->draw(texts_[i], states);

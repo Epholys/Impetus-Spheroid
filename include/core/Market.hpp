@@ -40,7 +40,6 @@ private:
 	gui::Menu::SPtr menu_;
 	sf::Font font_;
 	sf::Text coinsText_;
-
 	State::Context context_;
 };
 

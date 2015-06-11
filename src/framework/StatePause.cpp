@@ -27,13 +27,12 @@ StatePause::~StatePause()
 
 //-----------------------------------------------------------------------------
 
-void StatePause::draw()
+void StatePause::draw(sf::RenderStates states)
 {
-	sf::RenderStates states;
-	states.transform *= *context_.globalTransform;
 	sf::RectangleShape rect (Vector2f(context_.window->getSize()));
 	rect.setFillColor(sf::Color(0,0,0,200));
 	context_.window->draw(rect);
+
 	context_.window->draw(pause_, states);
 }
 

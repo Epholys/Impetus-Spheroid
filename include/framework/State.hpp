@@ -37,11 +37,10 @@ class State
 public:
 	struct Context
 	{
-		Context(sf::RenderWindow& window, sf::Transform& transform, TransGamesData& datas);
+		Context(sf::RenderWindow& window, TransGamesData& datas);
 		
 		sf::RenderWindow* window;
 		const Vector2f originalWindowSize;
-		sf::Transform* globalTransform;
 		TransGamesData* datas;
 	};
 
@@ -52,7 +51,7 @@ public:
 	State(StateStack& stack, Context context);
 	virtual ~State();
 
-	virtual void draw() =0;
+	virtual void draw(sf::RenderStates states) =0;
 	virtual bool update(Time dt) =0;
 	virtual bool handleInput(const sf::Event& event) =0;
 

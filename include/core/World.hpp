@@ -49,7 +49,6 @@ public:
 
 public:
 	World(const Vector2f& originalSize,
-	      const sf::Transform& globalTransform,
 	      TransGamesData& datas,
 	      int precision = 2);
 	~World() {};
@@ -94,7 +93,6 @@ private:
 
 private:
 	const Vector2f originalSize_;
-	const sf::Transform& globalTransform_;
 	ecs::EntityManager ecs_;
 	eg::PhysicEngine physEng_;
 	evt::EventGenerator evtGen_;

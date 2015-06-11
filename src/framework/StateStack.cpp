@@ -53,10 +53,10 @@ void StateStack::update(sf::Time dt)
 	applyPendingChanges();
 }
 
-void StateStack::draw()
+void StateStack::draw(sf::RenderStates states)
 {
 	for (auto& state : stack_)
-		state->draw();
+		state->draw(states);
 }
 
 void StateStack::handleEvent(const sf::Event& event)

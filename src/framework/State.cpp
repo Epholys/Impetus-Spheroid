@@ -4,10 +4,9 @@
 
 //-----------------------------------------------------------------------------
 
-State::Context::Context(sf::RenderWindow& window, sf::Transform& transform, TransGamesData& datas)
+State::Context::Context(sf::RenderWindow& window, TransGamesData& datas)
 	: window(&window)
 	, originalWindowSize(window.getSize())
-	, globalTransform(&transform)
 	, datas(&datas)
 {
 }

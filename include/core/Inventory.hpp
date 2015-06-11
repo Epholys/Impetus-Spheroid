@@ -37,7 +37,6 @@ class Inventory : public sf::NonCopyable,
 public:
 	Inventory();
 	Inventory(const Vector2f& originalSize,
-	          const sf::Transform& globalTransform,
 	          bool isAzerty);
 	virtual ~Inventory();
 
@@ -63,7 +62,6 @@ public:
 
 private:
 	const Vector2f originalSize_;
-	const sf::Transform& globalTransform_;
 
 	sf::Font font_;
 	mutable sf::Text coinsText_;
@@ -73,11 +71,6 @@ private:
 	std::map<sf::Keyboard::Key, PowerUpID::ID> keyBindings_;
 
 	std::map<PowerUpID::ID, PowerUpEntry> powerUpTable_;
-	// std::map<PowerUpID::ID, sf::Keyboard::Key> keys_;
-	// std::map<PowerUpID::ID, std::shared_ptr<PowerUp>> powerUps_;
-	// std::map<PowerUpID::ID, int> inventory_;
-	// std::map<PowerUpID::ID, sf::Texture> textures_;
-   
 
 	World* world_;
 };

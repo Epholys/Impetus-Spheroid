@@ -16,12 +16,13 @@ StateMarket::~StateMarket()
 
 //-----------------------------------------------------------------------------
 
-void StateMarket::draw()
+void StateMarket::draw(sf::RenderStates states)
 {
 	sf::RectangleShape rect (Vector2f(context_.window->getSize()));
 	rect.setFillColor(sf::Color(0,0,0,200));
 	context_.window->draw(rect);
-	context_.window->draw(market_);
+
+	context_.window->draw(market_, states);
 }
 
 bool StateMarket::update(Time)

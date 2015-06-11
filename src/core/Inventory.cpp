@@ -4,15 +4,13 @@
 //-----------------------------------------------------------------------------
 
 Inventory::Inventory()
-	: Inventory(Vector2f(800, 600), sf::Transform::Identity, true)
+	: Inventory(Vector2f(800, 600), true)
 {
 }
 
 Inventory::Inventory(const Vector2f& originalSize,
-                     const sf::Transform& globalTransform,
                      bool isAzerty)
 	: originalSize_(originalSize)
-	, globalTransform_(globalTransform)
 	, font_()
 	, coins_(0)
 	, keyBindings_()
@@ -134,13 +132,9 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	if(!world_)
 		return;
 	
-	states.transform *= globalTransform_;
-
-
 	const std::string str = toString(coins_);
 	coinsText_.setString(str);
 	target.draw(coinsText_, states);
-
 	
 	const Vector2u POWERUP_ICON_SIZE (20, 20);
 	const Vector2u SPACE_BEETWEEN_ICONS (10, 30);

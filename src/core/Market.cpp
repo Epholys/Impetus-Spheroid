@@ -94,35 +94,11 @@ void Market::updateCoinsText()
 
 void Market::handleEvent(const sf::Event& event)
 {
-	// Quite a dirty hack 
-	sf::Event modifiedEvent = event;
-	if(event.type == sf::Event::MouseMoved)
-	{
-		Vector2f mousePos = Vector2f(context_
-		                             .globalTransform
-		                             ->getInverse()
-		                             .transformPoint(Vector2f(event.mouseMove.x,
-		                                                      event.mouseMove.y)));
-		modifiedEvent.mouseMove.x = mousePos.x;
-		modifiedEvent.mouseMove.y = mousePos.y;
-	}
-	else if(event.type == sf::Event::MouseButtonPressed ||
-	        event.type == sf::Event::MouseButtonReleased )
-	{
-		Vector2f mousePos = Vector2f(context_
-		                             .globalTransform
-		                             ->getInverse()
-		                             .transformPoint(Vector2f(event.mouseButton.x,
-		                                                      event.mouseButton.y)));
-		modifiedEvent.mouseButton.x = mousePos.x;
-		modifiedEvent.mouseButton.y = mousePos.y;
-	}
-	menu_->handleEvent(modifiedEvent);
+	menu_->handleEvent(event);
 }
 
 void Market::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	states.transform *= *context_.globalTransform;
 	target.draw(*menu_, states);
 	target.draw(coinsText_, states);
 }

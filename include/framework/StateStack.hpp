@@ -27,7 +27,7 @@ public:
 	void registerState(StateID::ID id);
 
 	void update(sf::Time dt);
-	void draw();
+	void draw(sf::RenderStates states);
 	void handleEvent(const sf::Event& event);
 	
 	void pushState(StateID::ID id);
