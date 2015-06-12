@@ -4,10 +4,10 @@
 
 //-----------------------------------------------------------------------------
 
-State::Context::Context(sf::RenderWindow& window, TransGamesData& datas)
+State::Context::Context(sf::RenderWindow& window, MetaData& metaData)
 	: window(&window)
 	, originalWindowSize(window.getSize())
-	, datas(&datas)
+	, metaData(&metaData)
 {
 }
 

@@ -3,27 +3,41 @@
 
 
 //-----------------------------------------------------------------------------
+// *** Constructor Constants: ***
+
+namespace
+{
+	const Vector2u WINDOW_SIZE {800, 600};
+
+	const unsigned int GL_DEPTH = 0;
+	const unsigned int GL_STENCIL = 0;
+	const unsigned int GL_ANTI_ALIASING = 4;
+
+	// False in general, but for now it doesn't impact the gameplay
+	const bool IS_AZERTY = true;
+}
+
+
+//-----------------------------------------------------------------------------
 // *** Contructor: ***
 
 Application::Application()
-	: windowSize_(800, 600) 
-	, window_(sf::VideoMode(windowSize_.x, windowSize_.y),
+	: window_(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y),
 	          "Impetus Spheroid",
 	          sf::Style::Resize | sf::Style::Close,
-	          sf::ContextSettings(0, 0, 4))
+	          sf::ContextSettings(GL_DEPTH, GL_STENCIL, GL_ANTI_ALIASING))
 	, globalTransform_(sf::Transform::Identity)
-	, datas_(Vector2f(windowSize_), true)
-	, stack_(State::Context(window_, datas_))
+	, metaData_(WINDOW_SIZE, IS_AZERTY)
+	, stack_(State::Context(window_, metaData_))
 {
-	window_.setFramerateLimit(0);
+	window_.setFramerateLimit(0); // Unlimited Framerate
 	window_.setVerticalSyncEnabled(false);
 
-	if(!DataSaver::retrieveDatas(datas_))
+	if(!DataSaver::retrieveDatas(metaData_))
 	{
 		DataSaver::makeDefaultFile();
-		DataSaver::retrieveDatas(datas_);
+		DataSaver::retrieveDatas(metaData_);
 	}
-	
 
 	stack_.registerState<StateGame>(StateID::Game);
 	stack_.registerState<StateOver>(StateID::GameOver);
@@ -35,7 +49,7 @@ Application::Application()
 
 
 //-----------------------------------------------------------------------------
-// *** Game loop: ***
+// *** Main loop: ***
 
 void Application::run()
 {
@@ -51,9 +65,23 @@ void Application::run()
 	}
 }
 
+void Application::update(sf::Time dt)
+{
+	stack_.update(dt);
+}
 
-//-----------------------------------------------------------------------------
-// *** Private functions: ***
+void Application::render()
+{
+	const sf::Color BACKGROUND_COLOR (230, 230, 230);
+
+	window_.clear(BACKGROUND_COLOR);
+
+	sf::RenderStates states;
+	states.transform *= globalTransform_;
+	stack_.draw(states);
+
+	window_.display();
+}
 
 void Application::handleInput()
 {
@@ -64,70 +92,63 @@ void Application::handleInput()
 		{
 			window_.close();
 		}
-
 		else if (event.type == sf::Event::Resized)
 		{
-			globalTransform_ = sf::Transform::Identity;
-			float originalRatio = windowSize_.x / float(windowSize_.y);
-			float newRatio = event.size.width / float(event.size.height);
-			if(newRatio > originalRatio)
-			{
-				float scale = event.size.height / float(windowSize_.y);
-				float margin = std::abs(float(windowSize_.x) * scale - float(event.size.width)) / 2.f;
-				globalTransform_.translate(margin, 0.f);
-				globalTransform_.scale(scale, scale);
-			}
-			else
-			{
-				float scale = event.size.width / float(windowSize_.x);
-				float margin = std::abs(float(windowSize_.y) * scale - float(event.size.height)) / 2.f;
-				globalTransform_.translate(0.f, margin);
-				globalTransform_.scale(scale, scale);
-			}
-
-			window_.setView(
-				sf::View(
-					sf::FloatRect(0, 0, event.size.width, event.size.height)));
+			Vector2u newWindowSize {event.size.width, event.size.height};
+			handleResizing(newWindowSize);
 		}
-
-		// Quite a dirty hack
 		else if(event.type == sf::Event::MouseMoved)
 		{
-			Vector2f mousePos = Vector2f(globalTransform_
-			                             .getInverse()
-			                             .transformPoint(Vector2f(event.mouseMove.x,
-			                                                      event.mouseMove.y)));
-			event.mouseMove.x = mousePos.x;
-			event.mouseMove.y = mousePos.y;
+			Vector2i mousePosition {event.mouseMove.x, event.mouseMove.y};
+			correctMouseCoordinate(mousePosition);
+			event.mouseMove.x = mousePosition.x;
+			event.mouseMove.y = mousePosition.y;
 		}
 		else if(event.type == sf::Event::MouseButtonPressed ||
 		        event.type == sf::Event::MouseButtonReleased )
 		{
-			Vector2f mousePos = Vector2f(globalTransform_
-			                             .getInverse()
-			                             .transformPoint(Vector2f(event.mouseButton.x,
-			                                                      event.mouseButton.y)));
-			event.mouseButton.x = mousePos.x;
-			event.mouseButton.y = mousePos.y;
+			Vector2i mousePosition {event.mouseButton.x, event.mouseButton.y};
+			correctMouseCoordinate(mousePosition);
+			event.mouseButton.x = mousePosition.x;
+			event.mouseButton.y = mousePosition.y;
 		}
-
 
 		stack_.handleEvent(event);
 	}
 }
 
-void Application::update(sf::Time dt)
+
+//-----------------------------------------------------------------------------
+// *** Helper functions: ***
+
+void Application::handleResizing(Vector2u newWindowSize)
 {
-	stack_.update(dt);
+	globalTransform_ = sf::Transform::Identity;
+
+	float originalRatio = WINDOW_SIZE.x / float(WINDOW_SIZE.y);
+	float newRatio = newWindowSize.x / float(newWindowSize.y);
+
+	if(newRatio > originalRatio)
+	{
+		float scale = newWindowSize.y / float(WINDOW_SIZE.y);
+		float margin = std::abs(WINDOW_SIZE.x * scale - newWindowSize.x) / 2.f;
+		globalTransform_.translate(margin, 0.f).scale(scale, scale);
+	}
+
+	else
+	{
+		float scale = newWindowSize.x / float(WINDOW_SIZE.x);
+		float margin = std::abs(WINDOW_SIZE.y * scale - newWindowSize.y) / 2.f;
+		globalTransform_.translate(0.f, margin).scale(scale, scale);
+	}
+
+	window_.setView(
+		sf::View(
+			sf::FloatRect(0, 0, newWindowSize.x, newWindowSize.y)));
 }
 
-void Application::render()
+void Application::correctMouseCoordinate(Vector2i& mousePosition)
 {
-	window_.clear(sf::Color(230,230,230));
-
-	sf::RenderStates states;
-	states.transform *= globalTransform_;
-	stack_.draw(states);
-
-	window_.display();
+	mousePosition = 
+		Vector2i(globalTransform_.getInverse().transformPoint(Vector2f(mousePosition)));
 }

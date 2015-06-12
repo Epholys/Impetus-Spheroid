@@ -1,5 +1,5 @@
 #include "core/World.hpp"
-#include "core/TransGamesData.hpp"
+#include "core/MetaData.hpp"
 
 
 //-----------------------------------------------------------------------------
@@ -18,14 +18,14 @@ Vector2f World::CANON_POSITION {40.f, 580.f};
 
 
 World::World(const Vector2f& originalSize,
-             TransGamesData& datas,
+             MetaData& metaData,
              int precision)
 	: originalSize_(originalSize)
 	, ecs_()
 	, physEng_(ecs_, precision)
 	, evtGen_()
-	, difficulty_(DifficultyContext{this, &evtGen_, &datas, &(datas.inventory)})
-	, inventory_(datas.inventory)
+	, difficulty_(DifficultyContext{this, &evtGen_, &metaData, &(metaData.inventory)})
+	, inventory_(metaData.inventory)
 	, cannon_(CANON_POSITION, *this, inventory_)
 	, cannonModifiers_()
 	, state_(Waiting)

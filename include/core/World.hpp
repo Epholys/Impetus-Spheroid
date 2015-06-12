@@ -33,7 +33,7 @@
 #include "data/BallData.hpp"
 
 class Inventory;
-class TransGamesData;
+class MetaData;
 
 class World : public sf::NonCopyable,
               public sf::Drawable,
@@ -49,7 +49,7 @@ public:
 
 public:
 	World(const Vector2f& originalSize,
-	      TransGamesData& datas,
+	      MetaData& metaData,
 	      int precision = 2);
 	~World() {};
 

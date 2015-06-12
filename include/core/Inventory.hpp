@@ -36,7 +36,7 @@ class Inventory : public sf::NonCopyable,
 {
 public:
 	Inventory();
-	Inventory(const Vector2f& originalSize,
+	Inventory(Vector2u originalSize,
 	          bool isAzerty);
 	virtual ~Inventory();
 

@@ -54,7 +54,7 @@ void StateOver::initVariableTexts(Context context)
 
 	const Vector2f HIGH_SCORE_POS (winSize.x / 2, winSize.y / 10);
 	ss << "High Score: ";
-	ss << std::max(context_.datas->highScore, context_.datas->lastHighScore);
+	ss << std::max(context_.metaData->highScore, context_.metaData->lastScore);
 	texts_[HighScore].setString(ss.str());
 	centerOrigin(texts_[HighScore]);
 	texts_[HighScore].setPosition(HIGH_SCORE_POS);
@@ -62,9 +62,9 @@ void StateOver::initVariableTexts(Context context)
 
 	const Vector2f SCORE_POS (winSize.x / 4, winSize.y / 5);
 	ss << "Your Score: ";
-	ss << context_.datas->lastHighScore;
+	ss << context_.metaData->lastScore;
 	ss << ": +";
-	ss << std::max(0, context_.datas->lastHighScore - context_.datas->BASE_OBJECTIVE) * context.datas->COINS_PER_POINTS;
+	ss << std::max(0, context_.metaData->lastScore - context_.metaData->BASE_OBJECTIVE) * context.metaData->COINS_PER_POINTS;
 	ss << " coins";
 	texts_[Score].setString(ss.str());
 	centerOrigin(texts_[Score]);
@@ -73,7 +73,7 @@ void StateOver::initVariableTexts(Context context)
 
 	const Vector2f MONEY_POS (3* winSize.x / 4, winSize.y / 5);
 	ss <<  "C O I N S : ";
-	ss << context_.datas->inventory.getCoins() + std::max(0, context_.datas->lastHighScore - context_.datas->BASE_OBJECTIVE) * context.datas->COINS_PER_POINTS;
+	ss << context_.metaData->inventory.getCoins() + std::max(0, context_.metaData->lastScore - context_.metaData->BASE_OBJECTIVE) * context.metaData->COINS_PER_POINTS;
 	texts_[Money].setString(ss.str());
 	centerOrigin(texts_[Money]);
 	texts_[Money].setPosition(MONEY_POS);
@@ -86,19 +86,19 @@ void StateOver::initVariableTexts(Context context)
 
 void StateOver::updateDatas(Context context)
 {
-	int newScore = context_.datas->lastHighScore;
-	if(newScore > context_.datas->highScore)
+	int newScore = context_.metaData->lastScore;
+	if(newScore > context_.metaData->highScore)
 	{
 		texts_[HighScore].setColor(sf::Color::Green);
-		context_.datas->highScore = newScore;
+		context_.metaData->highScore = newScore;
 	}
 	else
 	{
 		texts_[HighScore].setColor(sf::Color::Red);
 	}
-	context_.datas->inventory.addCoins(std::max(0, context_.datas->lastHighScore - context_.datas->BASE_OBJECTIVE) * context.datas->COINS_PER_POINTS);
+	context_.metaData->inventory.addCoins(std::max(0, context_.metaData->lastScore - context_.metaData->BASE_OBJECTIVE) * context.metaData->COINS_PER_POINTS);
 
-	DataSaver::saveDatas(*context_.datas);
+	DataSaver::saveDatas(*context_.metaData);
 }
 
 

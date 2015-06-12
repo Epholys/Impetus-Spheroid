@@ -4,7 +4,7 @@
 #include "core/DifficultyManager.hpp"
 #include "core/World.hpp"
 #include "core/EventGenerator.hpp"
-#include "core/TransGamesData.hpp"
+#include "core/MetaData.hpp"
 
 
 //-----------------------------------------------------------------------------
@@ -28,7 +28,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, font_()
 	, timer_()
 	, score_(0.f)
-	, objective_(context.datas->BASE_OBJECTIVE)
+	, objective_(context.metaData->BASE_OBJECTIVE)
 	, objectiveIncrement_(2)
 	, ceiling_(baseCeiling_)
 	, scoreText_()
@@ -252,7 +252,7 @@ void DifficultyManager::updateObjective()
 	if(excess < 0)
 	{
 		context_.world->setState(World::GameState::GameOver);
-		context_.datas->lastHighScore = objective_;
+		context_.metaData->lastScore = objective_;
 		reset();
 		return;
 	}
@@ -314,7 +314,7 @@ void DifficultyManager::reset()
 {
 	phaseNumber_ = 0;
 	score_ = 0.f;
-	objective_ = context_.datas->BASE_OBJECTIVE;
+	objective_ = context_.metaData->BASE_OBJECTIVE;
 	phaseTime_ = Time::Zero;
 	context_.eventGenerator->updateDifficulty(eventDatas[0]);
 }

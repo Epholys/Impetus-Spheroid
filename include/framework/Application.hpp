@@ -2,27 +2,28 @@
 #define APPLICATION_HPP
 
 
-#include <vector>
-#include <iostream>
-
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Transform.hpp>
 
+#include "utility/Vector2.hpp"
 #include "framework/StateStack.hpp"
 #include "framework/StateGame.hpp"
 #include "framework/StateOver.hpp"
 #include "framework/StatePause.hpp"
 #include "framework/StateMarket.hpp"
-#include "framework/DataSaver.hpp"
-#include "ecs/EntityManager.hpp"
-#include "engine/PhysicEngine.hpp"
-#include "core/TransGamesData.hpp"
+#include "core/MetaData.hpp"
 
-/* The main object: the framework for everything else
- * 
- * Manages the sf::RenderWindow and some basic sf::Events.
- * Contain the simple game loop in run().
+/* Application is the main class of the project. It is instanciated in main(),
+ * Application.run() is then called and launch the game.
+ *
+ * WARNING:
+ * Supervises window redimensioning *alone*: all the other class are in the
+ * illusion of a WINDOW_SIZE (defined in the .cpp) sized window. For this
+ * purpose, Application:
+ *  - updates and forwards a globalTransform_
+ *  - modifies window_'s Events to correct the coordinate of the mouse's
+ * position
  * */
 
 class Application
@@ -34,14 +35,19 @@ public:
 
 private:
 	void handleInput();
+
+	// Update globalTransform_when window_ is resized.
+	void handleResizing(Vector2u newWindowSize);
+
+	void correctMouseCoordinate(Vector2i& mousePosition);
+
 	void update(sf::Time dt);
 	void render();
 
 private:
-	const sf::Vector2u windowSize_;
 	sf::RenderWindow window_;
 	sf::Transform globalTransform_;
-	TransGamesData datas_;
+	MetaData metaData_;
 
 	StateStack stack_;
 };

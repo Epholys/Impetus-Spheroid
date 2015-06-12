@@ -5,10 +5,10 @@
 
 StateGame::StateGame(StateStack& stack, Context context)
 	: State(stack, context)
-	, world_(context.originalWindowSize, *context.datas)
+	, world_(context.originalWindowSize, *context.metaData)
 	, overScreenUp_(false)
 {
-	context_.datas->inventory.addWorld(&world_);
+	context_.metaData->inventory.addWorld(&world_);
 }
 
 StateGame::~StateGame()
@@ -21,7 +21,7 @@ StateGame::~StateGame()
 void StateGame::draw(sf::RenderStates states)
 {
 	context_.window->draw(world_, states);
-	context_.window->draw(context_.datas->inventory, states);
+	context_.window->draw(context_.metaData->inventory, states);
 }
 
 bool StateGame::update(Time dt)
@@ -30,7 +30,7 @@ bool StateGame::update(Time dt)
 	if(world_.isGameOver() && !overScreenUp_)
 	{
 		requestStackPush(StateID::GameOver);
-		context_.datas->inventory.removeWorld();
+		context_.metaData->inventory.removeWorld();
 		overScreenUp_ = true;
 	}
 	return true;
@@ -42,7 +42,7 @@ bool StateGame::handleInput(const sf::Event& event)
 	{
 		requestStackPush(StateID::Pause);
 	}
-	context_.datas->inventory.handleInput(event);
+	context_.metaData->inventory.handleInput(event);
 	world_.handleInput(event);
 	return true;
 }

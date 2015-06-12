@@ -19,13 +19,13 @@ namespace evt {
 	class EventGenerator;
 }
 class Inventory;
-class TransGamesData;
+class MetaData;
 
 struct DifficultyContext
 {
 	World* world;
 	evt::EventGenerator* eventGenerator;
-	TransGamesData* datas;
+	MetaData* metaData;
 	Inventory* inventory;
 };
 

@@ -12,7 +12,7 @@ namespace
 //-----------------------------------------------------------------------------
 
 Market::Market(State::Context context)
-	: inventory_(context.datas->inventory)
+	: inventory_(context.metaData->inventory)
 	, menu_()
 	, font_()
 	, coinsText_()
@@ -79,7 +79,7 @@ void Market::buy(PowerUpID::ID id, int number, int price)
 		inventory_.removeCoins(price);
 		inventory_.increment(id, number);
 		updateCoinsText();
-		DataSaver::saveDatas(*context_.datas);
+		DataSaver::saveDatas(*context_.metaData);
 	}
 }
 

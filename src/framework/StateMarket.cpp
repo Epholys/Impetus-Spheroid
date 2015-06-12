@@ -40,7 +40,7 @@ bool StateMarket::handleInput(const sf::Event& event)
 		case sf::Keyboard::Escape:
 			requestStackClear();
 			requestStackPush(StateID::Game);
-			DataSaver::saveDatas(*context_.datas);
+			DataSaver::saveDatas(*context_.metaData);
 			break;
 
 		default:

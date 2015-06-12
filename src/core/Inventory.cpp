@@ -4,11 +4,11 @@
 //-----------------------------------------------------------------------------
 
 Inventory::Inventory()
-	: Inventory(Vector2f(800, 600), true)
+	: Inventory(Vector2u(800, 600), true)
 {
 }
 
-Inventory::Inventory(const Vector2f& originalSize,
+Inventory::Inventory(Vector2u originalSize,
                      bool isAzerty)
 	: originalSize_(originalSize)
 	, font_()

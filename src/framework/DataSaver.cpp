@@ -32,7 +32,7 @@ namespace DataSaver
 	}
 
 
-	bool retrieveDatas (TransGamesData& datas)
+	bool retrieveDatas (MetaData& metaData)
 	{
 		std::ifstream ist(filePath);
 		
@@ -42,34 +42,34 @@ namespace DataSaver
 		int value;
 		if(!readInt(ist, value))
 			return false;
-		datas.highScore = endecode(value);
+		metaData.highScore = endecode(value);
 
 		if(!readInt(ist, value))
 			return false;
-		datas.inventory.addCoins(endecode(value));
+		metaData.inventory.addCoins(endecode(value));
 		
 		for(int i=1; i<PowerUpID::PowerUpCount; ++i)
 		{
 			if(!readInt(ist, value) ||
-			   !datas.inventory.setPowerUp(PowerUpID::ID(i), endecode(value)))
+			   !metaData.inventory.setPowerUp(PowerUpID::ID(i), endecode(value)))
 				return false;
 		}
 		return true;
 	}
 
-	bool saveDatas (const TransGamesData& datas)
+	bool saveDatas (const MetaData& metaData)
 	{
 		std::ofstream ost(filePath);
 			
 		if(!ost)
 			return false;
 
-		ost << endecode(datas.highScore) << separator;
-		ost << endecode(datas.inventory.getCoins()) << separator;
+		ost << endecode(metaData.highScore) << separator;
+		ost << endecode(metaData.inventory.getCoins()) << separator;
 		
 		for(int i=1; i<PowerUpID::PowerUpCount; ++i)
 		{
-			ost << endecode(datas.inventory.getPowerUp(PowerUpID::ID(i))) << separator;
+			ost << endecode(metaData.inventory.getPowerUp(PowerUpID::ID(i))) << separator;
 		}
 
 		return true;
@@ -77,8 +77,8 @@ namespace DataSaver
 
 	void makeDefaultFile()
 	{
-		TransGamesData datas;
-		datas.highScore = 0;
-		saveDatas(datas);
+		MetaData metaData;
+		metaData.highScore = 0;
+		saveDatas(metaData);
 	}
 }
