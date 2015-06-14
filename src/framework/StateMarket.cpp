@@ -18,11 +18,13 @@ StateMarket::~StateMarket()
 
 void StateMarket::draw(sf::RenderStates states)
 {
-	sf::RectangleShape rect (Vector2f(context_.window->getSize()));
-	rect.setFillColor(sf::Color(0,0,0,200));
-	context_.window->draw(rect);
+	sf::RenderWindow* window = context_.window;
 
-	context_.window->draw(market_, states);
+	sf::RectangleShape rect (Vector2f(window->getSize()));
+	rect.setFillColor(sf::Color(0,0,0,200));
+	window->draw(rect);
+
+	window->draw(market_, states);
 }
 
 bool StateMarket::update(Time)

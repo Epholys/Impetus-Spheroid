@@ -15,9 +15,9 @@ StatePause::StatePause(StateStack& stack, Context context)
 
 	pause_.setFont(font_);
 	pause_.setString("Pause");
-	pause_.setColor(sf::Color::White);
 	centerOrigin(pause_);
 	pause_.setPosition(PAUSE_POS);
+	pause_.setColor(sf::Color::White);
 }
 
 StatePause::~StatePause()
@@ -29,11 +29,13 @@ StatePause::~StatePause()
 
 void StatePause::draw(sf::RenderStates states)
 {
-	sf::RectangleShape rect (Vector2f(context_.window->getSize()));
-	rect.setFillColor(sf::Color(0,0,0,200));
-	context_.window->draw(rect);
+	sf::RenderWindow* window = context_.window;
 
-	context_.window->draw(pause_, states);
+	sf::RectangleShape rect (Vector2f(window->getSize()));
+	rect.setFillColor(sf::Color(0,0,0,200));
+	window->draw(rect);
+
+	window->draw(pause_, states);
 }
 
 bool StatePause::update(Time)
@@ -50,5 +52,6 @@ bool StatePause::handleInput(const sf::Event& event)
 	}
 
 	return false;
+
 }
 

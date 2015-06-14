@@ -7,6 +7,18 @@ void centerOrigin(sf::Text& text)
 	sf::FloatRect bounds = text.getLocalBounds();
 	text.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 }
+void defineText(sf::Text& txt,
+                const std::string& str,
+                Vector2f position,
+                sf::Color color)
+{
+	txt.setString(str);
+	centerOrigin(txt);
+	txt.setPosition(position);
+	txt.setColor(color);
+}
+
+
 
 
 //-----------------------------------------------------------------------------

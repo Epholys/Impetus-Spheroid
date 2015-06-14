@@ -19,8 +19,7 @@
  *
  * WARNING:
  * Supervises window redimensioning *alone*: all the other class are in the
- * illusion of a WINDOW_SIZE (defined in the .cpp) sized window. For this
- * purpose, Application:
+ * illusion of a WINDOW_SIZE sized window. For this purpose, Application:
  *  - updates and forwards a globalTransform_
  *  - modifies window_'s Events to correct the coordinate of the mouse's
  * position

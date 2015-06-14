@@ -33,72 +33,63 @@ void StateOver::initStaticTexts(Context context)
 	const Vector2f MARKET_POS (winSize.x / 2, 2 * winSize.y / 3);
 	const Vector2f RETRY_POS (winSize.x / 2, 4 * winSize.y / 5); 
 
-	texts_[GameOver].setString("G A M E  O V E R");
-	centerOrigin(texts_[GameOver]);
-	texts_[GameOver].setPosition(GAME_OVER_POS);
-
-	texts_[Market].setString("Press CTRL to go to the Market");
-	centerOrigin(texts_[Market]);
-	texts_[Market].setPosition(MARKET_POS);
-
-	texts_[Retry].setString("Press SPACE to retry");
-	centerOrigin(texts_[Retry]);
-	texts_[Retry].setPosition(RETRY_POS);
+	defineText(texts_[GameOver], "G A M E  O V E R", GAME_OVER_POS);
+	defineText(texts_[Market], "Press CTRL to go to the Market", MARKET_POS);
+	defineText(texts_[Retry], "Press SPACE to retry", RETRY_POS);
 }
 
 void StateOver::initVariableTexts(Context context)
 {
 	Vector2u winSize = Vector2u(context.originalWindowSize );
-	
+	const Vector2f HIGH_SCORE_POS (winSize.x / 2, winSize.y / 10);
+	const Vector2f SCORE_POS (winSize.x / 4, winSize.y / 5);
+	const Vector2f MONEY_POS (3* winSize.x / 4, winSize.y / 5);
+
+	MetaData* metaData = context_.metaData;
+	int coinsWon = std::max(0, metaData->lastScore - metaData->BASE_OBJECTIVE)
+		           * metaData->COINS_PER_POINTS;
+
 	std::stringstream ss;
 
-	const Vector2f HIGH_SCORE_POS (winSize.x / 2, winSize.y / 10);
 	ss << "High Score: ";
-	ss << std::max(context_.metaData->highScore, context_.metaData->lastScore);
-	texts_[HighScore].setString(ss.str());
-	centerOrigin(texts_[HighScore]);
-	texts_[HighScore].setPosition(HIGH_SCORE_POS);
+	ss << std::max(metaData->highScore, metaData->lastScore);
+	defineText(texts_[HighScore], ss.str(), HIGH_SCORE_POS);
 	ss.str("");
 
-	const Vector2f SCORE_POS (winSize.x / 4, winSize.y / 5);
 	ss << "Your Score: ";
-	ss << context_.metaData->lastScore;
+	ss << metaData->lastScore;
 	ss << ": +";
-	ss << std::max(0, context_.metaData->lastScore - context_.metaData->BASE_OBJECTIVE) * context.metaData->COINS_PER_POINTS;
+	ss << coinsWon;
 	ss << " coins";
-	texts_[Score].setString(ss.str());
-	centerOrigin(texts_[Score]);
-	texts_[Score].setPosition(SCORE_POS);
+	defineText(texts_[Score], ss.str(), SCORE_POS);
 	ss.str("");	
 
-	const Vector2f MONEY_POS (3* winSize.x / 4, winSize.y / 5);
 	ss <<  "C O I N S : ";
-	ss << context_.metaData->inventory.getCoins() + std::max(0, context_.metaData->lastScore - context_.metaData->BASE_OBJECTIVE) * context.metaData->COINS_PER_POINTS;
-	texts_[Money].setString(ss.str());
-	centerOrigin(texts_[Money]);
-	texts_[Money].setPosition(MONEY_POS);
-	texts_[Money].setColor(sf::Color::Yellow);
-	ss.str("");	
+	ss << metaData->inventory.getCoins() + coinsWon;
+	defineText(texts_[Money], ss.str(), MONEY_POS, sf::Color::Yellow);
 }
-
 
 //-----------------------------------------------------------------------------
 
 void StateOver::updateDatas(Context context)
 {
-	int newScore = context_.metaData->lastScore;
-	if(newScore > context_.metaData->highScore)
+	MetaData* metaData = context_.metaData;
+
+	int newScore = metaData->lastScore;
+	if(newScore > metaData->highScore)
 	{
 		texts_[HighScore].setColor(sf::Color::Green);
-		context_.metaData->highScore = newScore;
+		metaData->highScore = newScore;
 	}
 	else
 	{
 		texts_[HighScore].setColor(sf::Color::Red);
 	}
-	context_.metaData->inventory.addCoins(std::max(0, context_.metaData->lastScore - context_.metaData->BASE_OBJECTIVE) * context.metaData->COINS_PER_POINTS);
+	metaData->inventory.addCoins(
+		std::max(0, metaData->lastScore - metaData->BASE_OBJECTIVE)
+		* context.metaData->COINS_PER_POINTS);
 
-	DataSaver::saveDatas(*context_.metaData);
+	DataSaver::saveDatas(*metaData);
 }
 
 
@@ -106,13 +97,15 @@ void StateOver::updateDatas(Context context)
 
 void StateOver::draw(sf::RenderStates states)
 {
-	sf::RectangleShape rect (Vector2f(context_.window->getSize()));
+	sf::RenderWindow* window = context_.window;
+
+	sf::RectangleShape rect (Vector2f(window->getSize()));
 	rect.setFillColor(sf::Color(0,0,0,200));
-	context_.window->draw(rect);
+	window->draw(rect);
 
 	for(int i=0; i<TextCount; ++i)
 	{
-		context_.window->draw(texts_[i], states);
+		window->draw(texts_[i], states);
 	}
 }
 
@@ -126,8 +119,7 @@ bool StateOver::handleInput(const sf::Event& event)
 	if(event.type == sf::Event::KeyReleased &&
 	   event.key.code == sf::Keyboard::Space)
 	{
-		requestStackPop();
-		requestStackPop();
+		requestStackClear();
 		requestStackPush(StateID::Game);
 	}
 

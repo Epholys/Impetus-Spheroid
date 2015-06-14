@@ -9,7 +9,7 @@
 #include "core/MetaData.hpp"
 #include "core/Identifiers.hpp"
 
-// Quick functions to save important datas to have a working prototype.
+// Quick functions to save and load MetaData on HDD/SSD.
 namespace DataSaver
 {
 	// Key for the XOR encoding, just not to be too obvious in the data file.
