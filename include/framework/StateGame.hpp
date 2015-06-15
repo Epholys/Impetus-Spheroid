@@ -6,6 +6,8 @@
 #include "core/World.hpp"
 
 
+// The main State, in which the game's World live.
+
 class StateGame : public State
 {
 public:

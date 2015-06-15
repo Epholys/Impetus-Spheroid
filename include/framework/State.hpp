@@ -32,6 +32,17 @@ namespace StateID
 }
 
 
+/* Abstract class which define a State of the program.
+ *
+ * The Context is like a combination of global variables that all States share.
+ * 
+ * The only subtility of this class is the boolean returned by update() and
+ * handleInput(): if true, it means that the State below it can be updated /
+ * handle input. For exemple, a PauseState will not allow the GameState below to
+ * be updated, on the contrary of a TutorialState.
+ * 
+ * */ 
+
 class State
 {
 public:
@@ -41,6 +52,7 @@ public:
 		
 		sf::RenderWindow* window;
 		const Vector2f originalWindowSize;
+
 		MetaData* metaData;
 	};
 

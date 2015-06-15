@@ -4,6 +4,11 @@
 
 #include "core/Inventory.hpp"
 
+
+/* All the datas that need to be persistent beetween several games and several
+ * execution of the program.
+ * */
+
 struct MetaData
 {
 	int highScore;

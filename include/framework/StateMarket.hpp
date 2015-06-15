@@ -8,6 +8,9 @@
 #include "framework/DataSaver.hpp"
 #include "core/Market.hpp"
 
+
+// The State in which power-ups can be bought
+
 class StateMarket : public State
 {
 public:

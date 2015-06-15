@@ -8,6 +8,9 @@
 #include "utility/utility.hpp"
 #include "utility/Vector2.hpp"
 
+
+// A very simple State to pause the game.
+
 class StatePause : public State
 {
 public:

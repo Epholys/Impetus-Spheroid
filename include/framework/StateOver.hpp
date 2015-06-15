@@ -13,6 +13,8 @@
 #include "utility/Vector2.hpp"
 
 
+// The Game Over screen State.
+
 class StateOver : public State
 {
 public:
