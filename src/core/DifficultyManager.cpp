@@ -11,7 +11,6 @@
 
 namespace
 {
-	Time PHASE_TIME {seconds(20.f)};
 	auto worldDatas = genDifficultyWorld();
 	auto eventDatas = genDifficultyEvent();
 	auto ballDatas = genBallDatas();
@@ -20,15 +19,22 @@ namespace
 
 //-----------------------------------------------------------------------------
 
+const int DifficultyManager::COINS_PER_POINTS_ = 10;
+const int DifficultyManager::BASE_OBJECTIVE_ = 20;
+const Time DifficultyManager::PHASE_TIME_ {seconds(20.f)};
+
+
+//-----------------------------------------------------------------------------
+
 DifficultyManager::DifficultyManager(DifficultyContext context)
-	: phaseDuration_(PHASE_TIME)
+	: phaseDuration_(PHASE_TIME_)
 	, phaseTime_()
 	, phaseNumber_(0)
 	, context_(context)
 	, font_()
 	, timer_()
 	, score_(0.f)
-	, objective_(context.metaData->BASE_OBJECTIVE)
+	, objective_(BASE_OBJECTIVE_)
 	, objectiveIncrement_(2)
 	, ceiling_(baseCeiling_)
 	, scoreText_()
@@ -186,6 +192,10 @@ void DifficultyManager::addTime(Time adding)
 	phaseTime_ -= adding;
 }
 
+int DifficultyManager::getObjective() const
+{
+	return objective_;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -222,7 +232,6 @@ void DifficultyManager::updateScore()
 		}
 	}
 
-
 	if(score_ + points > objective_)
 	{
 		int coins = (points - std::max(0.f, objective_ - score_)) * COINS_PER_EXCESS;
@@ -252,8 +261,6 @@ void DifficultyManager::updateObjective()
 	if(excess < 0)
 	{
 		context_.world->setState(World::GameState::GameOver);
-		context_.metaData->lastScore = objective_;
-		reset();
 		return;
 	}
 	
@@ -308,13 +315,4 @@ void DifficultyManager::reloadDifficulty()
 {
 	worldDatas = genDifficultyWorld(worldSeed_);
 	eventDatas = genDifficultyEvent(eventSeed_);
-}
-
-void DifficultyManager::reset()
-{
-	phaseNumber_ = 0;
-	score_ = 0.f;
-	objective_ = context_.metaData->BASE_OBJECTIVE;
-	phaseTime_ = Time::Zero;
-	context_.eventGenerator->updateDifficulty(eventDatas[0]);
 }

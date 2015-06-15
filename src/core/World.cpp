@@ -17,7 +17,7 @@ namespace
 Vector2f World::CANON_POSITION {40.f, 580.f};
 
 
-World::World(const Vector2f& originalSize,
+World::World(const Vector2u& originalSize,
              MetaData& metaData,
              int precision)
 	: originalSize_(originalSize)
@@ -67,6 +67,14 @@ void World::generateWorld()
 ecs::EntityManager& World::getEntityManager()
 {
 	return ecs_;
+}
+
+LastGameData World::getGameStats() const
+{
+	LastGameData data;
+	data.lastObjective = difficulty_.getObjective();
+
+	return data;
 }
 
 Vector2f& World::getGravityVect()

@@ -42,6 +42,7 @@ public:
 
 	void switchKeyboard(bool isAzerty);
 	void initKeyBinding(bool isAzerty);
+
 	void addWorld(World* world);
 	void removeWorld();
 

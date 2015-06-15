@@ -8,6 +8,7 @@
 #include <SFML/Graphics/RenderStates.hpp>
 
 #include "core/MetaData.hpp"
+#include "core/LastGameData.hpp"
 #include "utility/Time.hpp"
 
 namespace sf
@@ -48,12 +49,13 @@ class State
 public:
 	struct Context
 	{
-		Context(sf::RenderWindow& window, MetaData& metaData);
+		Context(sf::RenderWindow& window, MetaData& metaData, LastGameData& gameData);
 		
 		sf::RenderWindow* window;
-		const Vector2f originalWindowSize;
+		const Vector2u originalWindowSize;
 
 		MetaData* metaData;
+		LastGameData* lastGameData;
 	};
 
 public:

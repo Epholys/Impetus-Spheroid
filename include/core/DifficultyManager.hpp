@@ -41,11 +41,12 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	void handleInput(const sf::Event& event);
 
+	int getObjective() const;
+
 	void addTime(Time adding);
 	
-	void reset();
 	void mask();
-	
+
 private:
 	void createGui();
 
@@ -58,6 +59,11 @@ private:
 
 // Temp functions for prototyping
 	void reloadDifficulty();
+
+public:
+	static const int COINS_PER_POINTS_;
+	static const int BASE_OBJECTIVE_;
+	static const Time PHASE_TIME_;
 
 private:
 	Time phaseDuration_;
@@ -82,8 +88,6 @@ private:
 	gui::Component::SPtr diffGui_;
 	bool maskGui_;
 
-
-// Temp attributes for quick adjustements
 private:
 	DifficultyWorldSeed worldSeed_;
 	DifficultyEventGenSeed eventSeed_;

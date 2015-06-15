@@ -29,6 +29,7 @@
 #include "core/EventGenerator.hpp"
 #include "core/Cannon.hpp"
 #include "core/DifficultyManager.hpp"
+#include "core/LastGameData.hpp"
 #include "data/DifficultyData.hpp"
 #include "data/BallData.hpp"
 
@@ -48,14 +49,17 @@ public:
 	};
 
 public:
-	World(const Vector2f& originalSize,
+	World(const Vector2u& originalSize,
 	      MetaData& metaData,
+	      
 	      int precision = 2);
 	~World() {};
 
 	void handleInput(const sf::Event& event);
 	void update(Time dt);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+	LastGameData getGameStats() const;
 
 	ecs::EntityManager& getEntityManager();
 	Vector2f& getGravityVect();

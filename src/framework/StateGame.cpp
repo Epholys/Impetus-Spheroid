@@ -31,6 +31,7 @@ bool StateGame::update(Time dt)
 	if(world_.isGameOver() && !overScreenUp_)
 	{
 		requestStackPush(StateID::GameOver);
+		*context_.lastGameData = world_.getGameStats();
 		context_.metaData->inventory.removeWorld();
 		overScreenUp_ = true;
 	}

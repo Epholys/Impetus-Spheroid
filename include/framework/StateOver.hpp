@@ -38,9 +38,9 @@ public:
 	virtual bool handleInput(const sf::Event& event);
 
 private:
-	void initStaticTexts(Context context);
-	void initVariableTexts(Context context);
-	void updateDatas(Context context);
+	void initStaticTexts();
+	void initVariableTexts();
+		void updateDatas();
 
 private:
 	sf::Font font_;

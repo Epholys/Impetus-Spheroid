@@ -70,7 +70,7 @@ private:
 	std::vector<PendingChange> pendingList_;
 	
 	State::Context context_;
-	std::unordered_map<StateID::ID, std::function<State::UPtr()>, std::hash<int>> factories_;
+	std::unordered_map<StateID::ID, std::function<State::UPtr()>, std::hash<unsigned int>> factories_;
 };
 
 template<typename T>

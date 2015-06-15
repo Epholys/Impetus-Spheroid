@@ -28,7 +28,8 @@ Application::Application()
 	          sf::ContextSettings(GL_DEPTH, GL_STENCIL, GL_ANTI_ALIASING))
 	, globalTransform_(sf::Transform::Identity)
 	, metaData_(WINDOW_SIZE, IS_AZERTY)
-	, stack_(State::Context(window_, metaData_))
+	, lastGameData_()
+	, stack_(State::Context(window_, metaData_, lastGameData_))
 {
 	window_.setFramerateLimit(0); // Unlimited Framerate
 	window_.setVerticalSyncEnabled(false);

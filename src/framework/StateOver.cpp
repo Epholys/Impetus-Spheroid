@@ -14,9 +14,9 @@ StateOver::StateOver(StateStack& stack, Context context)
 		texts_[i].setFont(font_);
 	}
 
-	initStaticTexts(context);
-	initVariableTexts(context);
-	updateDatas(context);
+	initStaticTexts();
+	initVariableTexts();
+	updateDatas();
 }
 
 StateOver::~StateOver()
@@ -26,9 +26,9 @@ StateOver::~StateOver()
 
 //-----------------------------------------------------------------------------
 
-void StateOver::initStaticTexts(Context context)
+void StateOver::initStaticTexts()
 {
-	Vector2u winSize = Vector2u(context.originalWindowSize);
+	Vector2u winSize = context_.originalWindowSize;
 	const Vector2f GAME_OVER_POS (winSize.x / 2, winSize.y / 2);
 	const Vector2f MARKET_POS (winSize.x / 2, 2 * winSize.y / 3);
 	const Vector2f RETRY_POS (winSize.x / 2, 4 * winSize.y / 5); 
@@ -38,26 +38,28 @@ void StateOver::initStaticTexts(Context context)
 	defineText(texts_[Retry], "Press SPACE to retry", RETRY_POS);
 }
 
-void StateOver::initVariableTexts(Context context)
+void StateOver::initVariableTexts()
 {
-	Vector2u winSize = Vector2u(context.originalWindowSize );
+	Vector2u winSize = context_.originalWindowSize;
+	const MetaData* const metaData = context_.metaData;
+	int lastObjective = context_.lastGameData->lastObjective;
+
 	const Vector2f HIGH_SCORE_POS (winSize.x / 2, winSize.y / 10);
 	const Vector2f SCORE_POS (winSize.x / 4, winSize.y / 5);
 	const Vector2f MONEY_POS (3* winSize.x / 4, winSize.y / 5);
 
-	MetaData* metaData = context_.metaData;
-	int coinsWon = std::max(0, metaData->lastScore - metaData->BASE_OBJECTIVE)
-		           * metaData->COINS_PER_POINTS;
+	int coinsWon = std::max(0, lastObjective - DifficultyManager::BASE_OBJECTIVE_)
+		                    * DifficultyManager::COINS_PER_POINTS_;
 
 	std::stringstream ss;
 
 	ss << "High Score: ";
-	ss << std::max(metaData->highScore, metaData->lastScore);
+	ss << std::max(metaData->highScore, lastObjective);
 	defineText(texts_[HighScore], ss.str(), HIGH_SCORE_POS);
 	ss.str("");
 
 	ss << "Your Score: ";
-	ss << metaData->lastScore;
+	ss << lastObjective;
 	ss << ": +";
 	ss << coinsWon;
 	ss << " coins";
@@ -71,11 +73,12 @@ void StateOver::initVariableTexts(Context context)
 
 //-----------------------------------------------------------------------------
 
-void StateOver::updateDatas(Context context)
+void StateOver::updateDatas()
 {
-	MetaData* metaData = context_.metaData;
+	MetaData* const metaData = context_.metaData;
+	int lastObjective = context_.lastGameData->lastObjective;
 
-	int newScore = metaData->lastScore;
+	int newScore = lastObjective;
 	if(newScore > metaData->highScore)
 	{
 		texts_[HighScore].setColor(sf::Color::Green);
@@ -86,8 +89,8 @@ void StateOver::updateDatas(Context context)
 		texts_[HighScore].setColor(sf::Color::Red);
 	}
 	metaData->inventory.addCoins(
-		std::max(0, metaData->lastScore - metaData->BASE_OBJECTIVE)
-		* context.metaData->COINS_PER_POINTS);
+		std::max(0, lastObjective - DifficultyManager::BASE_OBJECTIVE_)
+		* DifficultyManager::COINS_PER_POINTS_);
 
 	DataSaver::saveDatas(*metaData);
 }

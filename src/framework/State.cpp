@@ -4,10 +4,12 @@
 
 //-----------------------------------------------------------------------------
 
-State::Context::Context(sf::RenderWindow& window, MetaData& metaData)
+State::Context::Context(sf::RenderWindow& window, MetaData& metaData,
+                        LastGameData& gameData)
 	: window(&window)
 	, originalWindowSize(window.getSize())
 	, metaData(&metaData)
+	, lastGameData(&gameData)
 {
 }
 

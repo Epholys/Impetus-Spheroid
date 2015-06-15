@@ -47,6 +47,7 @@ private:
 	sf::RenderWindow window_;
 	sf::Transform globalTransform_;
 	MetaData metaData_;
+	LastGameData lastGameData_;
 
 	StateStack stack_;
 };

@@ -52,6 +52,5 @@ bool StatePause::handleInput(const sf::Event& event)
 	}
 
 	return false;
-
 }
 
