@@ -1,36 +1,39 @@
 #include "utility/random.hpp"
 #include "core/Ball.hpp"
+#include "core/World.hpp"
 
+//-----------------------------------------------------------------------------
+
+namespace
+{
+	const float RADIUS = 10.f;
+	const float MASS = 1.f;
+}
 
 
 //-----------------------------------------------------------------------------
 
-Ball::Ball(World* world,
-           ecs::EntityManager& entm,
+Ball::Ball(World& world,
            Vector2f position, 
-           float radius, 
-           float mass, 
            Vector2f gravVect,
            BallData data,
-           int nTouching,
+           int nCollisionTarget,
            unsigned int type)
-	: Entity(world, entm, EntityID::Ball)
-	, ball_(radius)
+	: Entity(world, world.getEntityManager(), EntityID::Ball)
+	, ball_(RADIUS)
 {
-	label_ = ecs::createBall(entm, position, radius, mass, gravVect, data.point, nTouching);
+	label_ = ecs::createBall(ecs_, position, RADIUS, MASS, gravVect, data.point, nCollisionTarget);
 
 	if(type & Massless)
 	{
-		entm.removeComponent(label_, ecs::Component::Mass);
+		ecs_.removeComponent(label_, ecs::Component::Mass);
 	}
 	if(type & Ghost)
 	{
-		entm.removeComponent(label_, ecs::Component::Solid);
+		ecs_.removeComponent(label_, ecs::Component::Solid);
 	}
 
-	auto ballRect = ball_.getLocalBounds();
-	ball_.setOrigin(ballRect.left + ballRect.width / 2.f,
-	                ballRect.top + ballRect.height / 2.f);
+	centerOrigin(ball_);
 	ball_.setFillColor(data.color);
 
 	update(Time());
@@ -54,6 +57,10 @@ void Ball::update(Time dt)
 	if(pointPos)
 	{
 		auto position = pointPos->position_;
+		
+		// NOT ball_.setPosition(...): ball_'s Transformable base class isn't
+		// used because if suddenly Ball's view become several sf::Sprites and
+		// sf::Shapes, it would mean I'll have to update every single one of them.
 		setPosition(position.x, position.y);
 	}
 }

@@ -3,26 +3,29 @@
 
 
 //-----------------------------------------------------------------------------
-// *** constructor and destructor: ***
 
-Obstacle:: Obstacle(World* world,
-                    ecs::EntityManager& entm,
-                    Vector2f position,
-                    Vector2f size,
-                    Vector2f velocity,
-                    Vector2f gravVect,
-                    sf::Color color)
-	: Entity(world, entm, EntityID::Obstacle)
-	, rect_(size)
+namespace
 {
 	const float MASS = 10000.f;
+	const sf::Color COLOR = sf::Color::Black;
+}
 
-	label_ = ecs::createObstacle(entm, position, size, velocity, MASS, gravVect);
+
+//-----------------------------------------------------------------------------
+// *** constructor and destructor: ***
+
+Obstacle::Obstacle(World& world,
+                   Vector2f position,
+                   Vector2f size,
+                   Vector2f velocity,
+                   Vector2f gravVect)
+	: Entity(world, world.getEntityManager(), EntityID::Obstacle)
+	, rect_(size)
+{
+	label_ = ecs::createObstacle(ecs_, position, size, velocity, MASS, gravVect);
 	
-	rect_.setFillColor(color);
-	auto rectBounds = rect_.getLocalBounds();
-	rect_.setOrigin(rectBounds.left + rectBounds.width / 2.f,
-	                rectBounds.top + rectBounds.height / 2.f);
+	centerOrigin(rect_);
+	rect_.setFillColor(COLOR);
 
 	update(Time());
 

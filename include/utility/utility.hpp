@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Shape.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
 #include "utility/Vector2.hpp"
@@ -34,6 +35,7 @@ std::string toString(const T& var)
 //------------------------------------------------------------------------------
 
 void centerOrigin(sf::Text& text);
+void centerOrigin(sf::Shape& shape);
 void defineText(sf::Text& txt,
                 const std::string& str,
                 Vector2f position,

@@ -11,6 +11,10 @@
 #include "data/BallData.hpp"
 
 
+/* Concrete derived class representing a Ball.
+ *
+ * */
+
 class Ball : public Entity
 {
 public:
@@ -22,14 +26,11 @@ public:
 	};
 
 public:
-	Ball(World* world,
-		 ecs::EntityManager& entm,
+	Ball(World& world,
 	     Vector2f position,
-	     float radius,
-	     float mass,
 	     Vector2f gravVect,
 	     BallData data,
-	     int nTouching = 1,
+	     int nCollisionTarget = 1,
 	     unsigned int type = 0);
 	virtual ~Ball();
 

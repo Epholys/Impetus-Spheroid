@@ -5,11 +5,14 @@
 
 #include "core/Entity.hpp"
 
+/* Concrete derived class representing a Wall.
+ *
+ * */
+
 class Wall : public Entity
 {
 public:
-	Wall(World* world,
-	     ecs::EntityManager& entm,
+	Wall(World& world,
 	     Vector2f position,
 	     Vector2f size,
 	     sf::Color color);

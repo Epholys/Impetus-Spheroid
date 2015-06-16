@@ -8,6 +8,7 @@
 #include "core/Ball.hpp"
 #include "core/Inventory.hpp"
 
+
 //-----------------------------------------------------------------------------
 
 namespace
@@ -87,7 +88,7 @@ namespace
 	auto multiplyPoints =
 		[](World& w, Time, bool undo)
 	{
-		const float MULTIPLIER = 1.5f;
+		const float MULTIPLIER = PowerUpDatas::TARGET_POINT_MULTIPLIER;
 
 		auto& em = w.getEntityManager();
 		auto targetComps = em.getAllComponents(ecs::Component::Target);

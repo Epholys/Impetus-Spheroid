@@ -11,13 +11,11 @@
 class Obstacle : public Entity
 {
 public:
-	Obstacle(World* world,
-	         ecs::EntityManager& entm,
+	Obstacle(World& world,
 	         Vector2f position,
 	         Vector2f size,
 		     Vector2f velocity,
-	         Vector2f gravVect,
-		     sf::Color color);
+	         Vector2f gravVect);
 	virtual ~Obstacle();
 
 	virtual void update(Time dt);

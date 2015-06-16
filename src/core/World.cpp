@@ -41,17 +41,17 @@ World::World(const Vector2u& originalSize,
 
 void World::generateWorld()
 {
-	Entity::Ptr ceiling (new Wall(this, ecs_,
+	Entity::Ptr ceiling (new Wall(*this,
 	                              Vector2f(originalSize_.x / 2.f, 0.f),
 	                              Vector2f(originalSize_.x, 10.f),
 	                              sf::Color(80,80,80)));
 	
-	Entity::Ptr leftWall (new Wall(this, ecs_,
+	Entity::Ptr leftWall (new Wall(*this,
 	                               Vector2f(12.5f, originalSize_.y / 2.f),
 	                               Vector2f(25.f, originalSize_.y),
 	                               sf::Color(80,80,80)));
 
-	Entity::Ptr rightWall (new Wall(this, ecs_,
+	Entity::Ptr rightWall (new Wall(*this,
 	                                Vector2f(originalSize_.x, originalSize_.y / 2.f),
 	                                Vector2f(10.f, originalSize_.y),
 	                                sf::Color(80,80,80)));
@@ -159,16 +159,9 @@ World::getTrackedCollisions() const
 
 ecs::Entity World::createTarget(Vector2f position)
 {
-	const Vector2f TARGET_DIMENSION {15.f, 75.f};
-	const sf::Color TARGET_COLOR {sf::Color::Yellow};
+	Entity::Ptr pTarget (new Target(*this, position));
 
-
-	Entity::Ptr pTarget (new Target(this, ecs_,
-	                                position,
-	                                TARGET_DIMENSION,
-	                                TARGET_COLOR));
 	ecs::Entity label = pTarget->getLabel();
-
 	entities_.push_back(std::move(pTarget));
 
 	return label;

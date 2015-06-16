@@ -26,9 +26,6 @@ public:
 	Cannon(const Vector2f& position, World& world, Inventory& inventory);
 	~Cannon();
 
-	// NOTE: Cannon knows nothing about the Global Transform, etc.
-	// It's World's job to make sure event if correctely adapted to the
-	// originalWindow_ attribute.
 	void handleInput(const sf::Event& event);
 	void update(Time dt);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;

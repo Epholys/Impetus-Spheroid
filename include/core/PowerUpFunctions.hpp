@@ -14,4 +14,10 @@ struct PowerUpEntry;
 
 void genPowerUps(std::map<PowerUpID::ID, PowerUpEntry>& powerUpTable);
 
+namespace PowerUpDatas
+{
+	const float TARGET_POINT_MULTIPLIER = 1.5f;	
+}
+
+
 #endif // POWER_UP_FUNCTIONS_HPP

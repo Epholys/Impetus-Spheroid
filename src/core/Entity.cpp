@@ -2,7 +2,7 @@
 
 //-----------------------------------------------------------------------------
 
-Entity::Entity(World* world, ecs::EntityManager& entm, EntityID::Type type)
+Entity::Entity(World& world, ecs::EntityManager& entm, EntityID::Type type)
 	: world_(world)
 	, ecs_(entm)
 	, label_(0)

@@ -96,6 +96,9 @@ private:
 	void cleanEntities();
 
 private:
+	static Vector2f CANON_POSITION;
+
+private:
 	const Vector2f originalSize_;
 	ecs::EntityManager ecs_;
 	eg::PhysicEngine physEng_;
@@ -104,7 +107,6 @@ private:
 	Inventory& inventory_;
 	Cannon cannon_;
 	std::vector<Modifier<Cannon>> cannonModifiers_;
-	static Vector2f CANON_POSITION;
 
 	GameState state_;
 

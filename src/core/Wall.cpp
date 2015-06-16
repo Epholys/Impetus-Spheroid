@@ -1,24 +1,21 @@
 #include "core/Wall.hpp"
+#include "core/World.hpp"
 #include "framework/Assertion.hpp"
 
 
 //-----------------------------------------------------------------------------
 
-Wall::Wall(World* world,
-           ecs::EntityManager& entm,
+Wall::Wall(World& world,
            Vector2f position,
            Vector2f size,
            sf::Color color)
-	: Entity(world, entm, EntityID::Wall)
+	: Entity(world, world.getEntityManager(), EntityID::Wall)
 	, rect_(size)
 {
-	label_ = ecs::createWall(entm, position, size);
+	label_ = ecs::createWall(ecs_, position, size);
 
+	centerOrigin(rect_);
 	rect_.setFillColor(color);
-	auto rectBounds = rect_.getLocalBounds();
-	rect_.setOrigin(rectBounds.left + rectBounds.width / 2.f,
-	                rectBounds.top + rectBounds.height / 2.f);
-
 	update(Time());
 }
 
@@ -39,6 +36,10 @@ void Wall::update(Time dt)
 	if(pointPos)
 	{
 		auto position = pointPos->position_;
+
+		// NOT rect_.setPosition(...): rect__'s Transformable base class isn't
+		// used because if suddenly Wall's view become several sf::Sprites and
+		// sf::Shapes, it would mean I'll have to update every single one of them.
 		setPosition(position.x, position.y);
 	}
 }

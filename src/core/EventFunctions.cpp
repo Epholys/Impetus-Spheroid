@@ -130,7 +130,6 @@ namespace evt
 		const float DVT_VEL = 150.f;
 		const float MEAN_GRAV = 250.f;
 		const float DVT_GRAV = 50.f;
-		const sf::Color COLOR = sf::Color::Black;
 
 		Vector2f size (15.f, normalRandFloat(MEAN_HEIGHT, DVT_HEIGHT));
 		
@@ -145,8 +144,7 @@ namespace evt
  		world.addEntity<Obstacle>(Vector2f(xPosition, yPosition),
 		                          size,
 		                          Vector2f(0.f, yVelocity),
-		                          Vector2f(0.f, yGrav),
-		                          COLOR);
+		                          Vector2f(0.f, yGrav));
 }
 
 	void createObstacleModifiers(World& world, Time)

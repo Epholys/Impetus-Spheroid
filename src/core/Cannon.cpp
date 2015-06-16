@@ -110,9 +110,9 @@ ecs::Entity Cannon::createBall()
 {
 	const float IMPULSE_COEFF = 3.f;
 
-	Entity::Ptr pBall (new Ball(&world_, world_.getEntityManager(),
+	Entity::Ptr pBall (new Ball(world_,
 	                            position_,
-	                            ballRadius_, ballMass_, world_.getGravityVect(),
+	                            world_.getGravityVect(),
 	                            ballBuffer_.front().first,
 	                            nTouchingBall_,
 	                            ballBuffer_.front().second));
