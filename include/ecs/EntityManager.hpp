@@ -22,7 +22,6 @@ namespace ecs
 	 * NOTE : An 'object' is an Entity with all its Components.
 	 *
 	 * TODO: Maybe try to optimise instead of copying everything.
-	 * TODO: Replace all the std::map by some custom Table class.
 	 *
 	 * For more information about a Entity/Component System, see:
 	 * http://entity-systems.wikidot.com/

@@ -11,6 +11,12 @@
 
 namespace evt
 {
+	/* EventGenerator decide when and what Event World recieve (via update()).
+	 *
+	 * It is linked to DifficultyManager which send some information with
+	 * updateDifficulty().
+	 * */ 
+
 	class EventGenerator
 	{
 	public:

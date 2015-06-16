@@ -11,6 +11,12 @@ class World;
 
 namespace evt
 {
+	/* An event is just a collection of (Modifiable<> classes') modifiers. There
+	 * is just a getDuration() utility function. chance and diff are used in
+	 * EventGenerator. 
+	 *
+	 * */
+
 	struct Event
 	{
 		enum Difficulty
