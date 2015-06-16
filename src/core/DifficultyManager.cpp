@@ -13,11 +13,12 @@ namespace
 {
 	auto worldDatas = genDifficultyWorld();
 	auto eventDatas = genDifficultyEvent();
-	auto ballDatas = genBallDatas();
+//	auto ballDatas = genBallDatas();
 }
 
 
 //-----------------------------------------------------------------------------
+// *** public static const attribute: ***
 
 const int DifficultyManager::COINS_PER_POINTS_ = 10;
 const int DifficultyManager::BASE_OBJECTIVE_ = 20;
@@ -25,28 +26,33 @@ const Time DifficultyManager::PHASE_TIME_ {seconds(20.f)};
 
 
 //-----------------------------------------------------------------------------
+// *** other constants: ***
+namespace
+{
+	const int BASE_CEILING = 20;
+	const int OBJECTIVE_INCREMENT = 2;
+}
+
+
+//-----------------------------------------------------------------------------
 
 DifficultyManager::DifficultyManager(DifficultyContext context)
-	: phaseDuration_(PHASE_TIME_)
-	, phaseTime_()
+	: phaseTime_()
 	, phaseNumber_(0)
 	, context_(context)
 	, font_()
 	, timer_()
 	, score_(0.f)
 	, objective_(BASE_OBJECTIVE_)
-	, objectiveIncrement_(2)
-	, ceiling_(baseCeiling_)
+	, ceiling_(BASE_CEILING)
 	, scoreText_()
-	, ballCount_()
-	, diffGui_(nullptr)
-	, maskGui_(true)
-	, worldSeed_({0.05f})
-	, eventSeed_({100, 8, 10, 10.f})
+	// , ballCount_()
+	// , diffGui_(nullptr)
+	// , maskGui_(true)
 {
-
-	const Vector2f TIMER_POSITION (710.f, 0.f);
-	const Vector2f SCORE_POSITION (710.f, 20.f);
+	const Vector2u WINDOW_SIZE = context_.world->getWindowSize();
+	const Vector2f TIMER_POSITION (WINDOW_SIZE.x - 90.f, 0.f);
+	const Vector2f SCORE_POSITION (WINDOW_SIZE.x - 90.f, 20.f);
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
 
 	timer_.setFont(font_);
@@ -58,79 +64,16 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	scoreText_.setPosition(SCORE_POSITION);
 	updateScore();
 	
-	createGui();
+//	createGui();
 
 	context_.eventGenerator->updateDifficulty(eventDatas[0]);
 }
 
-void DifficultyManager::createGui()
-{
-	// const Vector2f SLIDER_SIZE(40.f,20.f);
-	// Vector2f sliderPos(0.f,25.f);
-	// const Vector2f sliderMov(0.f, SLIDER_SIZE.y);
-	// float i = 0.f;
-
-	// gui::Menu::SPtr pMainMenu (new gui::Menu(gui::Menu::Horizontal, "Main Menu", true, true));
-	// pMainMenu->move(5.f, 5.f);
-
-	// //---
-	
-	// gui::Menu::SPtr pGlobalDiff (new gui::Menu(gui::Menu::Vertical, "Global Difficulty"));
-	
-	// gui::Slider<Time>::SPtr pDurationSlider 
-	// 	(new gui::Slider<Time>(phaseDuration_, seconds(5.f), SLIDER_SIZE, "Phase Duration", true, seconds(5), seconds(900)));
-	// pDurationSlider->move(sliderPos);
-	// pGlobalDiff->pack(std::move(pDurationSlider));
-	
-	// pMainMenu->pack(std::move(pGlobalDiff));
-
-	// //---
-
-	
-	// gui::Menu::SPtr worldDiff (new gui::Menu(gui::Menu::Vertical, "World Difficulty"));
-	
-	// gui::Slider<float>::SPtr pSpeedSlider
-	// 	(new gui::Slider<float>(worldSeed_.speedConstant, 0.05f, SLIDER_SIZE, "SpeedCoeff", true, 0.f, 1.f));
-	// pSpeedSlider->move(sliderPos);
-	// worldDiff->pack(std::move(pSpeedSlider));
-
-	// pMainMenu->pack(std::move(worldDiff));
-
-	// //---
-
-	// gui::Menu::SPtr eventDiff (new gui::Menu(gui::Menu::Vertical, "Event Difficulty"));
-
-	// gui::Slider<float>::SPtr eventDelay
-	// 	(new gui::Slider<float>(eventSeed_.delay, 1, SLIDER_SIZE, "Event Delay", true, 0, 60));
-	// eventDelay->move(sliderPos + i * sliderMov); ++i;
-	// eventDiff->pack(std::move(eventDelay));
-
-    // pMainMenu->pack(std::move(eventDiff)); i=0;
-
-	// //---
-
-	// gui::Menu::SPtr advEventDiff (new gui::Menu(gui::Menu::Vertical, "Advanced Event Diff"));
-
-	// gui::Slider<int>::SPtr attenuation
-	// 	(new gui::Slider<int>(eventSeed_.attenuation, 1, SLIDER_SIZE, "Attenuation", true, 1, 16));
-	// attenuation->move(sliderPos + i * sliderMov); ++i;
-	// advEventDiff->pack(std::move(attenuation));
-
-	// gui::Slider<int>::SPtr offset
-	// 	(new gui::Slider<int>(eventSeed_.offset, 2, SLIDER_SIZE, "Offset", true, 0, 30));
-    // offset->move(sliderPos + i * sliderMov); ++i;
-    // advEventDiff->pack(std::move(offset));
-
-    // pMainMenu->pack(std::move(advEventDiff)); i=0;
-
-	
-	// //---
-
-	// diffGui_ = std::move(pMainMenu);
-
-	// // Important
-	// diffGui_->select();
-}
+// Served for quick parameter modification for prototyping, but the game's core
+// is well implemented, so it isn't useful for now.
+// void DifficultyManager::createGui()
+// {
+// }
 
 DifficultyManager::~DifficultyManager()
 {
@@ -143,14 +86,14 @@ void DifficultyManager::update(Time dt)
 {
 	phaseTime_ += dt;
 	updateScore();
-	if (phaseTime_ >= phaseDuration_)
+	if (phaseTime_ >= PHASE_TIME_)
 	{
-		phaseTime_ -= phaseDuration_;
+		phaseTime_ -= PHASE_TIME_;
 		++phaseNumber_;
 		updateDifficulty();
 	}
 
-	Time timerRemaining = phaseDuration_ - phaseTime_;
+	Time timerRemaining = PHASE_TIME_ - phaseTime_;
 	std::stringstream ssSeconds;
 	ssSeconds << int(timerRemaining.asSeconds());
 	std::stringstream ssCentiSecs;
@@ -158,33 +101,21 @@ void DifficultyManager::update(Time dt)
 	timer_.setString(ssSeconds.str() + ":" + ssCentiSecs.str());
 }
 
-void DifficultyManager::handleInput(const sf::Event&)
-{
-	// if(event.type == sf::Event::KeyReleased
-	//    && event.key.code == sf::Keyboard::P)
-	// 	reloadDifficulty();
-
-	// if(!maskGui_)
-	// {
-	// 	diffGui_->handleEvent(event);
-	// }
-}
+// Used to forward instruction to the GUI 
+// void DifficultyManager::handleInput(const sf::Event&)
+// {
+// }
 
 
 void DifficultyManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(timer_, states);
 	target.draw(scoreText_, states);
-	if(!maskGui_)
-	{
-		target.draw(*diffGui_, states);
-	}
+
+	// Don't forget to draw the GUI if necessary!
 }
 
-void DifficultyManager::mask()
-{
-	maskGui_ = !maskGui_;
-}
+//-----------------------------------------------------------------------------
 
 
 void DifficultyManager::addTime(Time adding)
@@ -196,6 +127,7 @@ int DifficultyManager::getObjective() const
 {
 	return objective_;
 }
+
 
 //-----------------------------------------------------------------------------
 
@@ -228,7 +160,10 @@ void DifficultyManager::updateScore()
 		if(projectileComp && targetComp)
 		{
 			points += projectileComp->getPoints() * targetComp->getPointMultiplier();
-			++ballCount_[projectileComp->getPoints()];
+			// // Some subtlety here: ballCount_ does not save the target's point
+			// // multiplier. It would have an impact if I decide to go back to the
+			// // old point system.
+			// ++ballCount_[projectileComp->getPoints()];
 		}
 	}
 
@@ -249,6 +184,9 @@ void DifficultyManager::updateScore()
 	scoreText_.setColor(txtCol);
 }
 
+// Before having the ceiling_'s system, I tried hard not to have gameplay
+// pitfalls where the game became too easy or too hard, so here is all the
+// documented code in case of getting rid of the ceiling system.
 void DifficultyManager::updateObjective()
 {
 	const int ATTENUATION = 2;
@@ -297,7 +235,7 @@ void DifficultyManager::updateObjective()
 	// 	}
 	// }
 
-	int increment = objectiveIncrement_ + excess / ATTENUATION;
+	int increment = OBJECTIVE_INCREMENT + excess / ATTENUATION;
 	if (increment >= ceiling_)
 	{
 		increment = ceiling_;
@@ -308,11 +246,5 @@ void DifficultyManager::updateObjective()
 	objective_ += increment;
 	
 	score_ = 0.f;
-	ballCount_.clear();
-}
-
-void DifficultyManager::reloadDifficulty()
-{
-	worldDatas = genDifficultyWorld(worldSeed_);
-	eventDatas = genDifficultyEvent(eventSeed_);
+	// ballCount_.clear();
 }

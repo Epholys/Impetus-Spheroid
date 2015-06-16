@@ -1,3 +1,4 @@
+
 template<typename T>
 auto DifficultyManager::selectDataIndex(std::vector<T> v)
 {
