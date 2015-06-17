@@ -54,6 +54,8 @@ public:
 	      int precision = 2);
 	~World() {};
 
+	ecs::Entity createTarget(Vector2f mousePosition);
+
 	void handleInput(const sf::Event& event);
 	void update(Time dt);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -84,9 +86,6 @@ public:
 	void addTime(Time adding);
 
 	void updateDifficulty(DifficultyWorld diff);
-
-	ecs::Entity createBall();
-	ecs::Entity createTarget(Vector2f mousePosition);
 
 private:
 	void generateWorld();

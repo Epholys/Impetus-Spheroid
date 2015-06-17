@@ -137,8 +137,8 @@ void genPowerUps(std::map<PowerUpID::ID, PowerUpEntry>& powerUpTable)
 {
 	using namespace PowerUpID;
 
-// WARNING: WE DO NOT VERIFY IF THE TEXTUREs ARE SUCCESSFULLY LOADED
-
+// WARNING: WE DO NOT VERIFY IF THE TEXTURES ARE SUCCESSFULLY LOADED
+	
 	PowerUpToogle* putGhost = new PowerUpToogle();
 	putGhost->addActivateFunc(switchGhostBalls);
 	putGhost->addDeactivateFunc(switchGhostBalls);
@@ -212,10 +212,11 @@ void genPowerUps(std::map<PowerUpID::ID, PowerUpEntry>& powerUpTable)
 	entry->stock = 0;
 	entry->texture = txtMult;
 
+	const int N_BALL_TOUCH = 2;
 	PowerUpToogle* putTouching = new PowerUpToogle();
 	putTouching->addActivateFunc(std::bind(changeNTouching,
 	                                       std::placeholders::_1,
-	                                       2));
+	                                       N_BALL_TOUCH));
 	putTouching->addDeactivateFunc(std::bind(changeNTouching,
 	                                         std::placeholders::_1,
 	                                         1));

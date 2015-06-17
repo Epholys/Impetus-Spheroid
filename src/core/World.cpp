@@ -149,6 +149,14 @@ void World::setState(GameState state)
 void World::cancelEvents(bool comeFromInventory)
 {
 	Modifiable<World>::forceEndingModifiers(*this);
+
+	for (auto& entity : entities_)
+	{
+		entity->forceEndingModifiers(*entity);
+	}
+	
+	cannon_.forceEndingModifiers(cannon_);
+
 	if(comeFromInventory)
 	{
 		inventory_.decrement(PowerUpID::CancelEvents);

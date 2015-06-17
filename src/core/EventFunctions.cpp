@@ -11,8 +11,13 @@
 
 namespace evt
 {
-	/* A modifier's main function which pause velocity for every ball in the
-	 * rectangle defined by its upper left corner POSITION and it size SIZE
+	namespace
+	{
+		const int DEFAULT_EVENT_DURATION = 5;
+	}
+
+	/* Pause velocity fort the Ball if it's in the rectangle defined by its
+	 * upper left corner at position and its size.
 	 * */
 	auto stopTimeBall =
 		[](Vector2f position, Vector2f size, Time pause, Entity& ball, Time)
@@ -46,6 +51,8 @@ namespace evt
 		}
 	};
 
+	/* Resume time for a Ball that are stopped mid-air.
+	 * */
 	auto resumeTimeBall = [](Entity& ball, Time)
 	{
 		if(ball.getType() != EntityType::Ball) return;
@@ -63,7 +70,9 @@ namespace evt
 		projectileComponent->unpause();
 	};
 
-
+	
+	/* Stop time for all balls entities of World.
+	 * */
 	auto stopTimeWorld =
 		[](Time pause, World& world, Time)
 	{
@@ -86,6 +95,8 @@ namespace evt
 		world.addModifier<Entity>(stopTimeMod);
 	};
 
+	/* Resume times for all World's Balls entities.  
+	 * */
 	auto resumeTimeWorld =
 		[](World& world, Time)
 	{
@@ -98,31 +109,13 @@ namespace evt
 		world.addModifier<Entity>(resumeTimeMod);
 	};
 
-//-----------------------------------------------------------------------------
-
-
-	auto chgGravUpWorld =
-		[](World& world, Time)
-		{
-			auto entm = world.getEntityManager();
-			auto vComp = entm.getAllComponents(ecs::Component::Mass);
-			for(auto& comp : vComp)
-			{
-				auto mass = dynCast<ecs::Mass>(comp);
-				if(mass)
-				{
-				  	mass->gravityVect_.y *= -1.f;
-				}
-			}
-
-			auto gravVect = world.getGravityVect();
-			gravVect.y *= -1;
-			world.setGravityVect(gravVect);
-		};
-
 
 //-----------------------------------------------------------------------------
 
+	/* Generate an Obstacle Entity with a random size, velocityand a random
+	 * position (within the zone delimited by its upper left-hand corner
+	 * upLeftCorner and its size zonSize. THen, add this Obstacle in world.
+	 * */
 	void generateAnObstacle (Vector2f upLeftCorner, Vector2f zoneSize,
 	                         World& world, Time)
 	{
@@ -148,8 +141,10 @@ namespace evt
 		                          size,
 		                          Vector2f(0.f, yVelocity),
 		                          Vector2f(0.f, yGrav));
-}
+	}
 
+	/* Generate a random amount of Obstacles at a random frequency.
+	 * */ 
 	void createObstacleModifiers(World& world, Time)
 	{
 		auto windowSize = world.getWindowSize();
@@ -189,7 +184,32 @@ namespace evt
 
 //-----------------------------------------------------------------------------
 
+	/* Reverse the gravity of world for all existing Entities and for new Balls
+	 * */
+	auto reverseGravWorld =
+		[](World& world, Time)
+		{
+			auto entm = world.getEntityManager();
+			auto vComp = entm.getAllComponents(ecs::Component::Mass);
+			for(auto& comp : vComp)
+			{
+				auto mass = dynCast<ecs::Mass>(comp);
+				if(mass)
+				{
+				  	mass->gravityVect_.y *= -1.f;
+				}
+			}
 
+			auto gravVect = world.getGravityVect();
+			gravVect.y *= -1;
+			world.setGravityVect(gravVect);
+		};
+
+
+//-----------------------------------------------------------------------------
+
+	/* Add a little wind by changing the gravity.
+	 * */
 	auto addWindWorld = 
 		[](World& world, Time)
 		{
@@ -198,6 +218,8 @@ namespace evt
 			world.setGravityVect(gravVec);
 		};
 
+	/* Remove the wind.
+	 * */
 	auto removeWindWorld = 
 		[](World& world, Time)
 		{
@@ -214,23 +236,26 @@ namespace evt
 	{
 		// Create base modifiers
 		Modifier<World> stopTimeMod;
-		stopTimeMod.duration_ = seconds(5);
-		stopTimeMod.preFunction_ = std::bind(stopTimeWorld, stopTimeMod.duration_, std::placeholders::_1, std::placeholders::_2);
+		stopTimeMod.duration_ = seconds(DEFAULT_EVENT_DURATION);
+		stopTimeMod.preFunction_ = std::bind(stopTimeWorld,
+		                                     stopTimeMod.duration_,
+		                                     std::placeholders::_1,
+		                                     std::placeholders::_2);
 		stopTimeMod.postFunction_ = resumeTimeWorld;
 
-		Modifier<World> chgGravUpWorldMod;
-		chgGravUpWorldMod.preFunction_ = chgGravUpWorld;
-		chgGravUpWorldMod.postFunction_ = chgGravUpWorld;
-		chgGravUpWorldMod.duration_ = seconds(5);
+		Modifier<World> reverseGravWorldMod;
+		reverseGravWorldMod.duration_ = seconds(DEFAULT_EVENT_DURATION);
+		reverseGravWorldMod.preFunction_ = reverseGravWorld;
+		reverseGravWorldMod.postFunction_ = reverseGravWorld;
 
 		Modifier<World> generateObstaclesMod;
+		generateObstaclesMod.duration_ = seconds(DEFAULT_EVENT_DURATION);
 		generateObstaclesMod.preFunction_ = createObstacleModifiers;
-		generateObstaclesMod.duration_ = seconds(5);
 
 		Modifier<World> addWindWorldMod;
+		addWindWorldMod.duration_ = seconds(DEFAULT_EVENT_DURATION);
 		addWindWorldMod.preFunction_ = addWindWorld;
 		addWindWorldMod.postFunction_ = removeWindWorld;
-		addWindWorldMod.duration_ = seconds(5);
 
 
 		// Create base Events
@@ -238,9 +263,9 @@ namespace evt
 		stopTimeEvt.diff = Event::Medium;
 		stopTimeEvt.worldModifiers.push_back(stopTimeMod);
 
-		Event chgGravUpWorldEvt;
-		chgGravUpWorldEvt.diff = Event::Medium;
-		chgGravUpWorldEvt.worldModifiers.push_back(chgGravUpWorldMod);
+		Event reverseGravWorldEvt;
+		reverseGravWorldEvt.diff = Event::Medium;
+		reverseGravWorldEvt.worldModifiers.push_back(reverseGravWorldMod);
 
 		Event createObstacleWorldEvt;
 		createObstacleWorldEvt.diff = Event::Medium;
@@ -252,16 +277,18 @@ namespace evt
 
 
 		// Modify Base Modifiers to create more complex Events
-		stopTimeMod.preDelay_ = seconds(5.5f);
+		const float BALL_FALLING = 0.5f;
+		const float PRE_DELAY = DEFAULT_EVENT_DURATION + BALL_FALLING;
+		stopTimeMod.preDelay_ = seconds(PRE_DELAY);
 		Event gravAndTimeEvt;
 		gravAndTimeEvt.diff = Event::Hard;
-		gravAndTimeEvt.worldModifiers.push_back(chgGravUpWorldMod);
+		gravAndTimeEvt.worldModifiers.push_back(reverseGravWorldMod);
 		gravAndTimeEvt.worldModifiers.push_back(stopTimeMod);
 
 		
 		// Create and return all the Events
 		std::vector<Event> events
-			{chgGravUpWorldEvt, stopTimeEvt, createObstacleWorldEvt,
+			{reverseGravWorldEvt, stopTimeEvt, createObstacleWorldEvt,
 			addWindWorldEvt, gravAndTimeEvt};
 		return events;
 	}
