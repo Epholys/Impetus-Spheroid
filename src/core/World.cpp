@@ -75,10 +75,16 @@ LastGameData World::getGameStats() const
 	return data;
 }
 
-Vector2f& World::getGravityVect()
+Vector2f World::getGravityVect() const
 {
 	return gravityVect_;
 }
+
+void World::setGravityVect(Vector2f vect)
+{
+	gravityVect_ = vect;
+}
+
 Vector2u World::getWindowSize() const
 {
 	return Vector2u(originalSize_);
@@ -287,12 +293,12 @@ void World::cleanEntities()
 
 void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	difficulty_.draw(target, states);
-
 	for(auto it = entities_.begin(); it != entities_.end(); ++it)
 	{
 		(*it)->draw(target, states);
 	}
+
+	difficulty_.draw(target, states);
 
 	cannon_.draw(target, states);
 }

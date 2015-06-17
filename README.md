@@ -14,12 +14,10 @@
   * (Heavy) Refactoring
   	* FontHolder (or a general ResourceHolder<>)
 	* Separate DifficultyManager into two classes
-	* Try to elimiate or un-ugly-fy template contamination by Modifiable<T> on Event, EventGenerator and World
-
 
 * Optimization (if necessary)
   * Search where are the bottlenecks
-  	* ecs/EntityManager's entityExists() / componentExists()
+  	* --> ecs/EntityManager's entityExists() / componentExists()
   * ECS: Optimize to be more cache-friendly
 
 

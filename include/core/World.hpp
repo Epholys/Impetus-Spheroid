@@ -61,7 +61,8 @@ public:
 	LastGameData getGameStats() const;
 
 	ecs::EntityManager& getEntityManager();
-	Vector2f& getGravityVect();
+	Vector2f getGravityVect() const;
+	void setGravityVect(Vector2f vect);
 	Vector2u getWindowSize() const;
 	const std::vector<eg::PhysicEngine::entityPair>& getTrackedCollisions() const;
 	Vector2f getMousePosition() const;

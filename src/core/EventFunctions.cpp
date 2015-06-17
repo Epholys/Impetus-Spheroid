@@ -115,7 +115,9 @@ namespace evt
 				}
 			}
 
-			world.getGravityVect().y *= -1.f;
+			auto gravVect = world.getGravityVect();
+			gravVect.y *= -1;
+			world.setGravityVect(gravVect);
 		};
 
 
@@ -191,13 +193,17 @@ namespace evt
 	auto addWindWorld = 
 		[](World& world, Time)
 		{
-			world.getGravityVect().x = -750.f;
+			auto gravVec = world.getGravityVect();
+			gravVec.x = -750.f;
+			world.setGravityVect(gravVec);
 		};
 
 	auto removeWindWorld = 
 		[](World& world, Time)
 		{
-			world.getGravityVect().x = 0.f;
+			auto gravVec = world.getGravityVect();
+			gravVec.x = 0.f;
+			world.setGravityVect(gravVec);
 		};
 
 
