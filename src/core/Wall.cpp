@@ -9,7 +9,7 @@ Wall::Wall(World& world,
            Vector2f position,
            Vector2f size,
            sf::Color color)
-	: Entity(world, world.getEntityManager(), EntityID::Wall)
+	: Entity(world, world.getEntityManager(), EntityType::Wall)
 	, rect_(size)
 {
 	label_ = ecs::createWall(ecs_, position, size);

@@ -16,7 +16,7 @@ namespace
 
 Target::Target(World& world,
                Vector2f position)
-	: Entity(world, world.getEntityManager(), EntityID::Target)
+	: Entity(world, world.getEntityManager(), EntityType::Target)
 	, rect_(SIZE)
 	, objective_()
 {

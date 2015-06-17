@@ -23,7 +23,7 @@ namespace
 			{
 				c.switchBallType(Ball::Ghost);
 			};
-		w.addCannonModifier(ghostBalls);
+		w.addModifier<Cannon>(ghostBalls);
 	};
 
 	auto switchNoGravBalls =
@@ -36,7 +36,7 @@ namespace
 			{
 				c.switchBallType(Ball::Massless);
 			};
-		w.addCannonModifier(masslessBalls);
+		w.addModifier<Cannon>(masslessBalls);
 	};
 
 	auto cancelEvents =
@@ -75,7 +75,7 @@ namespace
 	auto updateColor =
 		[](Entity& ent, Time)
 	{
-		if(ent.getType() == EntityID::Target)
+		if(ent.getType() == EntityType::Target)
 		{
 			Entity* pEnt = &ent;
 			Target* pTarg = dynamic_cast<Target*>(pEnt);
@@ -113,7 +113,7 @@ namespace
 		Modifier<Entity> mod;
 		mod.postFunction_ = updateColor;
 		mod.duration_ = Time();
-		w.addEntityModifier(mod);
+		w.addModifier<Entity>(mod);
 	};
 
 	auto changeNTouching =
@@ -126,7 +126,7 @@ namespace
 			{
 				c.setNTouching(nTouching);
 			};
-		w.addCannonModifier(multipleTouch);
+		w.addModifier<Cannon>(multipleTouch);
 	};
 }
 

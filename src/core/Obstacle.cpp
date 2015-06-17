@@ -19,7 +19,7 @@ Obstacle::Obstacle(World& world,
                    Vector2f size,
                    Vector2f velocity,
                    Vector2f gravVect)
-	: Entity(world, world.getEntityManager(), EntityID::Obstacle)
+	: Entity(world, world.getEntityManager(), EntityType::Obstacle)
 	, rect_(size)
 {
 	label_ = ecs::createObstacle(ecs_, position, size, velocity, MASS, gravVect);

@@ -27,12 +27,10 @@ World::World(const Vector2u& originalSize,
 	, difficulty_(DifficultyContext{this, &evtGen_, &metaData, &(metaData.inventory)})
 	, inventory_(metaData.inventory)
 	, cannon_(CANON_POSITION, *this, inventory_)
-	, cannonModifiers_()
 	, state_(Waiting)
 	, speedCoeff_(1.f)
-	, entities_()
-	, entitiesModifiers_()
 	, gravityVect_(0.f, 1000.f)
+	, entities_()
 {
 	const Vector2f SCORE_POSITION (750.f, 0.f);
 
@@ -90,14 +88,26 @@ Vector2f World::getMousePosition() const
 	return mousePosition_;
 }
 
-void World::addEntityModifier(Modifier<Entity> modifier)
-{
-	entitiesModifiers_.push_back(modifier);
+template<>
+void World::addModifier<World>(Modifier<World> modifier)
+{		
+	Modifiable<World>::addModifier(modifier);
 }
 
-void World::addCannonModifier(Modifier<Cannon> modifier)
+
+template<>
+void World::addModifier<Entity>(Modifier<Entity> modifier)
 {
-	cannonModifiers_.push_back(modifier);
+	for (auto& entity : entities_)
+	{
+		entity->addModifier(modifier);
+	}
+}
+
+template<>
+void World::addModifier<Cannon>(Modifier<Cannon> modifier)
+{		
+	cannon_.addModifier(modifier);
 }
 
 void World::addEntity(Entity::Ptr entity)
@@ -107,6 +117,7 @@ void World::addEntity(Entity::Ptr entity)
 
 void World::removeEntity(ecs::Entity label)
 {
+	// By security, even if Entity's destructor do it
 	ecs_.removeEntity(label);
 	
 	entities_.erase(
@@ -205,7 +216,7 @@ void World::update(Time dt)
 		cannon_.update(dt);
 
 	ecs_.update(dt);
-	applyModifiers(dt);
+	applyModifiers(*this, dt);
 
 	for(const auto& ent : entities_)
 	{
@@ -224,44 +235,12 @@ void World::getEvent(Time dt)
 
 	if(evt.diff == evt::Event::None)
 		return;
-	
-	if(!evt.entityModifiers.empty())
-	{
-		entitiesModifiers_.insert(entitiesModifiers_.begin(),
-		                          evt.entityModifiers.begin(),
-		                          evt.entityModifiers.end());
-	}
+
 	if(!evt.worldModifiers.empty())
 	{
 		modifiers_.insert(modifiers_.begin(),
 		                  evt.worldModifiers.begin(),
 		                  evt.worldModifiers.end());
-	}
-}
-
-void World::cleanModifiers()
-{
-	Modifiable<World>::cleanModifiers();
-
-	entitiesModifiers_.clear();
-	cannonModifiers_.clear();
-}
-
-void World::applyModifiers(Time dt)
-{
-	Modifiable<World>::applyModifiers(*this, dt);
-
-	for(auto& entity : entities_)
-	{
-		for(auto& modifier : entitiesModifiers_)
-		{
-			entity->addModifier(modifier);
-		}
-	}
-
-	for(auto& modifier : cannonModifiers_)
-	{
-		cannon_.addModifier(modifier);
 	}
 }
 

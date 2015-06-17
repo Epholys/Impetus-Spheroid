@@ -7,7 +7,6 @@
 #include <SFML/Graphics/Texture.hpp>
 
 #include "core/PowerUp.hpp"
-#include "core/Identifiers.hpp"
 #include "core/World.hpp"
 
 struct PowerUpEntry;

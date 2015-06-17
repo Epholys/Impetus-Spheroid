@@ -19,7 +19,7 @@ Ball::Ball(World& world,
            BallData data,
            int nCollisionTarget,
            unsigned int type)
-	: Entity(world, world.getEntityManager(), EntityID::Ball)
+	: Entity(world, world.getEntityManager(), EntityType::Ball)
 	, ball_(RADIUS)
 {
 	label_ = ecs::createBall(ecs_, position, RADIUS, MASS, gravVect, data.point, nCollisionTarget);

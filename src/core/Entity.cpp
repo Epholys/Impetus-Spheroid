@@ -2,7 +2,7 @@
 
 //-----------------------------------------------------------------------------
 
-Entity::Entity(World& world, ecs::EntityManager& entm, EntityID::Type type)
+Entity::Entity(World& world, ecs::EntityManager& entm, EntityType::Type type)
 	: world_(world)
 	, ecs_(entm)
 	, label_(0)
@@ -20,7 +20,7 @@ ecs::Entity Entity::getLabel() const
 	return label_;
 }
 
-EntityID::Type Entity::getType() const
+EntityType::Type Entity::getType() const
 {
 	return type_;
 }

@@ -12,12 +12,12 @@
 namespace evt
 {
 	/* A modifier's main function which pause velocity for every ball in the
-	 * rectangle defined bu its upper left corner POSITION and it size SIZE
+	 * rectangle defined by its upper left corner POSITION and it size SIZE
 	 * */
 	auto stopTimeBall =
 		[](Vector2f position, Vector2f size, Time pause, Entity& ball, Time)
 	{
-		if(ball.getType() != EntityID::Ball) return;
+		if(ball.getType() != EntityType::Ball) return;
 
 		auto components = ball.getComponents();
 		
@@ -48,7 +48,7 @@ namespace evt
 
 	auto resumeTimeBall = [](Entity& ball, Time)
 	{
-		if(ball.getType() != EntityID::Ball) return;
+		if(ball.getType() != EntityType::Ball) return;
 
 		auto components = ball.getComponents(true);
 		
@@ -83,7 +83,7 @@ namespace evt
 		                                      std::placeholders::_2);
 		stopTimeMod.duration_ = Time();
 
-		world.addEntityModifier(stopTimeMod);
+		world.addModifier<Entity>(stopTimeMod);
 	};
 
 	auto resumeTimeWorld =
@@ -95,7 +95,7 @@ namespace evt
 		                                        std::placeholders::_2);
 		resumeTimeMod.duration_ = Time();
 
-		world.addEntityModifier(resumeTimeMod);
+		world.addModifier<Entity>(resumeTimeMod);
 	};
 
 //-----------------------------------------------------------------------------
@@ -124,6 +124,7 @@ namespace evt
 	void generateAnObstacle (Vector2f upLeftCorner, Vector2f zoneSize,
 	                         World& world, Time)
 	{
+		const float WIDTH = 15.f;
 		const float MEAN_HEIGHT = 75.f;
 		const float DVT_HEIGHT = 25.f;
 		const float MEAN_VEL = -500.f;
@@ -131,7 +132,7 @@ namespace evt
 		const float MEAN_GRAV = 250.f;
 		const float DVT_GRAV = 50.f;
 
-		Vector2f size (15.f, normalRandFloat(MEAN_HEIGHT, DVT_HEIGHT));
+		Vector2f size (WIDTH, normalRandFloat(MEAN_HEIGHT, DVT_HEIGHT));
 		
 		float xMean = upLeftCorner.x + zoneSize.x / 2.f;
 		float xDev = zoneSize.x / 3.f;

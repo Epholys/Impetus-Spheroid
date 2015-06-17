@@ -51,7 +51,6 @@ public:
 public:
 	World(const Vector2u& originalSize,
 	      MetaData& metaData,
-	      
 	      int precision = 2);
 	~World() {};
 
@@ -71,10 +70,12 @@ public:
 	template<typename T, typename... Args>
 	void addEntity(Args... args);
 	void removeEntity(ecs::Entity label);
-	void addEntityModifier(Modifier<Entity> modifier);
 
-	void addCannonModifier(Modifier<Cannon> modifier);
-	
+	// It's a trap: it's no really a generic function, all cases (3) are
+	// specialized in the .cpp... but having a single interface is nicer.
+	template<typename T>
+	void addModifier(Modifier<T> modifier);
+
 	bool isGameOver() const;
 	void setState(GameState state);
 
@@ -90,8 +91,6 @@ private:
 	void generateWorld();
 
 	void getEvent(Time dt);
-	virtual void applyModifiers(Time dt);
-	virtual void cleanModifiers();
 
 	void cleanEntities();
 
@@ -106,17 +105,15 @@ private:
 	DifficultyManager difficulty_;
 	Inventory& inventory_;
 	Cannon cannon_;
-	std::vector<Modifier<Cannon>> cannonModifiers_;
 
 	GameState state_;
 
 	Vector2f mousePosition_;
 
 	float speedCoeff_;
+	Vector2f gravityVect_;
 
 	std::vector<Entity::Ptr> entities_;
-	std::vector<Modifier<Entity>> entitiesModifiers_;
-	Vector2f gravityVect_;
 };
 
 #include "World.ipp"

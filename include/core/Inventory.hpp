@@ -17,7 +17,6 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 #include "utility/utility.hpp"
-#include "core/Identifiers.hpp"
 #include "core/World.hpp"
 #include "core/PowerUp.hpp"
 #include "core/PowerUpToogle.hpp"

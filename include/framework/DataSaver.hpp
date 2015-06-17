@@ -7,7 +7,6 @@
 #include <string>
 
 #include "core/MetaData.hpp"
-#include "core/Identifiers.hpp"
 
 // Quick functions to save and load MetaData on HDD/SSD.
 namespace DataSaver
