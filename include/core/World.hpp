@@ -77,7 +77,7 @@ public:
 	// It's a trap: it's no really a generic function, all cases (3) are
 	// specialized in the .cpp... but having a single interface is nicer.
 	template<typename T>
-	void addModifier(Modifier<T> modifier);
+	void forwardModifier(Modifier<T> modifier);
 
 	bool isGameOver() const;
 	void setState(GameState state);

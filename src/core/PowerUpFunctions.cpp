@@ -23,7 +23,7 @@ namespace
 			{
 				c.switchBallType(Ball::Ghost);
 			};
-		w.addModifier<Cannon>(ghostBalls);
+		w.forwardModifier<Cannon>(ghostBalls);
 	};
 
 	auto switchNoGravBalls =
@@ -36,7 +36,7 @@ namespace
 			{
 				c.switchBallType(Ball::Massless);
 			};
-		w.addModifier<Cannon>(masslessBalls);
+		w.forwardModifier<Cannon>(masslessBalls);
 	};
 
 	auto cancelEvents =
@@ -69,7 +69,7 @@ namespace
 				w.removeEntity(label);
 			};
 
-		w.addModifier(removeTarget);
+		w.forwardModifier(removeTarget);
 	};
 
 	auto updateColor =
@@ -113,7 +113,7 @@ namespace
 		Modifier<Entity> mod;
 		mod.postFunction_ = updateColor;
 		mod.duration_ = Time();
-		w.addModifier<Entity>(mod);
+		w.forwardModifier<Entity>(mod);
 	};
 
 	auto changeNTouching =
@@ -126,7 +126,7 @@ namespace
 			{
 				c.setNTouching(nTouching);
 			};
-		w.addModifier<Cannon>(multipleTouch);
+		w.forwardModifier<Cannon>(multipleTouch);
 	};
 }
 

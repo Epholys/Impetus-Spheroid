@@ -92,7 +92,7 @@ namespace evt
 		                                      std::placeholders::_2);
 		stopTimeMod.duration_ = Time();
 
-		world.addModifier<Entity>(stopTimeMod);
+		world.forwardModifier<Entity>(stopTimeMod);
 	};
 
 	/* Resume times for all World's Balls entities.  
@@ -106,7 +106,7 @@ namespace evt
 		                                        std::placeholders::_2);
 		resumeTimeMod.duration_ = Time();
 
-		world.addModifier<Entity>(resumeTimeMod);
+		world.forwardModifier<Entity>(resumeTimeMod);
 	};
 
 

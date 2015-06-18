@@ -95,14 +95,14 @@ Vector2f World::getMousePosition() const
 }
 
 template<>
-void World::addModifier<World>(Modifier<World> modifier)
+void World::forwardModifier<World>(Modifier<World> modifier)
 {		
 	Modifiable<World>::addModifier(modifier);
 }
 
 
 template<>
-void World::addModifier<Entity>(Modifier<Entity> modifier)
+void World::forwardModifier<Entity>(Modifier<Entity> modifier)
 {
 	for (auto& entity : entities_)
 	{
@@ -111,7 +111,7 @@ void World::addModifier<Entity>(Modifier<Entity> modifier)
 }
 
 template<>
-void World::addModifier<Cannon>(Modifier<Cannon> modifier)
+void World::forwardModifier<Cannon>(Modifier<Cannon> modifier)
 {		
 	cannon_.addModifier(modifier);
 }
