@@ -209,7 +209,7 @@ namespace ecs
 	private:
 		Entity entityCount_;
 
-		objectTable entityComponents_;
+		objectTable objectTable_;
 
 		// std::map<Entity, Component::CategoryMask> entityMasks_;
 		std::unordered_map<Entity,

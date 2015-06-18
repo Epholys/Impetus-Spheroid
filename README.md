@@ -17,7 +17,9 @@
 
 * Optimization (if necessary)
   * Search where are the bottlenecks
-  	* --> ecs/EntityManager's entityExists() / componentExists()
+  	* ecs/EntityManager's entityExists() / componentExists() (called 504,360 times for a small game!).
+The function itself is optimized, but it is called to many times...
+**Solution:** Make a quad-tree for collision detection
   * ECS: Optimize to be more cache-friendly
 
 
