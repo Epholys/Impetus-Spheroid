@@ -55,8 +55,9 @@ namespace ecs
 		{
 			++entityCount_;
 			entityComponents_.emplace(entityCount_,
-			                          std::map<Component::Category, 
-			                                   ComponentBase::SPtr>());
+			                          std::unordered_map<Component::Category, 
+			                                             ComponentBase::SPtr,
+			                                             std::hash<unsigned int>>());
 			entityMasks_.emplace(entityCount_, 0);
 			return entityCount_;
 		}
