@@ -7,7 +7,7 @@ OPTFLAGS := -O2
 BUGFLAGS := 
 
 TARGETDIR = ../
-OBJECTS = PhysicEngine.o
+OBJECTS = PhysicEngine.o Contact.o
 
 empty :=
 space := $(empty) $(empty)

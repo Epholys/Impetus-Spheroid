@@ -14,7 +14,7 @@
   * (Heavy) Refactoring
   	* FontHolder (or a general ResourceHolder<>)
 	* Separate DifficultyManager into two classes
-
+	
 * Optimization (if necessary)
   * Search where are the bottlenecks
   	* ecs/EntityManager's entityExists() / componentExists() (called 504,360 times for a small game!).

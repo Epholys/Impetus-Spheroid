@@ -273,19 +273,18 @@ void World::cleanEntities()
 			auto posComp = dynCast<ecs::Position>(posPtr);
 			assert(posComp);
 
-			auto sphereCollComp = dynCast<ecs::CollidableSphere>(collPtr);
-			auto rectCollComp = dynCast<ecs::CollidableRect>(collPtr);
+			auto collComp = dynCast<ecs::Collidable>(collPtr);
 
-			if((sphereCollComp &&
-			    (posComp->position_.y - sphereCollComp->radius_ > originalSize_.y ||
-			     posComp->position_.y + sphereCollComp->radius_ < 0 ||
-			     posComp->position_.x - sphereCollComp->radius_ > originalSize_.x ||
-			     posComp->position_.x + sphereCollComp->radius_ < 0)) ||
-			   (rectCollComp &&
-			    (posComp->position_.y - rectCollComp->size_.y/2.f > originalSize_.y ||
-			     posComp->position_.y + rectCollComp->size_.y/2.f < 0 ||
-			     posComp->position_.x - rectCollComp->size_.y/2.f > originalSize_.x ||
-			     posComp->position_.x + rectCollComp->size_.y/2.f < 0)))
+			if((collComp->type == ecs::Collidable::Sphere &&
+			    (posComp->position_.y - collComp->radius > originalSize_.y ||
+			     posComp->position_.y + collComp->radius < 0 ||
+			     posComp->position_.x - collComp->radius > originalSize_.x ||
+			     posComp->position_.x + collComp->radius < 0)) ||
+			   (collComp->type == ecs::Collidable::Rectangle &&
+			    (posComp->position_.y - collComp->size.y/2.f > originalSize_.y ||
+			     posComp->position_.y + collComp->size.y/2.f < 0 ||
+			     posComp->position_.x - collComp->size.y/2.f > originalSize_.x ||
+			     posComp->position_.x + collComp->size.y/2.f < 0)))
 			{
 				entities_.erase(it);
 			}

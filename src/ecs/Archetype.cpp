@@ -26,8 +26,12 @@ namespace ecs
 		ecs.addComponent<Velocity>(ball);
 		ecs.addComponent<Mass>(ball, mass, gravVect);
 		ecs.addComponent<Solid>(ball, 1.f / mass, 2.f);
-		ecs.addComponent<CollidableSphere>(ball, radius);
 		ecs.addComponent<Projectile>(ball, points, nTouching);
+
+		Collidable* pCollSphere = new Collidable(Collidable::Sphere);
+		pCollSphere->radius = radius;
+		ComponentBase::SPtr spCollSphere (pCollSphere);
+		ecs.addComponent(ball, spCollSphere);
 
 		return ball;
 	}
@@ -41,7 +45,11 @@ namespace ecs
 		
 		ecs.addComponent<Position>(rect, position);
 		ecs.addComponent<Solid>(rect, 0.f, 1.f);
-		ecs.addComponent<CollidableRect>(rect, size);
+
+		Collidable* pCollRect = new Collidable(Collidable::Rectangle);
+		pCollRect->size = size;
+		ComponentBase::SPtr spCollRect (pCollRect);
+		ecs.addComponent(rect, spCollRect);
 
 		return rect;
 	}
@@ -57,8 +65,12 @@ namespace ecs
 		ecs.addComponent<Position>(targ, position);
 		ecs.addComponent<Velocity>(targ);
 		ecs.addComponent<Solid>(targ, 0.f, 1.f);
-		ecs.addComponent<CollidableRect>(targ, size);
 		ecs.addComponent<Target>(targ, multiplier);
+
+		Collidable* pCollRect = new Collidable(Collidable::Rectangle);
+		pCollRect->size = size;
+		ComponentBase::SPtr spCollRect (pCollRect);
+		ecs.addComponent(targ, spCollRect);
 
 		return targ;
 	}
@@ -82,7 +94,11 @@ namespace ecs
 		ecs.addComponent<Velocity>(obst, velocity);
 		ecs.addComponent<Mass>(obst, mass, gravVect);
 		ecs.addComponent<Solid>(obst, 1.f / mass, 1.5f);
-		ecs.addComponent<CollidableRect>(obst, size);
+
+		Collidable* pCollRect = new Collidable(Collidable::Rectangle);
+		pCollRect->size = size;
+		ComponentBase::SPtr spCollRect (pCollRect);
+		ecs.addComponent(obst, spCollRect);
 
 		return obst;
 	}

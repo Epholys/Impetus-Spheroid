@@ -39,28 +39,21 @@ namespace ecs
 	}
 
 //-----------------------------------------------------------------------------
-	// *** Collidable and children: **
+	// *** Collidable: **
 
-	CollidableSphere::CollidableSphere(float radius)
-		: radius_(radius)
+	Collidable::Collidable()
+		: type(None)
 	{
 	}
 
-	Component::Category CollidableSphere::getCategory() const
+	Collidable::Collidable(Type type)
+		: type(type)
 	{
-		return Component::Collidable;
 	}
-
 	
-	CollidableRect::CollidableRect(Vector2f size)
-		: size_(size)
-	{
-	}
-
-	Component::Category CollidableRect::getCategory() const
+	Component::Category Collidable::getCategory() const
 	{
 		return Component::Collidable;
 	}
-
 
 } // namespace ecs
