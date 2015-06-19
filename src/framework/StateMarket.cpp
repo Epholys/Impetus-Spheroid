@@ -16,12 +16,15 @@ StateMarket::~StateMarket()
 
 //-----------------------------------------------------------------------------
 
-void StateMarket::draw()
+void StateMarket::draw(sf::RenderStates states)
 {
-	sf::RectangleShape rect (Vector2f(context_.window->getSize()));
+	sf::RenderWindow* window = context_.window;
+
+	sf::RectangleShape rect (Vector2f(window->getSize()));
 	rect.setFillColor(sf::Color(0,0,0,200));
-	context_.window->draw(rect);
-	context_.window->draw(market_);
+	window->draw(rect);
+
+	window->draw(market_, states);
 }
 
 bool StateMarket::update(Time)
@@ -39,7 +42,7 @@ bool StateMarket::handleInput(const sf::Event& event)
 		case sf::Keyboard::Escape:
 			requestStackClear();
 			requestStackPush(StateID::Game);
-			DataSaver::saveDatas(*context_.datas);
+			DataSaver::saveDatas(*context_.metaData);
 			break;
 
 		default:

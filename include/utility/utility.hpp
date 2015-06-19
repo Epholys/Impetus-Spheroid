@@ -7,8 +7,10 @@
 #include <sstream>
 
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Shape.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
+#include "utility/Vector2.hpp"
 #include "ecs/ComponentBase.hpp"
 
 /* Just to have a shorter name that
@@ -33,5 +35,10 @@ std::string toString(const T& var)
 //------------------------------------------------------------------------------
 
 void centerOrigin(sf::Text& text);
+void centerOrigin(sf::Shape& shape);
+void defineText(sf::Text& txt,
+                const std::string& str,
+                Vector2f position,
+                sf::Color color = sf::Color::White);
 
 #endif // UT_UTILITY_HPP

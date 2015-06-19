@@ -8,13 +8,16 @@
 #include "framework/DataSaver.hpp"
 #include "core/Market.hpp"
 
+
+// The State in which power-ups can be bought
+
 class StateMarket : public State
 {
 public:
 	StateMarket(StateStack& stack, Context context);
 	virtual ~StateMarket();
 
-	virtual void draw();
+	virtual void draw(sf::RenderStates states);
 	virtual bool update(Time dt);
 	virtual bool handleInput(const sf::Event& event);
 

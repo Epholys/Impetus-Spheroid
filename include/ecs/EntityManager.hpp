@@ -1,11 +1,10 @@
 #ifndef ECS_ENTITYMANAGER_HPP
 #define ECS_ENTITYMANAGER_HPP
 
-#include <iostream>
-
+#include <functional>
 #include <memory>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 #include "utility/Time.hpp"
 #include "ecs/Entity.hpp"
@@ -22,7 +21,6 @@ namespace ecs
 	 * NOTE : An 'object' is an Entity with all its Components.
 	 *
 	 * TODO: Maybe try to optimise instead of copying everything.
-	 * TODO: Replace all the std::map by some custom Table class.
 	 *
 	 * For more information about a Entity/Component System, see:
 	 * http://entity-systems.wikidot.com/
@@ -34,10 +32,22 @@ namespace ecs
 	class EntityManager
 	{
 	public:
-		typedef std::map<Component::Category,
-		                  ComponentBase::SPtr> componentTable;
+		// If Component::Category or Entity became something other than aliases
+		// for existing type, uncomment this.
 
-		typedef std::map<Entity, componentTable> objectTable;
+		// typedef std::map<Component::Category,
+		//                   ComponentBase::SPtr> componentTable;
+
+		// typedef std::map<Entity, componentTable> objectTable;
+
+		typedef std::unordered_map<Component::Category,
+		                           ComponentBase::SPtr,
+		                           std::hash<unsigned int>> componentTable;
+
+		typedef std::unordered_map<Entity,
+		                           componentTable,
+		                           std::hash<unsigned int>> objectTable;
+
 
 	public:
 		EntityManager();
@@ -199,9 +209,12 @@ namespace ecs
 	private:
 		Entity entityCount_;
 
-		objectTable entityComponents_;
+		objectTable objectTable_;
 
-		std::map<Entity, Component::CategoryMask> entityMasks_;
+		// std::map<Entity, Component::CategoryMask> entityMasks_;
+		std::unordered_map<Entity,
+		                   Component::CategoryMask,
+		                   std::hash<unsigned int>> entityMasks_;
 
 		
 	};

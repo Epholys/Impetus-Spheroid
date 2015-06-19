@@ -19,17 +19,27 @@ namespace evt {
 	class EventGenerator;
 }
 class Inventory;
-class TransGamesData;
+class MetaData;
 
 struct DifficultyContext
 {
 	World* world;
 	evt::EventGenerator* eventGenerator;
-	TransGamesData* datas;
+	MetaData* metaData;
 	Inventory* inventory;
 };
 
 
+/* DifficultyManager schedules the increase of difficulty in world,
+ * eventGenerator, and of the objective_ by separating the game into different
+ * phases of PHASE_TIME_. It also managed all point counting.
+ *
+ * NOTE:
+ *  - Could be separated into several small classes.n
+ *  - The commented code used to display a GUI used to quickly modify difficulty
+ * parameters or is linked to the old point system.
+ *
+ * */
 
 class DifficultyManager : public sf::Drawable
 {
@@ -39,15 +49,14 @@ public:
 
 	void update(Time dt);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-	void handleInput(const sf::Event& event);
+//	void handleInput(const sf::Event& event);
+
+	int getObjective() const;
 
 	void addTime(Time adding);
-	
-	void reset();
-	void mask();
-	
+
 private:
-	void createGui();
+//	void createGui();
 
 	template<typename T>
 	auto selectDataIndex(std::vector<T> v);
@@ -56,12 +65,10 @@ private:
 	void updateScore();
 	void updateObjective();
 
-// Temp functions for prototyping
-	void reloadDifficulty();
-
-private:
-	Time phaseDuration_;
-	static const int baseCeiling_ = 20;
+public:
+	static const int COINS_PER_POINTS_;
+	static const int BASE_OBJECTIVE_;
+	static const Time PHASE_TIME_;
 
 private:
 	Time phaseTime_;
@@ -74,19 +81,12 @@ private:
 
 	float score_;
 	int objective_;
-	int objectiveIncrement_;
 	int ceiling_;
 	sf::Text scoreText_;
-	std::map<int, int> ballCount_;
+	// std::map<int, int> ballCount_;
 	
-	gui::Component::SPtr diffGui_;
-	bool maskGui_;
-
-
-// Temp attributes for quick adjustements
-private:
-	DifficultyWorldSeed worldSeed_;
-	DifficultyEventGenSeed eventSeed_;
+	// gui::Component::SPtr diffGui_;
+	// bool maskGui_;
 };
 
 #include "core/DifficultyManager.ipp"

@@ -11,6 +11,12 @@ class World;
 
 namespace evt
 {
+	/* An event is just a collection of World Modifiers (that may add
+	 * Modifier<Entity> or Modifier<Cannon>. There is just a getDuration()
+	 * utility function. chance and diff are used in EventGenerator.
+	 * 
+	 * */
+
 	struct Event
 	{
 		enum Difficulty
@@ -22,7 +28,6 @@ namespace evt
 
 		Time getDuration() const;
 
-		std::vector<Modifier<Entity>> entityModifiers;
 		std::vector<Modifier<World>> worldModifiers;
 
 		unsigned int chance;

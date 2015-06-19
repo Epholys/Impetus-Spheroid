@@ -11,6 +11,7 @@
 #include "utility/utility.hpp"
 #include "framework/Assertion.hpp"
 #include "data/MarketData.hpp"
+#include "core/PowerUp.hpp"
 
 namespace gui
 {

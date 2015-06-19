@@ -3,17 +3,28 @@
 
 //-----------------------------------------------------------------------------
 
+namespace
+{
+	const float BASE_TIME_BEETWEEN_EVENTS = 3.f;
+	const float FIRST_EVENT_TIME = 5.f;
+	const float FIRST_EVENT_TIME_DEV = 2.f;
+}
+
+
+//-----------------------------------------------------------------------------
+
 namespace evt
 {
 	EventGenerator::EventGenerator()
 		: events_()
 		, timeUntilNextEvent_()
-		, timeBeetweenEvents_(3.f)
+		, timeBeetweenEvents_(BASE_TIME_BEETWEEN_EVENTS)
 		, chanceSum_(0)
 	{
 		events_ = generateEvents();
 
-		timeUntilNextEvent_ = seconds(normalRandFloat(5.f, 2.f));
+		timeUntilNextEvent_ = seconds(normalRandFloat(FIRST_EVENT_TIME,
+		                                              FIRST_EVENT_TIME_DEV));
 
 		computeChanceSum();
 	}
@@ -97,3 +108,4 @@ namespace evt
 		return 0;
 	}
 }
+

@@ -6,10 +6,9 @@
 #include <fstream>
 #include <string>
 
-#include "core/TransGamesData.hpp"
-#include "core/Identifiers.hpp"
+#include "core/MetaData.hpp"
 
-// Quick functions to save important datas to have a working prototype.
+// Quick functions to save and load MetaData on HDD/SSD.
 namespace DataSaver
 {
 	// Key for the XOR encoding, just not to be too obvious in the data file.
@@ -18,8 +17,8 @@ namespace DataSaver
 	const std::string filePath = "./DATA.db";
 	const char separator = ',';
 
-	bool retrieveDatas(TransGamesData& datas);
-	bool saveDatas(const TransGamesData& datas);
+	bool retrieveDatas(MetaData& metaData);
+	bool saveDatas(const MetaData& metaData);
 	void makeDefaultFile();
 
 	bool readInt(std::istream& is, int& toRead);

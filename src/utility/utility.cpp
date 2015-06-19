@@ -8,6 +8,27 @@ void centerOrigin(sf::Text& text)
 	text.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 }
 
+void centerOrigin(sf::Shape& shape)
+{
+	auto shapeBounds = shape.getLocalBounds();
+	shape.setOrigin(shapeBounds.left + shapeBounds.width / 2.f,
+	                shapeBounds.top + shapeBounds.height / 2.f);
+
+}
+
+void defineText(sf::Text& txt,
+                const std::string& str,
+                Vector2f position,
+                sf::Color color)
+{
+	txt.setString(str);
+	centerOrigin(txt);
+	txt.setPosition(position);
+	txt.setColor(color);
+}
+
+
+
 
 //-----------------------------------------------------------------------------
 

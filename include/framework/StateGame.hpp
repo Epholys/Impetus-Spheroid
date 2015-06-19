@@ -6,13 +6,15 @@
 #include "core/World.hpp"
 
 
+// The main State, in which the game's World live.
+
 class StateGame : public State
 {
 public:
 	StateGame(StateStack& stack, Context context);
 	virtual ~StateGame();
 
-	virtual void draw();
+	virtual void draw(sf::RenderStates states);
 	virtual bool update(Time dt);
 	virtual bool handleInput(const sf::Event& event);
 

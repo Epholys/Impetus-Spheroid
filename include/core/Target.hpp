@@ -12,11 +12,8 @@
 class Target : public Entity
 {
 public:
-	Target(World* world,
-		   ecs::EntityManager& entm,
-	       Vector2f position,
-	       Vector2f size,
-	       sf::Color color);
+	Target(World& world,
+	       Vector2f position);
 	virtual ~Target();
 
 	virtual void update(Time dt);
@@ -32,6 +29,8 @@ private:
 protected:
 	sf::RectangleShape rect_;
 
+	// In this class, objective_ is the position where the Target have to go
+	// when touched by a ecs::Projectile.
 	Vector2f objective_;
 };
 

@@ -7,7 +7,8 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 
-#include "core/TransGamesData.hpp"
+#include "core/MetaData.hpp"
+#include "core/LastGameData.hpp"
 #include "utility/Time.hpp"
 
 namespace sf
@@ -32,17 +33,29 @@ namespace StateID
 }
 
 
+/* Abstract class which define a State of the program.
+ *
+ * The Context is like a combination of global variables that all States share.
+ * 
+ * The only subtility of this class is the boolean returned by update() and
+ * handleInput(): if true, it means that the State below it can be updated /
+ * handle input. For exemple, a PauseState will not allow the GameState below to
+ * be updated, on the contrary of a TutorialState.
+ * 
+ * */ 
+
 class State
 {
 public:
 	struct Context
 	{
-		Context(sf::RenderWindow& window, sf::Transform& transform, TransGamesData& datas);
+		Context(sf::RenderWindow& window, MetaData& metaData, LastGameData& gameData);
 		
 		sf::RenderWindow* window;
-		const Vector2f originalWindowSize;
-		sf::Transform* globalTransform;
-		TransGamesData* datas;
+		const Vector2u originalWindowSize;
+
+		MetaData* metaData;
+		LastGameData* lastGameData;
 	};
 
 public:
@@ -52,7 +65,7 @@ public:
 	State(StateStack& stack, Context context);
 	virtual ~State();
 
-	virtual void draw() =0;
+	virtual void draw(sf::RenderStates states) =0;
 	virtual bool update(Time dt) =0;
 	virtual bool handleInput(const sf::Event& event) =0;
 

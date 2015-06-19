@@ -8,7 +8,7 @@ namespace ecs
 // *** Constructor: ***
 	EntityManager::EntityManager()
 		: entityCount_(0)
-		, entityComponents_()
+		, objectTable_()
 	{
 	}
 
@@ -17,14 +17,14 @@ namespace ecs
 
 	bool EntityManager::entityExists(Entity ent) const
 	{
-		return entityComponents_.count(ent) > 0;
+		return objectTable_.find(ent) != objectTable_.end();
 	}
 
 	bool EntityManager::componentExists(Entity ent, Component::Category cat) const
 	{
 		if(entityExists(ent))
 		{
-			return entityComponents_.at(ent).count(cat) > 0;
+			return objectTable_.at(ent).find(cat) != objectTable_.at(ent).end();
 		}
 
 		return false;
@@ -34,7 +34,7 @@ namespace ecs
 	{
 		if(componentExists(ent, cat))
 		{
-			return !(entityComponents_.at(ent).at(cat)->isPaused());
+			return !(objectTable_.at(ent).at(cat)->isPaused());
 		}
 
 		return false;
@@ -54,9 +54,10 @@ namespace ecs
 		else
 		{
 			++entityCount_;
-			entityComponents_.emplace(entityCount_,
-			                          std::map<Component::Category, 
-			                                   ComponentBase::SPtr>());
+			objectTable_.emplace(entityCount_,
+			                          std::unordered_map<Component::Category, 
+			                                             ComponentBase::SPtr,
+			                                             std::hash<unsigned int>>());
 			entityMasks_.emplace(entityCount_, 0);
 			return entityCount_;
 		}
@@ -66,7 +67,7 @@ namespace ecs
 	{
 		if(entityExists(ent))
 		{
-			entityComponents_.erase(ent);
+			objectTable_.erase(ent);
 			entityMasks_.erase(ent);
 		}
 	}
@@ -78,7 +79,7 @@ namespace ecs
 	{
 		if(entityExists(ent))
 		{
-			entityComponents_[ent].emplace(comp->getCategory(), comp);
+			objectTable_[ent].emplace(comp->getCategory(), comp);
 			entityMasks_[ent] = entityMasks_[ent] | comp->getCategory();
 		}
 	}
@@ -90,7 +91,7 @@ namespace ecs
 		{
 			for(auto pComp : comps)
 			{
-				entityComponents_[ent].emplace(pComp->getCategory(), pComp);
+				objectTable_[ent].emplace(pComp->getCategory(), pComp);
 				entityMasks_[ent] = entityMasks_[ent] | pComp->getCategory();
 			}
 		}
@@ -101,7 +102,7 @@ namespace ecs
 	{
 		if(componentExists(ent, cat))
 		{
-			entityComponents_[ent].erase(cat);
+			objectTable_[ent].erase(cat);
 			entityMasks_[ent] = entityMasks_[ent] - (entityMasks_[ent] & cat);
 		} 
 	}
@@ -111,7 +112,7 @@ namespace ecs
 	{
 		if(entityExists(ent))
 		{
-			entityComponents_[ent].clear();
+			objectTable_[ent].clear();
 			entityMasks_[ent] = 0;
 		}
 	}
@@ -122,7 +123,7 @@ namespace ecs
 		if(componentIsActive(ent, cat) ||
 		   (force && componentExists(ent, cat)))
 		{
-			return entityComponents_[ent][cat];
+			return objectTable_[ent][cat];
 		}
 		return ComponentBase::SPtr(nullptr);
 	}
@@ -134,7 +135,7 @@ namespace ecs
 		if(componentIsActive(ent, cat) ||
 		   (force && componentExists(ent, cat)))
 		{
-			return entityComponents_.at(ent).at(cat);
+			return objectTable_.at(ent).at(cat);
 		}
 		return ComponentBase::SPtr(nullptr);
 	}
@@ -146,7 +147,7 @@ namespace ecs
 		componentTable table;
 		if(entityExists(ent))
 		{
-			for(auto& componentPair : entityComponents_[ent])
+			for(auto& componentPair : objectTable_[ent])
 			{
 				if(!componentPair.second->isPaused() || force)
 				{
@@ -163,7 +164,7 @@ namespace ecs
 		componentTable table;
 		if(entityExists(ent))
 		{
-			for(const auto& componentPair : entityComponents_.at(ent))
+			for(const auto& componentPair : objectTable_.at(ent))
 			{
 				if(!componentPair.second->isPaused() || force)
 				{
@@ -179,7 +180,7 @@ namespace ecs
 	EntityManager::getAllComponents(Component::Category cat, bool force)
 	{
 		std::vector<ComponentBase::SPtr> table;
-		for(auto& entityPair : entityComponents_)
+		for(auto& entityPair : objectTable_)
 		{
 			if(componentIsActive(entityPair.first, cat) ||
 			   (force && componentExists(entityPair.first, cat)))
@@ -194,7 +195,7 @@ namespace ecs
 	EntityManager::getAllComponents(Component::Category cat, bool force) const
 	{
 		std::vector<ComponentBase::SPtr> table;
-		for(auto& entityPair : entityComponents_)
+		for(auto& entityPair : objectTable_)
 		{
 			if(componentIsActive(entityPair.first, cat) ||
 			   (force && componentExists(entityPair.first, cat)))
@@ -209,7 +210,7 @@ namespace ecs
 	{
 		if(componentExists(ent, cat))
 		{
-			entityComponents_[ent][cat]->pause(dt);
+			objectTable_[ent][cat]->pause(dt);
 		}
 	}
 
@@ -217,7 +218,7 @@ namespace ecs
 	{
 		if(entityExists(ent))
 		{
-			for(const auto& pair : entityComponents_[ent])
+			for(const auto& pair : objectTable_[ent])
 			{
 				pair.second->pause(dt);
 			}
@@ -226,7 +227,7 @@ namespace ecs
 
 	void EntityManager::pauseAllComponents(Component::Category cat, Time dt)
 	{
-		for(const auto& entPair : entityComponents_)
+		for(const auto& entPair : objectTable_)
 		{
 			if(componentExists(entPair.first, cat))
 			{
@@ -237,7 +238,7 @@ namespace ecs
 
 	void EntityManager::pauseAllComponents(Time dt)
 	{
-		for(const auto& entPair : entityComponents_)
+		for(const auto& entPair : objectTable_)
 		{
 			for(const auto& compPair : entPair.second)
 			{
@@ -270,7 +271,7 @@ namespace ecs
 		EntityManager::objectTable objects;
 
 		// For each entity epair.first ...
-		for(auto& epair : entityComponents_)
+		for(auto& epair : objectTable_)
 		{
 
 			// ... check if it has the good components ...
@@ -314,7 +315,7 @@ namespace ecs
 // *** Pause Mechanics: ***
 	void EntityManager::update(Time dt)
 	{
-		for(auto& entityPair : entityComponents_)
+		for(auto& entityPair : objectTable_)
 		{
 			for(auto& componentPair : entityPair.second)
 			{

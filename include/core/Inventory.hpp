@@ -17,25 +17,31 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 #include "utility/utility.hpp"
-#include "core/Identifiers.hpp"
 #include "core/World.hpp"
 #include "core/PowerUp.hpp"
 #include "core/PowerUpToogle.hpp"
 #include "core/PowerUpFunctions.hpp"
 
+struct PowerUpEntry
+{
+	sf::Keyboard::Key key;
+	std::shared_ptr<PowerUp> powerUp;
+	int stock;
+	sf::Texture texture;
+};
 
 class Inventory : public sf::NonCopyable,
                   public sf::Drawable, public sf::Transformable
 {
 public:
 	Inventory();
-	Inventory(const Vector2f& originalSize,
-	          const sf::Transform& globalTransform,
+	Inventory(Vector2u originalSize,
 	          bool isAzerty);
 	virtual ~Inventory();
 
 	void switchKeyboard(bool isAzerty);
 	void initKeyBinding(bool isAzerty);
+
 	void addWorld(World* world);
 	void removeWorld();
 
@@ -52,11 +58,10 @@ public:
 	bool removeCoins(int n);
 	int getCoins() const;
 
-	const std::map<PowerUpID::ID, sf::Keyboard::Key>& getKeys() const;
+    std::map<PowerUpID::ID, sf::Keyboard::Key> getKeys() const;
 
 private:
 	const Vector2f originalSize_;
-	const sf::Transform& globalTransform_;
 
 	sf::Font font_;
 	mutable sf::Text coinsText_;
@@ -64,11 +69,8 @@ private:
 	int coins_;
 
 	std::map<sf::Keyboard::Key, PowerUpID::ID> keyBindings_;
-// TODO: change all std::map below to something like std::map<PowerUpID::ID, PowerUpStruct>
-	std::map<PowerUpID::ID, sf::Keyboard::Key> keys_;
-	std::map<PowerUpID::ID, std::shared_ptr<PowerUp>> powerUps_;
-	std::map<PowerUpID::ID, int> inventory_;
-	std::map<PowerUpID::ID, sf::Texture> textures_;
+
+	std::map<PowerUpID::ID, PowerUpEntry> powerUpTable_;
 
 	World* world_;
 };

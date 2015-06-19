@@ -1,26 +1,29 @@
-#include "core/World.hpp"
 #include "core/Target.hpp"
+#include "core/World.hpp"
+#include "core/PowerUpFunctions.hpp"
+
+//-----------------------------------------------------------------------------
+
+namespace
+{
+	const Vector2f SIZE {15.f, 75.f};
+	const sf::Color COLOR = sf::Color::Yellow;
+}
 
 
 //-----------------------------------------------------------------------------
 // *** constructor and destructor: ***
 
-Target::Target(World* world,
-               ecs::EntityManager& entm,
-               Vector2f position,
-               Vector2f size,
-               sf::Color color)
-	: Entity(world, entm, EntityID::Target)
-	, rect_(size)
+Target::Target(World& world,
+               Vector2f position)
+	: Entity(world, world.getEntityManager(), EntityType::Target)
+	, rect_(SIZE)
 	, objective_()
 {
-	label_ = ecs::createTarget(entm, position, size);
+	label_ = ecs::createTarget(ecs_, position, SIZE);
 
-	rect_.setFillColor(color);
-	auto rectBounds = rect_.getLocalBounds();
-	rect_.setOrigin(rectBounds.left + rectBounds.width / 2.f,
-	                rectBounds.top + rectBounds.height / 2.f);
-
+	centerOrigin(rect_);
+	rect_.setFillColor(COLOR);
 
 	auto pointPos = dynCast<ecs::Position>
 		(ecs_.getComponent(label_, ecs::Component::Position));
@@ -49,6 +52,10 @@ void Target::update(Time dt)
 	if(pointPos)
 	{
 		auto position = pointPos->position_;
+		
+		// NOT rect_.setPosition(...): rect_'s Transformable base class isn't
+		// used because if suddenly Target's view become several sf::Sprites and
+		// sf::Shapes, it would mean I'll have to update every single one of them.
 		setPosition(position.x, position.y);
 	}
 
@@ -71,10 +78,9 @@ void Target::draw(sf::RenderTarget& target,
 
 void Target::updateColor()
 {
-
 	const float EPSILON = 0.01f;
-	const float MULTIPLIER = 1.5f;	
-	std::vector<sf::Color> colors
+	const float MULTIPLIER = PowerUpDatas::TARGET_POINT_MULTIPLIER;	
+	const std::vector<sf::Color> COLORS
 			{sf::Color::Yellow,
 			sf::Color::Green,
 			sf::Color(0,255,255),
@@ -82,17 +88,19 @@ void Target::updateColor()
 			sf::Color(125,0,255),
 			sf::Color::Red,
 			sf::Color(255,175,0)};
+
 	auto targetComp = dynCast<ecs::Target>
 		(ecs_.getComponent(label_, ecs::Component::Target));
 	if(targetComp)
 	{
 		auto mult = targetComp->getPointMultiplier();
-		//Arbitrary big value
+		// 50 ios an arbitrary big value, I suppose nobody will have enough
+		// patience to cumulate so much money.
 		for(int i=0; i<50; ++i)
 		{
 			if(std::abs(mult - std::pow(MULTIPLIER, i)) < EPSILON)
 			{
-				rect_.setFillColor(colors[((i)%(colors.size()))]);
+				rect_.setFillColor(COLORS[((i)%(COLORS.size()))]);
 				break;
 			}
 		}
@@ -116,15 +124,20 @@ void Target::updateObjective()
 
 	if(!positionComponent) return;
 
-	auto windowSize = world_->getWindowSize();
-	int newXPosition = randInt(windowSize.x / 4, windowSize.x - 20);
-	int newYPosition = randInt(80, windowSize.y - 80);
+	const int Y_MARGIN = 80;
+	const int X_RIGHT_MARGIN = 20;
+	auto windowSize = world_.getWindowSize();
+	int newXPosition = randInt(windowSize.x / 4, windowSize.x - X_RIGHT_MARGIN);
+	int newYPosition = randInt(Y_MARGIN, windowSize.y - Y_MARGIN);
 
 	objective_ = Vector2f(newXPosition, newYPosition);
 }
 
 void Target::moveToObjective()
 {
+	// Note : I could simplify a little this function by removing averything
+	// about OLD_VEL_COEFF, but then I'll have to find again the sweet spot of
+	// NEW_VEL_COEFF, and I like the speed as it is now.
 	const float EPSILON = 0.1f;
 	const float OLD_VEL_COEFF = 0.25f;
 	const float NEW_VEL_COEFF = 2.5f;
@@ -137,9 +150,9 @@ void Target::moveToObjective()
 	if(!velocityComponent || !positionComponent) return;
 
 
-	
 	Vector2f vectToObjective = objective_ - positionComponent->position_;
-	if(std::sqrt(std::pow(vectToObjective.x,2) + std::pow(vectToObjective.y,2)) < EPSILON)
+	float distanceToObjective = std::sqrt(std::pow(vectToObjective.x,2) + std::pow(vectToObjective.y,2));
+	if(distanceToObjective < EPSILON)
 	{
 		velocityComponent->velocity_ = Vector2f();
 	}

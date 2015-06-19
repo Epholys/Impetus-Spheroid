@@ -59,21 +59,11 @@ namespace eg
 		/* Apply movements */
 		void updateMovement(Time dt);
 
-
 		/* Resolves all collisions */
 		void handleAllCollisions(Time dt);
 
 		/* Generate all the Contacts of Collidable Entities of ecs_. */
 		void generateAllContacts(const ecs::EntityManager::objectTable& collidables);
-		/* Returns the Contact beetween two spheres */
-		Contact generateSphereContact(Vector2f firstPos, float firstRadius,
-		                              Vector2f secondPos, float secondRadius);
-		/* Returns the Contact beetween two straight rectangles */
-		Contact generateRectContact(Vector2f firstPos, Vector2f firstSize,
-		                            Vector2f secondPos, Vector2f secondSize);
-		/* Returns the Contact beetween a sphere and a straight rectangle? */
-		Contact generateMixedContact(Vector2f spherePos, float sphereRadius,
-		                             Vector2f rectPos, Vector2f rectSize);
 
 		/* Compute the impulse with the datas from handleAllCollisions.
 		 * */

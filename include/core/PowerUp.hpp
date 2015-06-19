@@ -3,9 +3,33 @@
 
 #include <string>
 
-#include "core/Identifiers.hpp"
-
 class World;
+
+namespace PowerUpType
+{
+ 	enum Type
+ 	{
+ 		None = 0,
+ 		Modifier,
+ 		Toogle,
+ 	};
+}
+
+namespace PowerUpID
+{
+	enum ID
+	{
+		None = 0,
+		GhostBall,
+		NoGravBall,
+		CancelEvents,
+		AddTime,
+		AddTarget,
+		PointMultiplier,
+		BallTouchDouble,
+		PowerUpCount,
+	};
+}
 
 class PowerUp
 {

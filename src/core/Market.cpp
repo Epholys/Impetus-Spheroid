@@ -12,7 +12,7 @@ namespace
 //-----------------------------------------------------------------------------
 
 Market::Market(State::Context context)
-	: inventory_(context.datas->inventory)
+	: inventory_(context.metaData->inventory)
 	, menu_()
 	, font_()
 	, coinsText_()
@@ -44,7 +44,7 @@ void Market::initGUI()
 	const sf::Vector2u BUTTON_SIZE (600, 50);
 	const sf::Vector2u BEGIN_MIDDLE (400, 100);
 	const int SPACE_SIZE = 10;
-	const auto& KEYS = inventory_.getKeys();
+	const auto KEYS = inventory_.getKeys();
 	int buttonPosition = 0;
 	
 	for(auto it=datas.begin(); it!=datas.end(); ++it)
@@ -79,7 +79,7 @@ void Market::buy(PowerUpID::ID id, int number, int price)
 		inventory_.removeCoins(price);
 		inventory_.increment(id, number);
 		updateCoinsText();
-		DataSaver::saveDatas(*context_.datas);
+		DataSaver::saveDatas(*context_.metaData);
 	}
 }
 
@@ -94,35 +94,11 @@ void Market::updateCoinsText()
 
 void Market::handleEvent(const sf::Event& event)
 {
-	// Quite a dirty hack 
-	sf::Event modifiedEvent = event;
-	if(event.type == sf::Event::MouseMoved)
-	{
-		Vector2f mousePos = Vector2f(context_
-		                             .globalTransform
-		                             ->getInverse()
-		                             .transformPoint(Vector2f(event.mouseMove.x,
-		                                                      event.mouseMove.y)));
-		modifiedEvent.mouseMove.x = mousePos.x;
-		modifiedEvent.mouseMove.y = mousePos.y;
-	}
-	else if(event.type == sf::Event::MouseButtonPressed ||
-	        event.type == sf::Event::MouseButtonReleased )
-	{
-		Vector2f mousePos = Vector2f(context_
-		                             .globalTransform
-		                             ->getInverse()
-		                             .transformPoint(Vector2f(event.mouseButton.x,
-		                                                      event.mouseButton.y)));
-		modifiedEvent.mouseButton.x = mousePos.x;
-		modifiedEvent.mouseButton.y = mousePos.y;
-	}
-	menu_->handleEvent(modifiedEvent);
+	menu_->handleEvent(event);
 }
 
 void Market::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	states.transform *= *context_.globalTransform;
 	target.draw(*menu_, states);
 	target.draw(coinsText_, states);
 }

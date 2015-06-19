@@ -13,6 +13,8 @@
 #include "utility/Vector2.hpp"
 
 
+// The Game Over screen State.
+
 class StateOver : public State
 {
 public:
@@ -31,14 +33,14 @@ public:
 	StateOver(StateStack& stack, Context context);
 	virtual ~StateOver();
 
-	virtual void draw();
+	virtual void draw(sf::RenderStates states);
 	virtual bool update(Time dt);
 	virtual bool handleInput(const sf::Event& event);
 
 private:
-	void initStaticTexts(Context context);
-	void initVariableTexts(Context context);
-	void updateDatas(Context context);
+	void initStaticTexts();
+	void initVariableTexts();
+		void updateDatas();
 
 private:
 	sf::Font font_;
