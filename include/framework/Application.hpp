@@ -2,9 +2,13 @@
 #define APPLICATION_HPP
 
 
+#include <string>
+
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Transform.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include "utility/Vector2.hpp"
 #include "framework/StateStack.hpp"
@@ -50,6 +54,9 @@ private:
 	LastGameData lastGameData_;
 
 	StateStack stack_;
+
+	sf::Texture crossHairTexture_;
+	sf::Sprite crossHair_;
 };
 
 

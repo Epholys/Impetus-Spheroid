@@ -15,6 +15,8 @@ namespace
 
 	// False in general, but for now it doesn't impact the gameplay
 	const bool IS_AZERTY = true;
+
+	const std::string CROSS_HAIR_LOCATION = "media/sprites/Cross-hair.png";
 }
 
 
@@ -30,9 +32,12 @@ Application::Application()
 	, metaData_(WINDOW_SIZE, IS_AZERTY)
 	, lastGameData_()
 	, stack_(State::Context(window_, metaData_, lastGameData_))
+	, crossHairTexture_()
+	, crossHair_()
 {
 	window_.setFramerateLimit(0); // Unlimited Framerate
 	window_.setVerticalSyncEnabled(false);
+	window_.setMouseCursorVisible(false);
 
 	if(!DataSaver::retrieveDatas(metaData_))
 	{
@@ -46,6 +51,11 @@ Application::Application()
 	stack_.registerState<StateMarket>(StateID::Market);
 	
 	stack_.pushState(StateID::Game);
+	
+	
+	crossHairTexture_.loadFromFile(CROSS_HAIR_LOCATION);
+	crossHair_.setTexture(crossHairTexture_);
+	centerOrigin(crossHair_);
 }
 
 
@@ -69,6 +79,9 @@ void Application::run()
 void Application::update(sf::Time dt)
 {
 	stack_.update(dt);
+
+	const int DEGREE_PER_SECONDS = 90;
+	crossHair_.rotate(DEGREE_PER_SECONDS * dt.asSeconds());
 }
 
 void Application::render()
@@ -80,6 +93,8 @@ void Application::render()
 	sf::RenderStates states;
 	states.transform *= globalTransform_;
 	stack_.draw(states);
+
+	window_.draw(crossHair_);
 
 	window_.display();
 }
@@ -101,6 +116,9 @@ void Application::handleInput()
 		else if(event.type == sf::Event::MouseMoved)
 		{
 			Vector2i mousePosition {event.mouseMove.x, event.mouseMove.y};
+
+			crossHair_.setPosition(Vector2f(mousePosition));
+
 			correctMouseCoordinate(mousePosition);
 			event.mouseMove.x = mousePosition.x;
 			event.mouseMove.y = mousePosition.y;
@@ -134,6 +152,8 @@ void Application::handleResizing(Vector2u newWindowSize)
 		float scale = newWindowSize.y / float(WINDOW_SIZE.y);
 		float margin = std::abs(WINDOW_SIZE.x * scale - newWindowSize.x) / 2.f;
 		globalTransform_.translate(margin, 0.f).scale(scale, scale);
+		
+		crossHair_.setScale(scale, scale);
 	}
 
 	else
@@ -141,6 +161,8 @@ void Application::handleResizing(Vector2u newWindowSize)
 		float scale = newWindowSize.x / float(WINDOW_SIZE.x);
 		float margin = std::abs(WINDOW_SIZE.y * scale - newWindowSize.y) / 2.f;
 		globalTransform_.translate(0.f, margin).scale(scale, scale);
+
+		crossHair_.setScale(scale, scale);
 	}
 
 	window_.setView(

@@ -24,18 +24,33 @@ $ ./Impetus-Spheroid
 and you'll have a game freshly installed from source!
 
 ### TODO
-* Global
-  * Graphics
-  * Sound
-  * Clean-up
-  	* core/Event system
-	* World
-	* Market
-	* Inventory
-	* PowerUp
-  * (Heavy) Refactoring
-  	* FontHolder (or a general ResourceHolder<>)
-	* Separate DifficultyManager into two classes
+
+* Gameplay
+  * Add some indications (objective, points, money, etc)
+  	* More explicit beggining: Cannon sprite w/ aiming visualized, cross-hair for mouse's cursor (, maybe arc trajectory for the first shot and maybe a glowing target).
+	* More explicit Events: Icons, Particule Effects, other Graphic Effects...
+	* More explicit PowerUps: Icons _selected_ visualization, Particule Effects, other graphics Effects
+	* More explicit scoring: Little indication each time a ball touch the target (+1, +10, +100, ...)
+  * Make the game more addictive
+  	* Permanent Power-Ups
+	* Unlocking Power-Ups
+	* Achievement? Ranking System (Bronze, Silver, Gold, etc)?
+	* Rewarding: animation? sound?
+  * 
+
+* Graphics
+  * Particle Effects (for Balls, PowerUps, Events, etc...)
+
+* Sound (just little sound effects)
+
+* Bugs
+  * Prevent balls from being created when an other ball is in the generation post.
+
+* Clean-up
+
+* (Heavy) Refactoring
+  * FontHolder (or a general ResourceHolder<>)
+  * Separate DifficultyManager into two classes
 	
 * Optimization (if necessary)
   * Search where are the bottlenecks

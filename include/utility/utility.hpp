@@ -34,8 +34,17 @@ std::string toString(const T& var)
 
 //------------------------------------------------------------------------------
 
-void centerOrigin(sf::Text& text);
-void centerOrigin(sf::Shape& shape);
+/* For all sf::Transformable which has a getLocalBounds() function.
+ * */
+template<typename T>
+void centerOrigin(T& t)
+{
+	sf::FloatRect bounds = t.getLocalBounds();
+	t.setOrigin(bounds.left + bounds.width / 2.f,
+	            bounds.top + bounds.height / 2.f);
+}
+
+
 void defineText(sf::Text& txt,
                 const std::string& str,
                 Vector2f position,
