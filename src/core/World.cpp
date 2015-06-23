@@ -197,12 +197,16 @@ void World::handleInput(const sf::Event& event)
 	if(event.type == sf::Event::MouseMoved)
 	{
 		mousePosition_ = Vector2f(event.mouseMove.x, event.mouseMove.y);
+		cannon_.updateTubeDirection();
 	}
 
 	else if(state_ == Waiting || state_ == GameOver)
 	{
 		if(event.type == sf::Event::MouseButtonPressed)
+		{
 			state_ = Playing;
+			mousePosition_ = Vector2f(event.mouseButton.x, event.mouseButton.y);
+		}
 		else
 			return;
 	}
@@ -305,7 +309,7 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		(*it)->draw(target, states);
 	}
 
-	difficulty_.draw(target, states);
-
 	cannon_.draw(target, states);
+
+	difficulty_.draw(target, states);
 }

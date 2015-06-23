@@ -13,6 +13,12 @@ namespace
 
 //-----------------------------------------------------------------------------
 
+const float Ball::RADIUS_ = RADIUS;
+const float Ball::MASS_ = MASS;
+
+
+//-----------------------------------------------------------------------------
+
 Ball::Ball(World& world,
            Vector2f position, 
            Vector2f gravVect,

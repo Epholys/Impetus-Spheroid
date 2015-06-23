@@ -38,6 +38,10 @@ public:
 	virtual void draw(sf::RenderTarget& target,
 	                  sf::RenderStates states) const;
 
+public:
+	static const float RADIUS_;
+	static const float MASS_;
+
 protected:
 	sf::CircleShape ball_;
 };
