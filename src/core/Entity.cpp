@@ -3,7 +3,8 @@
 //-----------------------------------------------------------------------------
 
 Entity::Entity(World& world, ecs::EntityManager& entm, EntityType::Type type)
-	: world_(world)
+	: Emitter(world)
+	, world_(world)
 	, ecs_(entm)
 	, label_(0)
 	, type_(type)
@@ -35,6 +36,8 @@ void Entity::update(Time dt)
 {
 	applyModifiers(*this, dt);
 	cleanModifiers();
+
+	Emitter::update(dt);
 }
 
 void Entity::draw(sf::RenderTarget&, sf::RenderStates) const

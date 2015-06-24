@@ -31,9 +31,13 @@ World::World(const Vector2u& originalSize,
 	, speedCoeff_(1.f)
 	, gravityVect_(0.f, 1000.f)
 	, entities_()
+	, particleSystems_()
 {
-	const Vector2f SCORE_POSITION (750.f, 0.f);
-
+	for(int i=0; i<Particle::TypeCount; ++i)
+	{
+		particleSystems_.push_back(ParticleSystem(Particle::Type(i)));
+	}
+	
 	generateWorld();
 }
 
@@ -73,6 +77,11 @@ LastGameData World::getGameStats() const
 	data.lastObjective = difficulty_.getObjective();
 
 	return data;
+}
+
+ParticleSystem& World::getParticleSystem(Particle::Type type)
+{
+	return particleSystems_.at(type);
 }
 
 Vector2f World::getGravityVect() const
@@ -241,6 +250,10 @@ void World::update(Time dt)
 		ent->update(dt);
 	}
 	physEng_.update(dt);
+	for(auto& system : particleSystems_)
+	{
+		system.update(dt);
+	}
 
 	cleanEntities();
 	cleanModifiers();
@@ -304,6 +317,11 @@ void World::cleanEntities()
 
 void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	for(const auto& system : particleSystems_)
+	{
+		target.draw(system, states);
+	}
+
 	for(auto it = entities_.begin(); it != entities_.end(); ++it)
 	{
 		(*it)->draw(target, states);

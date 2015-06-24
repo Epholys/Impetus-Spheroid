@@ -39,6 +39,11 @@ Ball::Ball(World& world,
 		ecs_.removeComponent(label_, ecs::Component::Solid);
 	}
 
+	auto positionComponent = dynCast<ecs::Position>
+	                                  (ecs_.getComponent(label_, ecs::Component::Position));
+	assert(positionComponent);
+	addParticleEmitter(Particle::BallTrail, positionComponent->position_, 300, data.color);
+	
 	centerOrigin(ball_);
 	ball_.setFillColor(data.color);
 

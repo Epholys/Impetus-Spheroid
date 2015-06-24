@@ -27,7 +27,8 @@ and you'll have a game freshly installed from source!
 
 * Gameplay
   * Add some indications (objective, points, money, etc)
-  	* More explicit beggining: Cannon sprite w/ aiming visualized, cross-hair for mouse's cursor (, maybe arc trajectory for the first shot and maybe a glowing target).
+  	* More explicit beggining: Cannon sprite w/ aiming visualized (__DONE!__), cross-hair for mouse's cursor (__DONE!__) (, maybe arc trajectory for the first shot and maybe a glowing target).
+	* Alternate beetween cross-hair and "normal" cursor
 	* More explicit Events: Icons, Particule Effects, other Graphic Effects...
 	* More explicit PowerUps: Icons _selected_ visualization, Particule Effects, other graphics Effects
 	* More explicit scoring: Little indication each time a ball touch the target (+1, +10, +100, ...)
@@ -36,10 +37,12 @@ and you'll have a game freshly installed from source!
 	* Unlocking Power-Ups
 	* Achievement? Ranking System (Bronze, Silver, Gold, etc)?
 	* Rewarding: animation? sound?
-  * 
 
 * Graphics
   * Particle Effects (for Balls, PowerUps, Events, etc...)
+  	* Base (ParticleSystem, ParticleEmitter, Emitter) __DONE!__
+	* Affector
+	* Apply
 
 * Sound (just little sound effects)
 
@@ -54,9 +57,10 @@ and you'll have a game freshly installed from source!
 	
 * Optimization (if necessary)
   * Search where are the bottlenecks
-  	* ecs/EntityManager's entityExists() / componentExists() (called 504,360 times for a small game!).
+  * ecs/EntityManager's entityExists() / componentExists() (called 504,360 times for a small game!).
 The function itself is optimized, but it is called to many times...
 **Solution:** Make a quad-tree for collision detection
+  * Reduce all the Balls' draw calls, as one should be enough: they are all the same (minus the color)!
   * ECS: Optimize to be more cache-friendly
 
 

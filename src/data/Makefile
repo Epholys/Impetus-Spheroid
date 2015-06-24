@@ -7,7 +7,7 @@ OPTFLAGS := -O2
 BUGFLAGS :=
 
 TARGETDIR = ../
-OBJECTS = DifficultyData.o BallData.o MarketData.o
+OBJECTS = DifficultyData.o BallData.o MarketData.o ParticleData.o
 
 empty :=
 space := $(empty) $(empty)

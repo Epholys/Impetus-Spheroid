@@ -11,7 +11,8 @@ OBJECTS = 	Entity.o Ball.o Wall.o Target.o World.o Obstacle.o \
 			Event.o EventFunctions.o EventGenerator.o \
 			DifficultyManager.o PowerUp.o PowerUpModifier.o \
 			PowerUpToogle.o Inventory.o PowerUpFunctions.o \
-			Market.o Cannon.o
+			Market.o Cannon.o ParticleSystem.o ParticleEmitter.o \
+			Emitter.o
 
 empty :=
 space := $(empty) $(empty)

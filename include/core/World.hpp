@@ -30,8 +30,10 @@
 #include "core/Cannon.hpp"
 #include "core/DifficultyManager.hpp"
 #include "core/LastGameData.hpp"
+#include "core/ParticleSystem.hpp"
 #include "data/DifficultyData.hpp"
 #include "data/BallData.hpp"
+
 
 class Inventory;
 class MetaData;
@@ -64,6 +66,7 @@ public:
 
 	ecs::EntityManager& getEntityManager();
 	Vector2f getGravityVect() const;
+	ParticleSystem& getParticleSystem(Particle::Type type);
 	void setGravityVect(Vector2f vect);
 	Vector2u getWindowSize() const;
 	const std::vector<eg::PhysicEngine::entityPair>& getTrackedCollisions() const;
@@ -114,6 +117,8 @@ private:
 	Vector2f gravityVect_;
 
 	std::vector<Entity::Ptr> entities_;
+
+	std::vector<ParticleSystem> particleSystems_;
 };
 
 #include "World.ipp"
