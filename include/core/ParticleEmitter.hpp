@@ -7,7 +7,7 @@
 class ParticleEmitter
 {
 public:
-	ParticleEmitter(ParticleSystem* system, Vector2f* position, unsigned int emissionRate, sf::Color color);
+	ParticleEmitter(ParticleSystem* system, Vector2f* position, Vector2f velocity, unsigned int emissionRate, sf::Color color);
 
 	void update(Time dt);
 
@@ -17,6 +17,7 @@ private:
 	Time accumulatedTime_;
 	Vector2f* position_;
 	Vector2f previousPosition_;
+	Vector2f velocity_;
 	Time frequency_;
 	sf::Color color_;
 };

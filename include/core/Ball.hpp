@@ -7,6 +7,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "utility/utility.hpp"
+#include "utility/random.hpp"
 #include "core/Entity.hpp"
 #include "data/BallData.hpp"
 
@@ -38,6 +39,14 @@ public:
 	virtual void draw(sf::RenderTarget& target,
 	                  sf::RenderStates states) const;
 
+private:
+	/* This function is a dirty, messy hacks: it creates ParticleEmitters via
+	 * Emitter with just the correct rate to create a single particle during the
+	 * Emitter::update() call inside this function. The ParticleEmitters are
+	 * then destroyed.
+	 * */
+	void makeMicroParticles(Time dt, std::shared_ptr<ecs::Projectile> projectileComponent);
+	
 public:
 	static const float RADIUS_;
 	static const float MASS_;

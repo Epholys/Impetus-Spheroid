@@ -32,19 +32,20 @@ ParticleSystem::ParticleSystem(Particle::Type type)
 
 //-----------------------------------------------------------------------------
 
-void ParticleSystem::addParticle(Vector2f position)
+void ParticleSystem::addParticle(Vector2f position, Vector2f velocity)
 {
 	Particle particle;
 	particle.position = position;
+	particle.velocity = velocity;
 	particle.color = datas.at(type_).color;
 	particle.lifetime = datas.at(type_).lifetime;
 
 	particles_.push_back(particle);
 }
 
-void ParticleSystem::addParticle(Vector2f position, sf::Color color)
+void ParticleSystem::addParticle(Vector2f position, Vector2f velocity, sf::Color color)
 {
-	addParticle(position);
+	addParticle(position, velocity);
 	particles_.back().color = color;
 }
 
@@ -61,6 +62,7 @@ void ParticleSystem::update(Time dt)
 	for (auto& particle : particles_)
 	{
 		particle.lifetime -= dt;
+		particle.position += particle.velocity * dt.asSeconds();
 
 		for(auto& affector : affectors_)
 		{

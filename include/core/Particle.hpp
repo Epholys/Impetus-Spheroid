@@ -16,10 +16,12 @@ struct Particle
 	enum Type
 	{
 		BallTrail,
+		Pixel,
 		TypeCount
 	};
 	
 	Vector2f position;
+	Vector2f velocity;
 	sf::Color color;
 	Time lifetime;
 };

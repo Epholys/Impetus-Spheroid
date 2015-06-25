@@ -7,32 +7,34 @@
 Emitter::Emitter(World& world)
 	: world_(world)
 	, emitters_()
+	, emitterCount_(0)
 {
 }
 
 
 //-----------------------------------------------------------------------------
 
-int Emitter::addParticleEmitter(Particle::Type type, Vector2f& position, unsigned int emissionRate, sf::Color color)
+int Emitter::addParticleEmitter(Particle::Type type, Vector2f& position, unsigned int emissionRate, sf::Color color, Vector2f velocity)
 {
 	if(type == Particle::TypeCount)
 		return -1;
 
 	/* else */
 	auto& system = world_.getParticleSystem(type);
-	ParticleEmitter emitter (&system, &position, emissionRate, color);
-	emitters_.push_back(emitter);
+	ParticleEmitter emitter (&system, &position, velocity, emissionRate, color);
+	emitters_.emplace(emitterCount_, emitter);
+	++emitterCount_;
 
-	return emitters_.size() - 1;
+	return emitterCount_ - 1;
 }
 
 bool Emitter::removeParticleEmitter(int index)
 {
-	if(!(-1 < index && index < static_cast<int>(emitters_.size())))
+	if(!(-1 < index && index < emitterCount_))
 		return false;
 
 	/* else */
-	emitters_.erase(emitters_.begin() + index);
+	emitters_.erase(index);
 	return true;
 }
 
@@ -48,8 +50,6 @@ void Emitter::update(Time dt)
 {
 	for(auto& emitter : emitters_)
 	{
-		emitter.update(dt);
-
-
+		emitter.second.update(dt);
 	}
 }

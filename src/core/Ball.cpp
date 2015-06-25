@@ -76,11 +76,42 @@ void Ball::update(Time dt)
 	// sf::Shapes, it would mean I'll have to update every single one of them.
 	setPosition(position_->x, position_->y);
 
+	
+	if(trailEmitter_ == -1) return;
+	
 	auto projectileComponent = dynCast<ecs::Projectile>
 		(ecs_.getComponent(label_, ecs::Component::Projectile));
 	if(projectileComponent && projectileComponent->hasTouchedTarget())
 	{
 		removeParticleEmitter(trailEmitter_);
+		trailEmitter_ = -1;
+
+		makeMicroParticles(dt, projectileComponent);
+	}
+}
+
+void Ball::makeMicroParticles(Time dt, std::shared_ptr<ecs::Projectile> projectileComponent)
+{
+	std::vector<int> microParticleEmitterID;
+	unsigned int rate = std::ceil(1.f / dt.asSeconds());
+
+	auto velocityComponent = dynCast<ecs::Velocity>
+		(ecs_.getComponent(label_, ecs::Component::Velocity));
+	assert(velocityComponent);
+	Vector2f velocity = velocityComponent->velocity_;
+
+	for(int i = 0; i<projectileComponent->getPoints() * 3; ++i)
+	{
+		Vector2f speed (normalRandFloat(velocity.x / 3.f, velocity.x / 3.f),
+		                normalRandFloat(velocity.y / 3.f , velocity.y / 3.f));
+		
+		microParticleEmitterID.push_back(
+			addParticleEmitter(Particle::Pixel, *position_, rate, ball_.getFillColor(), speed));
+	}
+	Emitter::update(dt);
+	for(int i : microParticleEmitterID)
+	{
+		removeParticleEmitter(i);
 	}
 }
 
