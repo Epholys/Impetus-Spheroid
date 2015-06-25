@@ -8,6 +8,7 @@ namespace
 {
 	const float RADIUS = 10.f;
 	const float MASS = 1.f;
+	const unsigned int PARTICLE_RATE = 500;
 }
 
 
@@ -30,6 +31,8 @@ Ball::Ball(World& world,
 {
 	label_ = ecs::createBall(ecs_, position, RADIUS, MASS, gravVect, data.point, nCollisionTarget);
 
+	sf::Color ballColor = data.color;
+	
 	if(type & Massless)
 	{
 		ecs_.removeComponent(label_, ecs::Component::Mass);
@@ -37,15 +40,16 @@ Ball::Ball(World& world,
 	if(type & Ghost)
 	{
 		ecs_.removeComponent(label_, ecs::Component::Solid);
+		ballColor.a = 100;
 	}
 
 	auto positionComponent = dynCast<ecs::Position>
 	                                  (ecs_.getComponent(label_, ecs::Component::Position));
 	assert(positionComponent);
-	addParticleEmitter(Particle::BallTrail, positionComponent->position_, 300, data.color);
+	addParticleEmitter(Particle::BallTrail, positionComponent->position_, PARTICLE_RATE, ballColor);
 	
 	centerOrigin(ball_);
-	ball_.setFillColor(data.color);
+	ball_.setFillColor(ballColor);
 
 	update(Time());
 }

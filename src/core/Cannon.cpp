@@ -237,7 +237,7 @@ void Cannon::applyBallType()
 
 	else if(ballType_ & Ball::Ghost)
 	{
-		ballBuffer_.front().first.color.a = 155;
+		ballBuffer_.front().first.color.a = 100;
 	}
 }
 
@@ -253,4 +253,5 @@ BallData Cannon::randomBallData() const
 		}
 	}
 	return ballDatas[0];
+
 }
