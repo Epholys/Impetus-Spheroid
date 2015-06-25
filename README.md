@@ -41,13 +41,17 @@ and you'll have a game freshly installed from source!
 * Graphics
   * Particle Effects (for Balls, PowerUps, Events, etc...)
   	* Base (ParticleSystem, ParticleEmitter, Emitter) __DONE!__
-	* Affector
+	* Affector __DONE!__
 	* Apply
+	  * Ball _WIP_
+	  * Events
+	  * PowerUps
 
 * Sound (just little sound effects)
 
 * Bugs
-  * Prevent balls from being created when an other ball is in the generation post.
+  * Prevent balls from being created when an other ball is in the generation post. __DONE__
+  * World's wall mess-up __DONE__
 
 * Clean-up
 
@@ -62,6 +66,7 @@ The function itself is optimized, but it is called to many times...
 **Solution:** Make a quad-tree for collision detection
   * Reduce all the Balls' draw calls, as one should be enough: they are all the same (minus the color)!
   * ECS: Optimize to be more cache-friendly
+  * Use a single draw call for all the balls, as it is done for Particles
 
 
 ### Trivia

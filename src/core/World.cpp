@@ -61,6 +61,11 @@ void World::generateWorld()
 	entities_.push_back(std::move(ceiling));
 	entities_.push_back(std::move(leftWall));
 	entities_.push_back(std::move(rightWall));
+	
+	for(const auto& ent : entities_)
+	{
+		ent->update(Time());
+	}
 
 	createTarget(Vector2f(3* originalSize_.x / 4.f, originalSize_.y / 2.f));
 }
