@@ -28,6 +28,8 @@ Ball::Ball(World& world,
            unsigned int type)
 	: Entity(world, world.getEntityManager(), EntityType::Ball)
 	, ball_(RADIUS)
+	, position_(nullptr)
+	, trailEmitter_(-1)
 {
 	label_ = ecs::createBall(ecs_, position, RADIUS, MASS, gravVect, data.point, nCollisionTarget);
 
@@ -46,7 +48,9 @@ Ball::Ball(World& world,
 	auto positionComponent = dynCast<ecs::Position>
 	                                  (ecs_.getComponent(label_, ecs::Component::Position));
 	assert(positionComponent);
-	addParticleEmitter(Particle::BallTrail, positionComponent->position_, PARTICLE_RATE, ballColor);
+	position_ = &positionComponent->position_;
+
+	trailEmitter_ = addParticleEmitter(Particle::BallTrail, *position_, PARTICLE_RATE, ballColor);
 	
 	centerOrigin(ball_);
 	ball_.setFillColor(ballColor);
@@ -67,16 +71,16 @@ void Ball::update(Time dt)
 {
 	Entity::update(dt);
 
-	auto pointPos = dynCast<ecs::Position>
-		(ecs_.getComponent(label_, ecs::Component::Position));
-	if(pointPos)
+	// NOT ball_.setPosition(...): ball_'s Transformable base class isn't
+	// used because if suddenly Ball's view become several sf::Sprites and
+	// sf::Shapes, it would mean I'll have to update every single one of them.
+	setPosition(position_->x, position_->y);
+
+	auto projectileComponent = dynCast<ecs::Projectile>
+		(ecs_.getComponent(label_, ecs::Component::Projectile));
+	if(projectileComponent && projectileComponent->hasTouchedTarget())
 	{
-		auto position = pointPos->position_;
-		
-		// NOT ball_.setPosition(...): ball_'s Transformable base class isn't
-		// used because if suddenly Ball's view become several sf::Sprites and
-		// sf::Shapes, it would mean I'll have to update every single one of them.
-		setPosition(position.x, position.y);
+		removeParticleEmitter(trailEmitter_);
 	}
 }
 

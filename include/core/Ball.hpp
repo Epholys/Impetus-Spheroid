@@ -44,6 +44,8 @@ public:
 
 protected:
 	sf::CircleShape ball_;
+	Vector2f* position_;
+	int trailEmitter_;
 };
 
 #endif // BALL_HPP

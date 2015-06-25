@@ -28,6 +28,7 @@ private:
 
 protected:
 	sf::RectangleShape rect_;
+	Vector2f* position_;
 
 	// In this class, objective_ is the position where the Target have to go
 	// when touched by a ecs::Projectile.

@@ -18,6 +18,7 @@ Target::Target(World& world,
                Vector2f position)
 	: Entity(world, world.getEntityManager(), EntityType::Target)
 	, rect_(SIZE)
+	, position_(nullptr)
 	, objective_()
 {
 	label_ = ecs::createTarget(ecs_, position, SIZE);
@@ -25,13 +26,16 @@ Target::Target(World& world,
 	centerOrigin(rect_);
 	rect_.setFillColor(COLOR);
 
+	
+	
 	auto pointPos = dynCast<ecs::Position>
 		(ecs_.getComponent(label_, ecs::Component::Position));
 	if(pointPos)
 	{
+		position_ = &pointPos->position_;
 		objective_ = pointPos->position_;
 	}
-
+	
 	update(Time());
 }
 
@@ -46,17 +50,12 @@ void Target::update(Time dt)
 {
 	Entity::update(dt);
 
-	auto pointPos = dynCast<ecs::Position>
-		(ecs_.getComponent(label_, ecs::Component::Position));
-
-	if(pointPos)
+	if(position_)
 	{
-		auto position = pointPos->position_;
-		
 		// NOT rect_.setPosition(...): rect_'s Transformable base class isn't
 		// used because if suddenly Target's view become several sf::Sprites and
 		// sf::Shapes, it would mean I'll have to update every single one of them.
-		setPosition(position.x, position.y);
+		setPosition(position_->x, position_->y);
 	}
 
 	updateObjective();
@@ -118,11 +117,7 @@ void Target::updateObjective()
 	if(!targetComponent) return;
 	if(!targetComponent->reset()) return;
 
-
-	auto positionComponent = dynCast<ecs::Position>
-		(ecs_.getComponent(label_, ecs::Component::Position));
-
-	if(!positionComponent) return;
+	if(!position_) return;
 
 	const int Y_MARGIN = 80;
 	const int X_RIGHT_MARGIN = 20;
@@ -144,13 +139,11 @@ void Target::moveToObjective()
 
 	auto velocityComponent = dynCast<ecs::Velocity>
 		(ecs_.getComponent(label_, ecs::Component::Velocity));
-	auto positionComponent = dynCast<ecs::Position>
-		(ecs_.getComponent(label_, ecs::Component::Position));
 
-	if(!velocityComponent || !positionComponent) return;
+	if(!velocityComponent || !position_) return;
 
 
-	Vector2f vectToObjective = objective_ - positionComponent->position_;
+	Vector2f vectToObjective = objective_ - *position_;
 	float distanceToObjective = std::sqrt(std::pow(vectToObjective.x,2) + std::pow(vectToObjective.y,2));
 	if(distanceToObjective < EPSILON)
 	{

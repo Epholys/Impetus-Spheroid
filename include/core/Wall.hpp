@@ -23,6 +23,7 @@ public:
 
 protected:
 	sf::RectangleShape rect_;
+	Vector2f* position_;
 };
 
 

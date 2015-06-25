@@ -11,12 +11,20 @@ Wall::Wall(World& world,
            sf::Color color)
 	: Entity(world, world.getEntityManager(), EntityType::Wall)
 	, rect_(size)
+	, position_(nullptr)
 {
 	label_ = ecs::createWall(ecs_, position, size);
 
 	centerOrigin(rect_);
 	rect_.setFillColor(color);
 	update(Time());
+
+	auto pointPos = dynCast<ecs::Position>
+		(ecs_.getComponent(label_, ecs::Component::Position));
+	if(pointPos)
+	{
+		position_ = &pointPos->position_;
+	}
 }
 
 Wall::~Wall()
@@ -31,16 +39,12 @@ void Wall::update(Time dt)
 {
 	Entity::update(dt);
 
-	auto pointPos = dynCast<ecs::Position>
-		(ecs_.getComponent(label_, ecs::Component::Position));
-	if(pointPos)
+	if(position_)
 	{
-		auto position = pointPos->position_;
-
 		// NOT rect_.setPosition(...): rect__'s Transformable base class isn't
 		// used because if suddenly Wall's view become several sf::Sprites and
 		// sf::Shapes, it would mean I'll have to update every single one of them.
-		setPosition(position.x, position.y);
+		setPosition(position_->x, position_->y);
 	}
 }
 
