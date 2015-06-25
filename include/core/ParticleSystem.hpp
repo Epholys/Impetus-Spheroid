@@ -25,6 +25,7 @@ private:
 	
 private:
 	std::deque<Particle> particles_;
+	std::vector<ParticleAffector> affectors_;
 	Particle::Type type_;
 	sf::Texture texture_;
 

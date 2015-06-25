@@ -4,14 +4,17 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "core/Particle.hpp"
+#include "core/ParticleAffectorFunctions.hpp"
 
 struct ParticleData
 {
 	sf::Color color;
 	Time lifetime;
 	std::string texturePath;
+	std::vector<AffectorType::Type> affectors;
 };
 
 

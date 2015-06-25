@@ -7,6 +7,7 @@
 namespace
 {
 	std::vector<ParticleData> datas = genParticleData();
+	std::vector<ParticleAffector> affectors = genParticleAffectors();
 }
 
 
@@ -14,11 +15,17 @@ namespace
 
 ParticleSystem::ParticleSystem(Particle::Type type)
 	: particles_()
+	, affectors_()
 	, type_(type)
 	, texture_()
 	, vertexArray_(sf::Quads)
 	, updateVertices_(true)
 {
+	for(auto& affectorType : datas.at(type).affectors)
+	{
+		affectors_.push_back(affectors[affectorType]);
+	}
+	
 	texture_.loadFromFile(datas.at(type).texturePath);
 }
 
@@ -54,7 +61,13 @@ void ParticleSystem::update(Time dt)
 	for (auto& particle : particles_)
 	{
 		particle.lifetime -= dt;
+
+		for(auto& affector : affectors_)
+		{
+			affector(particle, type_, dt);
+		}
 	}
+
 
 	updateVertices_ = true;
 }
