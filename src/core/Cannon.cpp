@@ -63,7 +63,6 @@ void Cannon::initView()
 	cannonTube_.setFillColor(CANNON_COLOR);
 	cannonTube_.setOutlineColor(CANNON_OUTLINE_COLOR);
 	cannonTube_.setOutlineThickness(OUTLINE_THICKNESS);
-	updateTubeDirection();
 }
 
 Cannon::~Cannon()
