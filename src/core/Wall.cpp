@@ -17,6 +17,8 @@ Wall::Wall(World& world,
 
 	centerOrigin(rect_);
 	rect_.setFillColor(color);
+	rect_.setOutlineThickness(3.f);
+	rect_.setOutlineColor(color);
 	update(Time());
 
 	auto pointPos = dynCast<ecs::Position>
@@ -54,3 +56,28 @@ void Wall::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	
 	target.draw(rect_, states);
 }
+
+
+//-----------------------------------------------------------------------------
+
+Vector2f Wall::getPosition() const
+{
+	return *position_;
+}
+
+Vector2f Wall::getSize() const
+{
+	return Vector2f(rect_.getSize());
+}
+
+void Wall::setOutlineColor(sf::Color color)
+{
+	rect_.setOutlineColor(color);
+}
+
+void Wall::resetOutlineColor()
+{
+	rect_.setOutlineColor(rect_.getFillColor());
+}
+
+

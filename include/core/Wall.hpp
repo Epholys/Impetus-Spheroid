@@ -21,6 +21,11 @@ public:
 	virtual void update(Time dt = Time::Zero);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+	Vector2f getSize() const;
+	Vector2f getPosition() const;
+	void setOutlineColor(sf::Color color);
+	void resetOutlineColor();
+	
 protected:
 	sf::RectangleShape rect_;
 	Vector2f* position_;

@@ -71,6 +71,8 @@ public:
 	Vector2u getWindowSize() const;
 	const std::vector<eg::PhysicEngine::entityPair>& getTrackedCollisions() const;
 	Vector2f getMousePosition() const;
+	Wall * getCeiling();
+	Wall * getLeftWall();
 
 	void addEntity(Entity::Ptr entity);
 	template<typename T, typename... Args>
@@ -117,6 +119,8 @@ private:
 	Vector2f gravityVect_;
 
 	std::vector<Entity::Ptr> entities_;
+	Wall* ceiling_;
+	Wall* leftWall_;
 
 	std::vector<ParticleSystem> particleSystems_;
 };

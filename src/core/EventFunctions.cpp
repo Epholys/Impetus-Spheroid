@@ -184,7 +184,32 @@ namespace evt
 
 //-----------------------------------------------------------------------------
 
-	/* Reverse the gravity of world for all existing Entities and for new Balls
+	auto addParticleWall =
+		[](Wall* wall, Vector2f distance, sf::Color color, float MEAN_RATE)
+		{
+			const int N_EMITTERS = 50;
+			const float DEV_RATE = MEAN_RATE / 2.f;
+			Vector2f size = wall->getSize();
+			Vector2f gap = size / static_cast<float>(N_EMITTERS);
+			gap = (distance.x == 0) ? Vector2f{gap.x, 0.f} : gap;
+			gap = (distance.y == 0) ? Vector2f{0.f, gap.y} : gap;
+			Vector2f basePosition = wall->getPosition() - wall->getSize() / 2.f + distance;
+			for(int i=0; i<N_EMITTERS; ++i)
+			{
+				float emissionRate = std::abs(normalRandFloat(MEAN_RATE, DEV_RATE));
+				wall->addParticleEmitter(Particle::Bubble,
+				                         basePosition,
+				                         emissionRate,
+				                         color,
+				                         -distance / 2.f);
+				basePosition += gap;
+
+			}
+
+			wall->setOutlineColor(color);
+		};
+	
+	/* Reverse the gravity of world for all existing Entities and for new Balls.
 	 * */
 	auto reverseGravWorld =
 		[](World& world, Time)
@@ -203,6 +228,22 @@ namespace evt
 			auto gravVect = world.getGravityVect();
 			gravVect.y *= -1;
 			world.setGravityVect(gravVect);
+
+			addParticleWall(world.getCeiling(), Vector2f(0.f, 40.f), sf::Color::Blue, 0.75f);
+
+
+			// Yeah, it's called twice : one correctly, the other one
+			// DEFAULT_EVENT_DURATION *after* the Event is already over.
+			Modifier<Entity> modifier;
+			modifier.duration_ = seconds(DEFAULT_EVENT_DURATION);
+			modifier.postFunction_ =
+				[&](Entity& ent, Time)
+				{
+					if(&ent != world.getCeiling()) return;
+					world.getCeiling()->removeAllParticleEmitters();
+					world.getCeiling()->resetOutlineColor();
+				};
+			world.forwardModifier<Entity>(modifier);
 		};
 
 
@@ -213,9 +254,22 @@ namespace evt
 	auto addWindWorld = 
 		[](World& world, Time)
 		{
+			auto entm = world.getEntityManager();
+			auto vComp = entm.getAllComponents(ecs::Component::Mass);
+			for(auto& comp : vComp)
+			{
+				auto mass = dynCast<ecs::Mass>(comp);
+				if(mass)
+				{
+				  	mass->gravityVect_.x = -750.f;
+				}
+			}
+
 			auto gravVec = world.getGravityVect();
 			gravVec.x = -750.f;
 			world.setGravityVect(gravVec);
+
+			addParticleWall(world.getLeftWall(), Vector2f(60.f, 0.f), sf::Color(0,150,255), 0.25f);
 		};
 
 	/* Remove the wind.
@@ -223,9 +277,32 @@ namespace evt
 	auto removeWindWorld = 
 		[](World& world, Time)
 		{
+			auto entm = world.getEntityManager();
+			auto vComp = entm.getAllComponents(ecs::Component::Mass);
+			for(auto& comp : vComp)
+			{
+				auto mass = dynCast<ecs::Mass>(comp);
+				if(mass)
+				{
+				  	mass->gravityVect_.x = 0.f;
+				}
+			}
+			
 			auto gravVec = world.getGravityVect();
 			gravVec.x = 0.f;
 			world.setGravityVect(gravVec);
+
+			
+			Modifier<Entity> modifier;
+			modifier.duration_ = Time();
+			modifier.postFunction_ =
+			[&](Entity& ent, Time)
+			{
+				if(&ent != world.getLeftWall()) return;
+				world.getLeftWall()->removeAllParticleEmitters();
+				world.getLeftWall()->resetOutlineColor();
+			};
+			world.forwardModifier<Entity>(modifier);
 		};
 
 

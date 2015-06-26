@@ -16,7 +16,8 @@ struct Particle
 	enum Type
 	{
 		BallTrail,
-		Pixel,
+		Shard,
+		Bubble,
 		TypeCount
 	};
 	

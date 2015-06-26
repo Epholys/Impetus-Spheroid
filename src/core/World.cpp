@@ -31,6 +31,8 @@ World::World(const Vector2u& originalSize,
 	, speedCoeff_(1.f)
 	, gravityVect_(0.f, 1000.f)
 	, entities_()
+	, ceiling_(nullptr)
+	, leftWall_(nullptr)
 	, particleSystems_()
 {
 	for(int i=0; i<Particle::TypeCount; ++i)
@@ -43,23 +45,26 @@ World::World(const Vector2u& originalSize,
 
 void World::generateWorld()
 {
-	Entity::Ptr ceiling (new Wall(*this,
-	                              Vector2f(originalSize_.x / 2.f, 0.f),
-	                              Vector2f(originalSize_.x, 10.f),
-	                              sf::Color(80,80,80)));
+	Wall* ceiling  = new Wall(*this,
+	                          Vector2f(originalSize_.x / 2.f, 0.f),
+	                          Vector2f(originalSize_.x, 10.f),
+	                          sf::Color(80,80,80));
 	
-	Entity::Ptr leftWall (new Wall(*this,
-	                               Vector2f(12.5f, originalSize_.y / 2.f),
-	                               Vector2f(25.f, originalSize_.y),
-	                               sf::Color(80,80,80)));
+	Wall* leftWall = new Wall(*this,
+	                          Vector2f(12.5f, originalSize_.y / 2.f),
+	                          Vector2f(25.f, originalSize_.y),
+	                          sf::Color(80,80,80));
 
 	Entity::Ptr rightWall (new Wall(*this,
 	                                Vector2f(originalSize_.x, originalSize_.y / 2.f),
 	                                Vector2f(10.f, originalSize_.y),
 	                                sf::Color(80,80,80)));
 
-	entities_.push_back(std::move(ceiling));
-	entities_.push_back(std::move(leftWall));
+	ceiling_ = ceiling;
+	leftWall_ = leftWall;
+	
+	entities_.push_back(std::move(Entity::Ptr(ceiling)));
+	entities_.push_back(std::move(Entity::Ptr(leftWall)));
 	entities_.push_back(std::move(rightWall));
 	
 	for(const auto& ent : entities_)
@@ -107,6 +112,16 @@ Vector2f World::getMousePosition() const
 {
 	return mousePosition_;
 }
+
+Wall * World::getCeiling()
+{
+	return ceiling_;
+}
+Wall * World::getLeftWall()
+{
+	return leftWall_;
+}
+
 
 template<>
 void World::forwardModifier<World>(Modifier<World> modifier)
