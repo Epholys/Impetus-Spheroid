@@ -3,17 +3,20 @@
 
 //-----------------------------------------------------------------------------
 
-ParticleEmitter::ParticleEmitter(ParticleSystem* system, Vector2f* position, Vector2f velocity, unsigned int emissionRate, sf::Color color)
+ParticleEmitter::ParticleEmitter(ParticleSystem* system, Vector2f position, Vector2f velocity, float emissionRate, sf::Color color)
 	: system_(system)
+	, accumulatedTime_()
 	, position_(position)
-	, previousPosition_(*position)
+	, previousPosition_(position)
 	, velocity_(velocity)
 	, frequency_(seconds(1.f))
 	, color_(color)
 {
-	if(emissionRate != 0)
+	if(emissionRate != 0.f)
 	{
 		frequency_ = seconds(1.f / emissionRate);
+		// // To start emitting right away particles
+		// accumulatedTime_ = frequency_;
 	}
 }
 
@@ -24,7 +27,7 @@ void ParticleEmitter::update(Time dt)
 {
 	accumulatedTime_ += dt;
 
-	if(accumulatedTime_ < frequency_ || !system_ || !position_)
+	if(accumulatedTime_ < frequency_ || !system_)
 		return;
 
 	/*else*/
@@ -34,7 +37,7 @@ void ParticleEmitter::update(Time dt)
 		return;
 
 	/*else*/
-	Vector2f gap = *position_ - previousPosition_;
+	Vector2f gap = position_ - previousPosition_;
 	Vector2f fillingDistance = gap / float(nParticuleToEmit);
 	Vector2f particulePosition = previousPosition_;
 	for(int i=0; i<nParticuleToEmit; ++i)
@@ -44,5 +47,10 @@ void ParticleEmitter::update(Time dt)
 		particulePosition += fillingDistance;
 	}
 	
-	previousPosition_ = *position_;
+	previousPosition_ = position_;
+}
+
+void ParticleEmitter::updatePosition(Vector2f position)
+{
+	position_ = position;
 }

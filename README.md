@@ -54,6 +54,7 @@ and you'll have a game freshly installed from source!
   * World's wall mess-up __DONE__
 
 * Clean-up
+  * Fusion addWindWorld and reverseGravWorld in EventFunctions.cpp
 
 * (Heavy) Refactoring
   * FontHolder (or a general ResourceHolder<>)

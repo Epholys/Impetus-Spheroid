@@ -78,6 +78,8 @@ void Ball::update(Time dt)
 
 	
 	if(trailEmitter_ == -1) return;
+
+	updatePosition(trailEmitter_, *position_);
 	
 	auto projectileComponent = dynCast<ecs::Projectile>
 		(ecs_.getComponent(label_, ecs::Component::Projectile));
@@ -106,7 +108,7 @@ void Ball::makeMicroParticles(Time dt, std::shared_ptr<ecs::Projectile> projecti
 		                normalRandFloat(velocity.y / 3.f , velocity.y / 3.f));
 		
 		microParticleEmitterID.push_back(
-			addParticleEmitter(Particle::Pixel, *position_, rate, ball_.getFillColor(), speed));
+			addParticleEmitter(Particle::Shard, *position_, rate, ball_.getFillColor(), speed));
 	}
 	Emitter::update(dt);
 	for(int i : microParticleEmitterID)
