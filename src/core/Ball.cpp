@@ -33,6 +33,13 @@ Ball::Ball(World& world,
 {
 	label_ = ecs::createBall(ecs_, position, RADIUS, MASS, gravVect, data.point, nCollisionTarget);
 
+
+	auto positionComponent = dynCast<ecs::Position>
+	                                  (ecs_.getComponent(label_, ecs::Component::Position));
+	assert(positionComponent);
+	position_ = &positionComponent->position_;
+
+	
 	sf::Color ballColor = data.color;
 	
 	if(type & Massless)
@@ -45,21 +52,35 @@ Ball::Ball(World& world,
 		ballColor.a = 100;
 	}
 
-	auto positionComponent = dynCast<ecs::Position>
-	                                  (ecs_.getComponent(label_, ecs::Component::Position));
-	assert(positionComponent);
-	position_ = &positionComponent->position_;
-
 	trailEmitter_ = addParticleEmitter(Particle::BallTrail, *position_, PARTICLE_RATE, ballColor);
 	
 	centerOrigin(ball_);
 	ball_.setFillColor(ballColor);
+	ball_.setOutlineThickness(5.f);
+	ball_.setOutlineColor(ballColor);
 
 	update(Time());
 }
 
 Ball::~Ball()
 {
+}
+
+
+//-----------------------------------------------------------------------------
+
+sf::Color Ball::getColor() const
+{
+	return ball_.getOutlineColor();
+}
+
+void Ball::setOutlineColor(sf::Color color)
+{
+	ball_.setOutlineColor(color);
+}
+void Ball::reverseOutlineColor()
+{
+	ball_.setOutlineColor(ball_.getFillColor());
 }
 
 

@@ -16,6 +16,7 @@ namespace evt
 		const int DEFAULT_EVENT_DURATION = 5;
 	}
 
+
 	/* Pause velocity fort the Ball if it's in the rectangle defined by its
 	 * upper left corner at position and its size.
 	 * */
@@ -48,6 +49,9 @@ namespace evt
 			{
 				projectileComponent->pause(pause);
 			}
+			Ball* pBall = dynamic_cast<Ball*>(&ball);
+			if(pBall)
+				pBall->setOutlineColor(sf::Color::White);
 		}
 	};
 
@@ -68,6 +72,10 @@ namespace evt
 		
 		velocityComponent->unpause();
 		projectileComponent->unpause();
+		
+		Ball* pBall = dynamic_cast<Ball*>(&ball);
+		if(pBall)
+			pBall->reverseOutlineColor();
 	};
 
 	
@@ -215,7 +223,7 @@ namespace evt
 		[](World& world, Time)
 		{
 			auto entm = world.getEntityManager();
-			auto vComp = entm.getAllComponents(ecs::Component::Mass);
+			auto vComp = entm.getAllComponents(ecs::Component::Mass, true);
 			for(auto& comp : vComp)
 			{
 				auto mass = dynCast<ecs::Mass>(comp);

@@ -39,6 +39,10 @@ public:
 	virtual void draw(sf::RenderTarget& target,
 	                  sf::RenderStates states) const;
 
+	sf::Color getColor() const;
+	void setOutlineColor(sf::Color color);
+	void reverseOutlineColor();
+
 private:
 	/* This function is a dirty, messy hacks: it creates ParticleEmitters via
 	 * Emitter with just the correct rate to create a single particle during the
