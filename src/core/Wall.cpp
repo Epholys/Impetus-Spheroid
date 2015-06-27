@@ -17,7 +17,7 @@ Wall::Wall(World& world,
 
 	centerOrigin(rect_);
 	rect_.setFillColor(color);
-	rect_.setOutlineThickness(3.f);
+	rect_.setOutlineThickness(-3.f);
 	rect_.setOutlineColor(color);
 	update(Time());
 
