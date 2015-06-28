@@ -44,8 +44,13 @@ and you'll have a game freshly installed from source!
 	* Affector __DONE!__
 	* Apply
 	  * Ball _WIP_
-	  * Events
-	  * PowerUps
+	  * Events _WIP_
+	  * PowerUps _WIP_
+  * Transition
+  	* Transition __DONE!__
+	* TransitionFunctions __DONE!__
+	* TweeningStack
+	* ^^^^^^^^^^^^^<-- Balls' preview & More explicit Scoring
 
 * Sound (just little sound effects)
 
