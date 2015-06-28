@@ -263,7 +263,7 @@ namespace evt
 		[](World& world, Time)
 		{
 			auto entm = world.getEntityManager();
-			auto vComp = entm.getAllComponents(ecs::Component::Mass);
+			auto vComp = entm.getAllComponents(ecs::Component::Mass, true);
 			for(auto& comp : vComp)
 			{
 				auto mass = dynCast<ecs::Mass>(comp);
@@ -286,7 +286,7 @@ namespace evt
 		[](World& world, Time)
 		{
 			auto entm = world.getEntityManager();
-			auto vComp = entm.getAllComponents(ecs::Component::Mass);
+			auto vComp = entm.getAllComponents(ecs::Component::Mass, true);
 			for(auto& comp : vComp)
 			{
 				auto mass = dynCast<ecs::Mass>(comp);
