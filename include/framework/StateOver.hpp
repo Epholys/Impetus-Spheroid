@@ -40,7 +40,7 @@ public:
 private:
 	void initStaticTexts();
 	void initVariableTexts();
-		void updateDatas();
+	void updateDatas();
 
 private:
 	sf::Font font_;
