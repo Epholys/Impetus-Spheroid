@@ -49,8 +49,8 @@ and you'll have a game freshly installed from source!
   * Transition
   	* Transition __DONE!__
 	* TransitionFunctions __DONE!__
-	* TweeningStack
-	* ^^^^^^^^^^^^^<-- Balls' preview & More explicit Scoring
+	* TransitionDeque __DONE!__
+	* Apply Transition Deque to Cannon (with a new class?) and to Difficulty Manager
 
 * Sound (just little sound effects)
 
@@ -64,6 +64,7 @@ and you'll have a game freshly installed from source!
 * (Heavy) Refactoring
   * FontHolder (or a general ResourceHolder<>)
   * Separate DifficultyManager into two classes
+  * Refactor TransitionDeque to have one an only Transition?
 	
 * Optimization (if necessary)
   * Search where are the bottlenecks

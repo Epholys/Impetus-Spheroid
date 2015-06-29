@@ -30,6 +30,10 @@ namespace gui
 		void updateFinish(Vector2f newFinish, Time toAdd = Time());
 
 		bool isOver() const;
+		Vector2f getStart() const;
+		Vector2f getFinish() const;
+		Time getAccumulatedTime() const;
+		Time getDuration() const;
 
 	private:
 		sf::Transformable* toMove_;

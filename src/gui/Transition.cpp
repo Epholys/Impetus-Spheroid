@@ -7,18 +7,22 @@
 namespace gui
 {
 	Transition::Transition(sf::Transformable* toMove,
-	           Type type,
-	           Vector2f start,
-	           Vector2f finish,
-	           Time duration)
+	                       Type type,
+	                       Vector2f start,
+	                       Vector2f finish,
+	                       Time duration)
 		: toMove_(toMove)
 		, type_(type)
 		, start_(start)
 		, finish_(finish)
 		, duration_(duration)
 		, accumulatedTime_()
-		, transitionFunction_(generateTransitionFunction(type, start, finish, duration))
+		, transitionFunction_(generateTransitionFunction(type_, start_, finish_, duration_))
 	{
+		if(toMove)
+		{
+			toMove->setPosition(start);
+		}
 	}
 
 	void Transition::update(Time dt)
@@ -47,6 +51,26 @@ namespace gui
 
 	bool Transition::isOver() const
 	{
-		return (accumulatedTime_ >= duration_);
+		return accumulatedTime_ >= duration_;
+	}
+	
+	Vector2f Transition::getFinish() const
+	{
+		return finish_;
+	}
+
+	Vector2f Transition::getStart() const
+	{
+		return start_;
+	}
+	
+	Time Transition::getAccumulatedTime() const
+	{
+		return accumulatedTime_;
+	}
+
+	Time Transition::getDuration() const
+	{
+		return duration_;
 	}
 }
