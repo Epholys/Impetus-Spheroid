@@ -50,4 +50,8 @@ void defineText(sf::Text& txt,
                 Vector2f position,
                 sf::Color color = sf::Color::White);
 
+//-----------------------------------------------------------------------------
+
+float round (float toRound);
+
 #endif // UT_UTILITY_HPP

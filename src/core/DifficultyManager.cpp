@@ -13,7 +13,7 @@ namespace
 {
 	auto worldDatas = genDifficultyWorld();
 	auto eventDatas = genDifficultyEvent();
-//	auto ballDatas = genBallDatas();
+	auto ballDatas = genBallDatas();
 }
 
 
@@ -31,6 +31,11 @@ namespace
 {
 	const int BASE_CEILING = 20;
 	const int OBJECTIVE_INCREMENT = 2;
+
+	const Vector2f INDICATOR_POSITION (720.f, 65.f);
+	const Vector2f INDICATOR_SPACE (0.f, 15.f);
+	const Time INDICATOR_DURATION = seconds(1.f);
+	const Time DEQUE_DURATION = milliseconds(200);
 }
 
 
@@ -46,6 +51,10 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, objective_(BASE_OBJECTIVE_)
 	, ceiling_(BASE_CEILING)
 	, scoreText_()
+	, indicatorTexts_()
+	, indicatorDeque_(INDICATOR_POSITION, INDICATOR_SPACE, gui::Transition::Linear, DEQUE_DURATION)
+	, indicatorAccumulator_()
+	, indicatorDuration_(INDICATOR_DURATION)
 	// , ballCount_()
 	// , diffGui_(nullptr)
 	// , maskGui_(true)
@@ -85,7 +94,25 @@ DifficultyManager::~DifficultyManager()
 void DifficultyManager::update(Time dt)
 {
 	phaseTime_ += dt;
+
+	updateIndicatorDuration();
+	indicatorDeque_.update(dt);
+	if(!indicatorTexts_.empty())
+	{
+		indicatorAccumulator_ += dt;
+	}
+	if(indicatorAccumulator_ > indicatorDuration_)
+	{
+		indicatorAccumulator_ = Time();
+		if(!indicatorTexts_.empty())
+		{
+			indicatorDeque_.popFront();
+			indicatorTexts_.pop_front();
+		}
+	}	
+
 	updateScore();
+
 	if (phaseTime_ >= PHASE_TIME_)
 	{
 		phaseTime_ -= PHASE_TIME_;
@@ -111,6 +138,11 @@ void DifficultyManager::draw(sf::RenderTarget& target, sf::RenderStates states) 
 {
 	target.draw(timer_, states);
 	target.draw(scoreText_, states);
+
+	for (const auto& text : indicatorTexts_)
+	{
+		target.draw(text, states);
+	}
 
 	// Don't forget to draw the GUI if necessary!
 }
@@ -159,11 +191,15 @@ void DifficultyManager::updateScore()
 			                                      ecs::Component::Target));
 		if(projectileComp && targetComp)
 		{
-			points += projectileComp->getPoints() * targetComp->getPointMultiplier();
+			float pointsWon = projectileComp->getPoints() * targetComp->getPointMultiplier();
+				
+			points += pointsWon;
 			// // Some subtlety here: ballCount_ does not save the target's point
 			// // multiplier. It would have an impact if I decide to go back to the
 			// // old point system.
 			// ++ballCount_[projectileComp->getPoints()];
+
+			updateIndicator(static_cast<int>(round(pointsWon)));
 		}
 	}
 
@@ -247,4 +283,54 @@ void DifficultyManager::updateObjective()
 	
 	score_ = 0.f;
 	// ballCount_.clear();
+}
+
+void DifficultyManager::updateIndicatorDuration()
+{
+	if(indicatorTexts_.size() > 5)
+	{
+		indicatorDuration_ = INDICATOR_DURATION / 4.f;
+	}
+	else if(indicatorTexts_.size() > 3)
+	{
+		indicatorDuration_ = INDICATOR_DURATION / 2.f;
+	}
+	else
+	{
+		indicatorDuration_ = INDICATOR_DURATION;
+	}
+}
+
+void DifficultyManager::updateIndicator(int points)
+{
+	const unsigned int CHAR_SIZE = 20;
+	std::stringstream ss;
+	ss << "+" << points;
+	sf::Text text (ss.str(), font_, CHAR_SIZE);
+	text.setColor(findColor(points));
+			
+	indicatorTexts_.push_back(text);
+	indicatorDeque_.pushBack(&indicatorTexts_.back());
+}
+
+sf::Color DifficultyManager::findColor(int points)
+{
+	auto foundColor =
+		std::find_if(
+			ballDatas.begin(),
+			ballDatas.end(),
+			[points](const BallData& data)
+			{
+				return data.point > points;
+			});
+
+	if(foundColor != ballDatas.begin())
+	{
+		--foundColor;
+		return foundColor->color;
+	}
+	else
+	{
+		return ballDatas.begin()->color;
+	}
 }

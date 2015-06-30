@@ -134,3 +134,15 @@ std::string toString(sf::Keyboard::Key key)
 
 	return "";
 }
+
+
+//-----------------------------------------------------------------------------
+
+float round (float toRound)
+{
+	float intPart = 0;
+	float fractionalPart = std::modf(toRound, &intPart);
+	fractionalPart = (fractionalPart < 0.5f) ? 0 : 1;
+	intPart += fractionalPart;
+	return intPart;
+}

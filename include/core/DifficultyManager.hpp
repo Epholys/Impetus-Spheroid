@@ -13,6 +13,7 @@
 #include "utility/Time.hpp"
 #include "data/DifficultyData.hpp"
 #include "gui/Menu.hpp"
+#include "gui/TransitionDeque.hpp"
 
 class World;
 namespace evt {
@@ -64,6 +65,10 @@ private:
 	void updateDifficulty();
 	void updateScore();
 	void updateObjective();
+	void updateIndicatorDuration();
+	void updateIndicator(int points);
+
+	sf::Color findColor(int points);
 
 public:
 	static const int COINS_PER_POINTS_;
@@ -83,6 +88,13 @@ private:
 	int objective_;
 	int ceiling_;
 	sf::Text scoreText_;
+
+	std::deque<sf::Text> indicatorTexts_;
+	gui::TransitionDeque indicatorDeque_;
+	Time indicatorAccumulator_;
+	Time indicatorDuration_;
+	
+
 	// std::map<int, int> ballCount_;
 	
 	// gui::Component::SPtr diffGui_;
