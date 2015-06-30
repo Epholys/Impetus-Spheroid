@@ -7,7 +7,7 @@
 namespace
 {
 	const Vector2f SIZE {15.f, 75.f};
-	const sf::Color COLOR = sf::Color::Yellow;
+	const sf::Color COLOR (255, 230, 0);
 }
 
 
@@ -80,7 +80,7 @@ void Target::updateColor()
 	const float EPSILON = 0.01f;
 	const float MULTIPLIER = PowerUpDatas::TARGET_POINT_MULTIPLIER;	
 	const std::vector<sf::Color> COLORS
-			{sf::Color::Yellow,
+			{COLOR,
 			sf::Color::Green,
 			sf::Color(0,255,255),
 			sf::Color::Blue,

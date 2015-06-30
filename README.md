@@ -50,7 +50,7 @@ and you'll have a game freshly installed from source!
   	* Transition __DONE!__
 	* TransitionFunctions __DONE!__
 	* TransitionDeque __DONE!__
-	* Apply Transition Deque to Cannon (with a new class?) and to Difficulty Manager
+	* Apply Transition Deque to Cannon (with a new class?) and to Difficulty Manager __DONE!__
 
 * Sound (just little sound effects)
 
