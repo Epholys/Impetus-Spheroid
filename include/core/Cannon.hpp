@@ -18,6 +18,7 @@
 #include "core/Modifiable.hpp"
 #include "core/Ball.hpp"
 #include "data/BallData.hpp"
+#include "gui/TransitionDeque.hpp"
 
 
 class World;
@@ -56,7 +57,7 @@ private:
 	void applyBallType();
 	BallData randomBallData() const;
 
-	void drawFutureBalls(sf::RenderTarget& target, sf::RenderStates states) const;
+	void updateBuffer();
 
 private:
 	World& world_;
@@ -70,7 +71,14 @@ private:
 	unsigned int ballType_;
 	int nTouchingBall_;
 
-	std::deque<std::pair<BallData, unsigned int>> ballBuffer_;
+	struct BufferEntry
+	{
+		BallData data;
+		unsigned int type;
+		sf::CircleShape shape;
+	};
+	std::deque<BufferEntry> ballBuffer_;
+	gui::TransitionDeque transitionDeque_;
 
 	sf::CircleShape cannonBody_;
 	sf::RectangleShape cannonTube_;

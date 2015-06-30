@@ -23,6 +23,10 @@ namespace
 
 	const float CANNON_BODY_RADIUS = 35.f;
 	const Vector2f CANNON_TUBE_SIZE { 60.f, 24.f };
+
+	const Vector2f BALL_POSITION {2.5f, 570.f};
+	const Vector2f BALL_SPACING  {0.f, -40.f};
+	const Time TRANSITION_DURATION = milliseconds(125);
 }
 
 
@@ -36,12 +40,17 @@ Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory)
 	, timeBeetweenFire_(milliseconds(333))
 	, ballType_(Ball::Normal)
 	, nTouchingBall_(1)
+	, ballBuffer_()
+	, transitionDeque_(BALL_POSITION, BALL_SPACING, gui::Transition::Linear, TRANSITION_DURATION)
 	, cannonBody_()
 	, cannonTube_()
 {
-	for(int i=0; i<10; ++i)
+	for(int i=0; i<15; ++i)
 	{
-		ballBuffer_.push_back(std::make_pair(randomBallData(), Ball::Normal));
+		BufferEntry entry { randomBallData(), Ball::Normal, sf::CircleShape(Ball::RADIUS_) };
+		entry.shape.setFillColor(entry.data.color);
+		ballBuffer_.push_back(entry);
+		transitionDeque_.pushBack(&(ballBuffer_.back().shape));
 	}
 
 	initView();
@@ -80,6 +89,8 @@ void Cannon::update(Time dt)
 	applyAutoFire(dt);
 
 	updateTubeDirection();
+
+	transitionDeque_.update(dt);
 }
 
 void Cannon::applyAutoFire(Time dt)
@@ -112,20 +123,9 @@ void Cannon::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	target.draw(cannonTube_, states);
 	target.draw(cannonBody_, states);
 	
-	drawFutureBalls(target, states);
-}
-
-void Cannon::drawFutureBalls(sf::RenderTarget& target, sf::RenderStates states) const
-{
-	Vector2f ballPosition {2.5f, 570.f};
-	Vector2f ballSpacing  {0.f, -60.f};
-	for (const auto& data : ballBuffer_)
+	for (const auto& entry : ballBuffer_)
 	{
-		sf::CircleShape circ (Ball::RADIUS_);
-		circ.setFillColor(data.first.color);
-		circ.setPosition(ballPosition);
-		ballPosition += ballSpacing;
-		target.draw(circ, states);
+		target.draw(entry.shape, states);
 	}
 }
 
@@ -167,9 +167,9 @@ ecs::Entity Cannon::createBall()
 	Entity::Ptr pBall (new Ball(world_,
 	                            position_,
 	                            world_.getGravityVect(),
-	                            ballBuffer_.front().first,
+	                            ballBuffer_.front().data,
 	                            nTouchingBall_,
-	                            ballBuffer_.front().second));
+	                            ballBuffer_.front().type));
 
 	auto velComp = dynCast<ecs::Velocity>
 		(world_.getEntityManager().getComponent(pBall->getLabel(),
@@ -205,9 +205,7 @@ ecs::Entity Cannon::createBall()
 
 	world_.addEntity(std::move(pBall));
 
-	ballBuffer_.pop_front();
-
-	ballBuffer_.push_back(std::make_pair(randomBallData(), Ball::Normal));
+	updateBuffer();
 	
 	applyBallType();
 	updateInventory();
@@ -227,17 +225,27 @@ void Cannon::updateInventory()
 
 void Cannon::applyBallType()
 {
-	ballBuffer_.front().second = ballType_;
+	ballBuffer_.front().type = ballType_;
 
 	if (ballType_ == Ball::Normal)
 	{
-		ballBuffer_.front().first.color.a = 255;
+		ballBuffer_.front().data.color.a = 255;
 	}
 
 	else if(ballType_ & Ball::Ghost)
 	{
-		ballBuffer_.front().first.color.a = 100;
+		ballBuffer_.front().data.color.a = 100;
 	}
+}
+
+void Cannon::updateBuffer()
+{
+	transitionDeque_.popFront();
+	ballBuffer_.pop_front();
+	BufferEntry entry { randomBallData(), Ball::Normal, sf::CircleShape(Ball::RADIUS_) };
+	entry.shape.setFillColor(entry.data.color);
+	ballBuffer_.push_back(entry);
+	transitionDeque_.pushBack(&(ballBuffer_.back().shape));
 }
 
 BallData Cannon::randomBallData() const
