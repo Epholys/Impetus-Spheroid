@@ -15,8 +15,8 @@ ParticleEmitter::ParticleEmitter(ParticleSystem* system, Vector2f position, Vect
 	if(emissionRate != 0.f)
 	{
 		frequency_ = seconds(1.f / emissionRate);
-		// // To start emitting right away particles
-		// accumulatedTime_ = frequency_;
+		// To start emitting right away particles
+		accumulatedTime_ = frequency_;
 	}
 }
 
