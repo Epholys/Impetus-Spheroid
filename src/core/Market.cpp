@@ -11,11 +11,23 @@ namespace
 
 //-----------------------------------------------------------------------------
 
+namespace
+{
+	Vector2f COIN_LOST_OFFSET (10.f, 0.f);
+	sf::Color COIN_LOST_COLOR (255, 200, 0);
+}
+
+
+//-----------------------------------------------------------------------------
+
 Market::Market(State::Context context)
 	: inventory_(context.metaData->inventory)
 	, menu_()
 	, font_()
 	, coinsText_()
+	, coinsLost_()
+	, coinsLostTransition_(nullptr, gui::Transition::Linear, Vector2f(), Vector2f(), Time())
+	, coinsLostFadeOut_(nullptr, gui::ColorEffectID::Transition, sf::Color(), sf::Color(), Time())
 	, context_(context)
 {
 	initText();
@@ -25,14 +37,19 @@ Market::Market(State::Context context)
 void Market::initText()
 {
 	const sf::Vector2f TEXT_POSITION (context_.originalWindowSize.x / 2.f, 50);
-
+	
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
+
 	coinsText_.setFont(font_);
 	updateCoinsText();
 	coinsText_.setColor(sf::Color::Yellow);
 	centerOrigin(coinsText_);
 	coinsText_.setPosition(TEXT_POSITION);
-	
+
+	coinsLost_.setFont(font_);
+	coinsLost_.setColor(COIN_LOST_COLOR);
+	centerOrigin(coinsLost_);
+	coinsLost_.setPosition(coinsText_.findCharacterPos(100) + COIN_LOST_OFFSET);
 }
 
 void Market::initGUI()
@@ -72,12 +89,22 @@ void Market::initGUI()
 
 //-----------------------------------------------------------------------------
 
+void Market::update(Time dt)
+{
+	coinsLostTransition_.update(dt);
+	coinsLostFadeOut_.update(dt);
+}
+
+
+//-----------------------------------------------------------------------------
+
 void Market::buy(PowerUpID::ID id, int number, int price)
 {
 	if(price <= inventory_.getCoins())
 	{
 		inventory_.removeCoins(price);
 		inventory_.increment(id, number);
+		updateCoinsLoss(price);
 		updateCoinsText();
 		DataSaver::saveDatas(*context_.metaData);
 	}
@@ -88,6 +115,19 @@ void Market::updateCoinsText()
 	std::stringstream ss;
 	ss << "COINS: " << inventory_.getCoins();
 	coinsText_.setString(ss.str());
+}
+
+void Market::updateCoinsLoss(int price)
+{
+	std::stringstream ss;
+	ss << "-" << price;
+	coinsLost_.setString(ss.str());
+	
+	coinsLost_.setPosition(coinsText_.findCharacterPos(100) + COIN_LOST_OFFSET);
+	coinsLost_.setColor(COIN_LOST_COLOR);
+	Vector2f coinsPos = Vector2f(coinsLost_.getPosition());
+	coinsLostTransition_ = gui::Transition(&coinsLost_, gui::Transition::Linear, coinsPos, coinsPos + Vector2f(30.f, 0.f), seconds(1.f));
+	coinsLostFadeOut_ = gui::ColorEffect<sf::Text>(&coinsLost_, gui::ColorEffectID::Transition, coinsLost_.getColor(), sf::Color(0,0,0,0), seconds(1.f));
 }
 
 //-----------------------------------------------------------------------------
@@ -101,4 +141,5 @@ void Market::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(*menu_, states);
 	target.draw(coinsText_, states);
+	target.draw(coinsLost_, states);
 }

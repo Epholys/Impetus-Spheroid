@@ -51,7 +51,8 @@ public:
 	void clearStates();
 
 	bool isEmpty() const;
-
+	const State* upperState() const;
+	
 private:
 	State::UPtr createState(StateID::ID id);
 	void applyPendingChanges();

@@ -38,7 +38,7 @@ namespace gui
 	private:
 		sf::Transformable* toMove_;
 		Type type_;
-		const Vector2f start_;
+		Vector2f start_;
 		Vector2f finish_;
 		Time duration_;
 		Time accumulatedTime_;

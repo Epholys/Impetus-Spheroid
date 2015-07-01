@@ -15,6 +15,8 @@
 #include "gui/Menu.hpp"
 #include "gui/Button.hpp"
 #include "gui/TextureGenerator.hpp"
+#include "gui/ColorEffectFunctions.hpp"
+#include "gui/Transition.hpp"
 #include "core/Inventory.hpp"
 #include "data/MarketData.hpp"
 
@@ -25,7 +27,8 @@ public:
 
 	void handleEvent(const sf::Event& event);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
+	void update(Time dt);
+	
 private:
 	void initText();
 	void initGUI();
@@ -33,6 +36,7 @@ private:
 	void buy(PowerUpID::ID id, int number, int price);
 
 	void updateCoinsText();
+	void updateCoinsLoss(int price);
 
 private:
 	Inventory& inventory_;
@@ -40,6 +44,11 @@ private:
 	gui::Menu::SPtr menu_;
 	sf::Font font_;
 	sf::Text coinsText_;
+
+	sf::Text coinsLost_;
+	gui::Transition coinsLostTransition_;
+	gui::ColorEffect<sf::Text> coinsLostFadeOut_;
+	
 	State::Context context_;
 };
 

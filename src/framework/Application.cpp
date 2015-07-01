@@ -32,12 +32,12 @@ Application::Application()
 	, metaData_(WINDOW_SIZE, IS_AZERTY)
 	, lastGameData_()
 	, stack_(State::Context(window_, metaData_, lastGameData_))
+	, crossHairActivated_(false)
 	, crossHairTexture_()
 	, crossHair_()
 {
 	window_.setFramerateLimit(0); // Unlimited Framerate
 	window_.setVerticalSyncEnabled(false);
-	window_.setMouseCursorVisible(false);
 
 	if(!DataSaver::retrieveDatas(metaData_))
 	{
@@ -51,7 +51,6 @@ Application::Application()
 	stack_.registerState<StateMarket>(StateID::Market);
 	
 	stack_.pushState(StateID::Game);
-	
 	
 	crossHairTexture_.loadFromFile(CROSS_HAIR_LOCATION);
 	crossHair_.setTexture(crossHairTexture_);
@@ -80,6 +79,17 @@ void Application::update(sf::Time dt)
 {
 	stack_.update(dt);
 
+	if(typeid(*stack_.upperState()) == typeid(StateGame))
+	{
+		crossHairActivated_ = true;
+		window_.setMouseCursorVisible(false);
+	}
+	else
+	{
+		crossHairActivated_ = false
+		window_.setMouseCursorVisible(true);
+	}
+
 	const int DEGREE_PER_SECONDS = 90;
 	crossHair_.rotate(DEGREE_PER_SECONDS * dt.asSeconds());
 }
@@ -94,8 +104,11 @@ void Application::render()
 	states.transform *= globalTransform_;
 	stack_.draw(states);
 
-	window_.draw(crossHair_);
-
+	if(crossHairActivated_)
+	{
+		window_.draw(crossHair_);
+	}
+	
 	window_.display();
 }
 

@@ -55,6 +55,7 @@ private:
 
 	StateStack stack_;
 
+	bool crossHairActivated_;
 	sf::Texture crossHairTexture_;
 	sf::Sprite crossHair_;
 };
