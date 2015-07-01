@@ -86,7 +86,7 @@ void Application::update(sf::Time dt)
 	}
 	else
 	{
-		crossHairActivated_ = false
+		crossHairActivated_ = false;
 		window_.setMouseCursorVisible(true);
 	}
 

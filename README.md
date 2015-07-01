@@ -64,12 +64,8 @@ and you'll have a game freshly installed from source!
 * (Heavy) Refactoring
   * FontHolder (or a general ResourceHolder<>)
   * Separate DifficultyManager into two classes
-  * gui::Transition & gui::ColorEffect
-  	  * Change Transition to allow scaling and rotating (by changing Vector2f into sf::Transform)
-	  * Merge (by templating ? by OOP inheritance ?) gui::Transition and gui::ColorEffect(?)
-	  * Modify gui::Transition and gui::EffectColor to be interfaces/base-class and create custom Text, Shape, etc to be able to apply naturally these two classes instead of always having a Transition object and a ColorTransition object for each Object I want to transform/color
-	  * _Remove gui::EffectColor<T> if it is only used for Market, you can make a little utility function instead of this behemoth_
-	  * Refactor TransitionDeque to have one an only Transition?
+  * Remove gui::EffectColor<T> if it is only used for Market, you can make a little utility function instead of this behemoth __DONE!__
+  * Refactor TransitionDeque to have one an only Transition?
 	
 * Optimization (if necessary)
   * Search where are the bottlenecks
