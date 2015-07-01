@@ -28,7 +28,7 @@ and you'll have a game freshly installed from source!
 * Gameplay
   * Add some indications (objective, points, money, etc)
   	* More explicit beggining: Cannon sprite w/ aiming visualized (__DONE!__), cross-hair for mouse's cursor (__DONE!__) (, maybe arc trajectory for the first shot and maybe a glowing target).
-	* Alternate beetween cross-hair and "normal" cursor __DONE!__
+	* Alternate beetween cross-hair and "normal" cursor __DONE!__ | Replace the grey cross-hair by something more visible(?)
 	* More explicit Events: Icons, Particule Effects, other Graphic Effects...
 	* More explicit PowerUps: Icons _selected_ visualization, Particule Effects, other graphics Effects
 	* More explicit scoring: Little indication each time a ball touch the target (+1, +10, +100, ...) __DONE!__
@@ -50,7 +50,7 @@ and you'll have a game freshly installed from source!
   	* Transition __DONE!__
 	* TransitionFunctions __DONE!__
 	* TransitionDeque __DONE!__
-	* Apply Transition Deque to Cannon (with a new class?) and to Difficulty Manager
+	* Apply Transition Deque to Cannon (with a new class?) and to Difficulty Manager __DONE!__
 
 * Sound (just little sound effects)
 
@@ -64,10 +64,12 @@ and you'll have a game freshly installed from source!
 * (Heavy) Refactoring
   * FontHolder (or a general ResourceHolder<>)
   * Separate DifficultyManager into two classes
-  * Change Transition to allow scaling and rotating (by changing Vector2f into sf::Transform)
-  * Merge (by templating ? by OOP inheritance ?) gui::Transition and gui::ColorEffect
-  * Modify gui::Transition and gui::EffectColor to be interfaces/base-class and create custom Text, Shape, etc to be able to apply naturally these two classes instead of always having a Transition object and a ColorTransition object for each Object I want to transform/color
-  * Refactor TransitionDeque to have one an only Transition?
+  * gui::Transition & gui::ColorEffect
+  	  * Change Transition to allow scaling and rotating (by changing Vector2f into sf::Transform)
+	  * Merge (by templating ? by OOP inheritance ?) gui::Transition and gui::ColorEffect(?)
+	  * Modify gui::Transition and gui::EffectColor to be interfaces/base-class and create custom Text, Shape, etc to be able to apply naturally these two classes instead of always having a Transition object and a ColorTransition object for each Object I want to transform/color
+	  * _Remove gui::EffectColor<T> if it is only used for Market, you can make a little utility function instead of this behemoth_
+	  * Refactor TransitionDeque to have one an only Transition?
 	
 * Optimization (if necessary)
   * Search where are the bottlenecks
