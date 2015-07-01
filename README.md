@@ -28,10 +28,10 @@ and you'll have a game freshly installed from source!
 * Gameplay
   * Add some indications (objective, points, money, etc)
   	* More explicit beggining: Cannon sprite w/ aiming visualized (__DONE!__), cross-hair for mouse's cursor (__DONE!__) (, maybe arc trajectory for the first shot and maybe a glowing target).
-	* Alternate beetween cross-hair and "normal" cursor
+	* Alternate beetween cross-hair and "normal" cursor __DONE!__
 	* More explicit Events: Icons, Particule Effects, other Graphic Effects...
 	* More explicit PowerUps: Icons _selected_ visualization, Particule Effects, other graphics Effects
-	* More explicit scoring: Little indication each time a ball touch the target (+1, +10, +100, ...)
+	* More explicit scoring: Little indication each time a ball touch the target (+1, +10, +100, ...) __DONE!__
   * Make the game more addictive
   	* Permanent Power-Ups
 	* Unlocking Power-Ups

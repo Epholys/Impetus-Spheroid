@@ -21,6 +21,10 @@ bool StateStack::isEmpty() const
 	return stack_.empty();
 }
 
+const State* StateStack::upperState() const
+{
+	return stack_.rbegin()->get();
+}
 
 //-----------------------------------------------------------------------------
 
