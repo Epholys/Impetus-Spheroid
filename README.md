@@ -64,6 +64,9 @@ and you'll have a game freshly installed from source!
 * (Heavy) Refactoring
   * FontHolder (or a general ResourceHolder<>)
   * Separate DifficultyManager into two classes
+  * Change Transition to allow scaling and rotating (by changing Vector2f into sf::Transform)
+  * Merge (by templating ? by OOP inheritance ?) gui::Transition and gui::ColorEffect
+  * Modify gui::Transition and gui::EffectColor to be interfaces/base-class and create custom Text, Shape, etc to be able to apply naturally these two classes instead of always having a Transition object and a ColorTransition object for each Object I want to transform/color
   * Refactor TransitionDeque to have one an only Transition?
 	
 * Optimization (if necessary)

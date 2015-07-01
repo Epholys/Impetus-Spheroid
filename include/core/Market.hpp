@@ -15,6 +15,7 @@
 #include "gui/Menu.hpp"
 #include "gui/Button.hpp"
 #include "gui/TextureGenerator.hpp"
+#include "gui/ColorEffectFunctions.hpp"
 #include "gui/Transition.hpp"
 #include "core/Inventory.hpp"
 #include "data/MarketData.hpp"
@@ -46,6 +47,7 @@ private:
 
 	sf::Text coinsLost_;
 	gui::Transition coinsLostTransition_;
+	gui::ColorEffect<sf::Text> coinsLostFadeOut_;
 	
 	State::Context context_;
 };

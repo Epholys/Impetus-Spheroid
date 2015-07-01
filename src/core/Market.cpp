@@ -14,7 +14,7 @@ namespace
 namespace
 {
 	Vector2f COIN_LOST_OFFSET (10.f, 0.f);
-
+	sf::Color COIN_LOST_COLOR (255, 200, 0);
 }
 
 
@@ -27,6 +27,7 @@ Market::Market(State::Context context)
 	, coinsText_()
 	, coinsLost_()
 	, coinsLostTransition_(nullptr, gui::Transition::Linear, Vector2f(), Vector2f(), Time())
+	, coinsLostFadeOut_(nullptr, gui::ColorEffectID::Transition, sf::Color(), sf::Color(), Time())
 	, context_(context)
 {
 	initText();
@@ -46,7 +47,7 @@ void Market::initText()
 	coinsText_.setPosition(TEXT_POSITION);
 
 	coinsLost_.setFont(font_);
-	coinsLost_.setColor(sf::Color(255, 200, 0));
+	coinsLost_.setColor(COIN_LOST_COLOR);
 	centerOrigin(coinsLost_);
 	coinsLost_.setPosition(coinsText_.findCharacterPos(100) + COIN_LOST_OFFSET);
 }
@@ -91,6 +92,7 @@ void Market::initGUI()
 void Market::update(Time dt)
 {
 	coinsLostTransition_.update(dt);
+	coinsLostFadeOut_.update(dt);
 }
 
 
@@ -122,8 +124,10 @@ void Market::updateCoinsLoss(int price)
 	coinsLost_.setString(ss.str());
 	
 	coinsLost_.setPosition(coinsText_.findCharacterPos(100) + COIN_LOST_OFFSET);
+	coinsLost_.setColor(COIN_LOST_COLOR);
 	Vector2f coinsPos = Vector2f(coinsLost_.getPosition());
 	coinsLostTransition_ = gui::Transition(&coinsLost_, gui::Transition::Linear, coinsPos, coinsPos + Vector2f(30.f, 0.f), seconds(1.f));
+	coinsLostFadeOut_ = gui::ColorEffect<sf::Text>(&coinsLost_, gui::ColorEffectID::Transition, coinsLost_.getColor(), sf::Color(0,0,0,0), seconds(1.f));
 }
 
 //-----------------------------------------------------------------------------
