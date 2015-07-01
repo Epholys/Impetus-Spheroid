@@ -27,8 +27,9 @@ void StateMarket::draw(sf::RenderStates states)
 	window->draw(market_, states);
 }
 
-bool StateMarket::update(Time)
+bool StateMarket::update(Time dt)
 {
+	market_.update(dt);
 	return true;
 }
 
