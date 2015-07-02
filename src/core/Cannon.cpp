@@ -2,7 +2,6 @@
 #include "core/World.hpp"
 #include "core/Inventory.hpp"
 
-
 //-----------------------------------------------------------------------------
 // *** general datas: ***
 
@@ -44,6 +43,7 @@ Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory)
 	, transitionDeque_(BALL_POSITION, BALL_SPACING, gui::Transition::Linear, TRANSITION_DURATION)
 	, cannonBody_()
 	, cannonTube_()
+	, arcPreview_(sf::TrianglesStrip)
 {
 	for(int i=0; i<15; ++i)
 	{
@@ -115,11 +115,68 @@ void Cannon::updateTubeDirection()
 	cannonTube_.setRotation(angle);
 }
 
+void Cannon::updateArcPreview()
+{
+	computeArcView(computeBallTrajectory());
+}
+
+std::vector<Vector2f> Cannon::computeBallTrajectory()
+{
+	const Time FLIGHT_DURATION = seconds(5.f);
+	const Time FLIGHT_DT = seconds(1 / 60.f);
+	int pointCount = std::ceil(FLIGHT_DURATION.asSeconds() / FLIGHT_DT.asSeconds());
+	Vector2f ballVelocity = computeBallVelocity(world_.getMousePosition());
+	float velocityNorm = std::sqrt(std::pow(ballVelocity.x, 2.f) + std::pow(ballVelocity.y, 2.f));
+	sf::Time timeInsideCannon = seconds(CANNON_TUBE_SIZE.x / velocityNorm);
+	auto gravityVect = world_.getGravityVect();
+	std::vector<Vector2f> arcPoint;
+	arcPoint.push_back(position_);
+	Time totalFlight;
+	for(int i=1; i<pointCount; ++i)
+	{
+		if(totalFlight >= timeInsideCannon)
+		{
+			ballVelocity += gravityVect * FLIGHT_DT.asSeconds();
+		}
+		arcPoint.push_back(arcPoint.at(i-1) + ballVelocity * FLIGHT_DT.asSeconds());
+		totalFlight += FLIGHT_DT;
+	}
+	return arcPoint;
+}
+void Cannon::computeArcView(const std::vector<Vector2f>& trajectory)
+{
+	const int PREVIEW_SIZE_BEGIN = 2;
+	float previewSize = PREVIEW_SIZE_BEGIN;
+	arcPreview_.clear();
+	auto firstpos = trajectory.at(0);
+	arcPreview_.append(sf::Vertex(Vector2f(firstpos.x - previewSize, firstpos.y), sf::Color(0,0,0,50)));
+	arcPreview_.append(sf::Vertex(Vector2f(firstpos.x + previewSize, firstpos.y), sf::Color(0,0,0,50)));
+	for(std::size_t i=1; i<trajectory.size(); ++i)
+	{
+		auto pos = trajectory.at(i);
+		Vector2f dir = pos - trajectory.at(i-1);
+		dir.normalize();
+		Vector2f orth (-dir.y, dir.x);
+		sf::Vertex vx1 (Vector2f(pos.x - orth.x * previewSize,
+		                         pos.y - orth.y * previewSize),
+		                sf::Color(0,0,0,50));
+		sf::Vertex vx2 (Vector2f(pos.x + orth.x * previewSize,
+		                         pos.y + orth.y * previewSize),
+		                sf::Color(0,0,0,50));
+		arcPreview_.append(vx1);
+		arcPreview_.append(vx2);
+	}
+}
+
 
 //-----------------------------------------------------------------------------
 
 void Cannon::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	if(!world_.hasStarted())
+	{
+		target.draw(arcPreview_, states);
+	}
 	target.draw(cannonTube_, states);
 	target.draw(cannonBody_, states);
 	
@@ -135,7 +192,7 @@ void Cannon::draw(sf::RenderTarget& target, sf::RenderStates states) const
 void Cannon::handleInput(const sf::Event& event)
 {
 	if (event.type == sf::Event::MouseButtonPressed &&
-	         event.mouseButton.button == sf::Mouse::Left)
+	    event.mouseButton.button == sf::Mouse::Left)
 	{
 		createBall();
 		untilNextFire_ = timeBeetweenFire_;
@@ -162,8 +219,6 @@ ecs::Entity Cannon::createBall()
 	if (!(cannonAngle < 10.f || cannonAngle > 265.f))
 		return -1;
 
-	const float IMPULSE_COEFF = 3.f;
-
 	Entity::Ptr pBall (new Ball(world_,
 	                            position_,
 	                            world_.getGravityVect(),
@@ -173,32 +228,16 @@ ecs::Entity Cannon::createBall()
 
 	auto velComp = dynCast<ecs::Velocity>
 		(world_.getEntityManager().getComponent(pBall->getLabel(),
-		                                         ecs::Component::Velocity));
+		                                        ecs::Component::Velocity));
 	assert(velComp);
 
-	// Necessary not to have ball at the speed of light in peculiar kind of
-	// zooming
-	Vector2f mousePosition = world_.getMousePosition();
-	Vector2f windowSize = Vector2f(world_.getWindowSize());
-	mousePosition = { std::min(mousePosition.x, windowSize.x)
-					, std::min(mousePosition.y, windowSize.y) };
-
-
-
-	Vector2f direction = mousePosition - position_;
-
-	// Necessary not to have a weak cannon at low distances
-	float impulse = std::max(std::max(direction.x, -direction.y),
-	                         windowSize.x / 3.f);
-	direction.normalize();			
-
-	Vector2f velocity = IMPULSE_COEFF * impulse * direction / Ball::MASS_;
+	Vector2f velocity = computeBallVelocity(world_.getMousePosition());
 	velComp->velocity_ += velocity;
 
 	ecs::Entity label = pBall->getLabel();
 
 	// Pause Mass and Solid Component while the ball is inside the cannon
-	float velocityNorm = std::sqrt(std::pow(velocity.x, 2) + std::pow(velocity.y, 2));
+	float velocityNorm = std::sqrt(std::pow(velocity.x, 2.f) + std::pow(velocity.y, 2.f));
 	sf::Time timeInsideCannon = seconds(CANNON_TUBE_SIZE.x / velocityNorm);
 	world_.getEntityManager().pauseComponent(label, ecs::Component::Mass, timeInsideCannon);
 	world_.getEntityManager().pauseComponent(label, ecs::Component::Solid, timeInsideCannon);
@@ -212,6 +251,31 @@ ecs::Entity Cannon::createBall()
 
 	return label;
 }
+
+Vector2f Cannon::computeBallVelocity(Vector2f mousePosition)
+{
+	const float IMPULSE_COEFF = 3.f;
+	
+	// Necessary not to have ball at the speed of light in peculiar kind of
+	// zooming
+	Vector2f windowSize = Vector2f(world_.getWindowSize());
+	mousePosition = { std::min(mousePosition.x, windowSize.x)
+	                  , std::min(mousePosition.y, windowSize.y) };
+
+
+	Vector2f direction = mousePosition - position_;
+
+	// Necessary not to have a (too) weak cannon at low distances
+	float impulse = std::max(std::max(std::abs(direction.x), std::abs(direction.y)),
+	                         windowSize.x / 5.f);
+
+	direction.normalize();			
+
+	Vector2f velocity = IMPULSE_COEFF * impulse * direction / Ball::MASS_;
+   
+	return velocity;
+}
+
 
 void Cannon::updateInventory()
 {
@@ -262,3 +326,10 @@ BallData Cannon::randomBallData() const
 	return ballDatas[0];
 
 }
+
+
+
+
+
+
+

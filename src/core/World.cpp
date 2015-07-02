@@ -170,6 +170,11 @@ bool World::isGameOver() const
 	return state_ == GameOver;
 }
 
+bool World::hasStarted() const
+{
+	return state_ !=Waiting;
+}
+
 void World::setState(GameState state)
 {
 	state_ = state;
@@ -227,6 +232,7 @@ void World::handleInput(const sf::Event& event)
 	{
 		mousePosition_ = Vector2f(event.mouseMove.x, event.mouseMove.y);
 		cannon_.updateTubeDirection();
+		cannon_.updateArcPreview();
 	}
 
 	else if(state_ == Waiting || state_ == GameOver)

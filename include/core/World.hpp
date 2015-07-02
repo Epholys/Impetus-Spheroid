@@ -84,6 +84,7 @@ public:
 	template<typename T>
 	void forwardModifier(Modifier<T> modifier);
 
+	bool hasStarted() const;
 	bool isGameOver() const;
 	void setState(GameState state);
 

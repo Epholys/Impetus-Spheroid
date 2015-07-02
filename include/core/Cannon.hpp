@@ -4,10 +4,7 @@
 #include <deque>
 #include <vector>
 
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Transformable.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics.hpp>
 #include <SFML/Window/Event.hpp>
 
 #include "utility/Time.hpp"
@@ -41,6 +38,7 @@ public:
 	void handleInput(const sf::Event& event);
 	void update(Time dt);
 	void updateTubeDirection();
+	void updateArcPreview();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	void switchBallType(unsigned int type);
@@ -54,9 +52,13 @@ private:
 
 	void applyAutoFire(Time dt);
 	void updateInventory();
+	Vector2f computeBallVelocity(Vector2f mousePosition);
 	void applyBallType();
 	BallData randomBallData() const;
 
+	std::vector<Vector2f> computeBallTrajectory();
+	void computeArcView(const std::vector<Vector2f>& trajectory);
+	
 	void updateBuffer();
 
 private:
@@ -82,9 +84,8 @@ private:
 
 	sf::CircleShape cannonBody_;
 	sf::RectangleShape cannonTube_;
+	sf::VertexArray arcPreview_;
 };
 
 
 #endif // CANNON_HPP
-
-
