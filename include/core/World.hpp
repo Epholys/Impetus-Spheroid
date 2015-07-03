@@ -31,6 +31,7 @@
 #include "core/DifficultyManager.hpp"
 #include "core/LastGameData.hpp"
 #include "core/ParticleSystem.hpp"
+#include "core/SunHighlight.hpp"
 #include "data/DifficultyData.hpp"
 #include "data/BallData.hpp"
 
@@ -122,6 +123,7 @@ private:
 	std::vector<Entity::Ptr> entities_;
 	Wall* ceiling_;
 	Wall* leftWall_;
+	SunHighlight targetHighlight_;
 
 	std::vector<ParticleSystem> particleSystems_;
 };

@@ -33,6 +33,8 @@ World::World(const Vector2u& originalSize,
 	, entities_()
 	, ceiling_(nullptr)
 	, leftWall_(nullptr)
+	, targetHighlight_(Vector2f(3* originalSize_.x / 4.f, originalSize_.y / 2.f),
+	                   sf::FloatRect(0.f, 0.f, originalSize_.x, originalSize_.y))
 	, particleSystems_()
 {
 	for(int i=0; i<Particle::TypeCount; ++i)
@@ -252,7 +254,10 @@ void World::handleInput(const sf::Event& event)
 void World::update(Time dt)
  {
 	if(state_ == Waiting)
+	{
+		targetHighlight_.update(dt);
 		return;
+	}
 
 	// All the objects that requires the "real" time:
 	if(state_ != GameOver)
@@ -343,6 +348,11 @@ void World::cleanEntities()
 
 void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	if(state_ == Waiting)
+	{
+		target.draw(targetHighlight_, states);
+	}
+
 	for(const auto& system : particleSystems_)
 	{
 		target.draw(system, states);
