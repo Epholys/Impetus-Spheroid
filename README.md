@@ -27,7 +27,7 @@ and you'll have a game freshly installed from source!
 
 * Gameplay
   * Add some indications (objective, points, money, etc)
-  	* More explicit beggining: Cannon sprite w/ aiming visualized (__DONE!__), cross-hair for mouse's cursor (__DONE!__) (, maybe arc trajectory for the first shot and maybe a glowing target).
+  	* More explicit beggining: Cannon sprite w/ aiming visualized (__DONE!__), cross-hair for mouse's cursor (__DONE!__) (, maybe arc trajectory __DONE!__ for the first shot and maybe a glowing target __DONE!__).
 	* Alternate beetween cross-hair and "normal" cursor __DONE!__ | Replace the grey cross-hair by something more visible(?)
 	* More explicit Events: Icons, Particule Effects, other Graphic Effects...
 	* More explicit PowerUps: Icons _selected_ visualization, Particule Effects, other graphics Effects
