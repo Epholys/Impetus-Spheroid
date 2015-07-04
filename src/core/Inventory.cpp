@@ -182,6 +182,18 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			target.draw(sprite, states);
 			target.draw(num, states);
 
+			auto pPowerupToogle = std::dynamic_pointer_cast<PowerUpToogle>(it->second.powerUp);
+			if(pPowerupToogle && pPowerupToogle->isActivated())
+			{
+				const sf::Vector2u OFFSET (2, 2);
+				sf::RectangleShape rect (Vector2f(POWERUP_ICON_SIZE.x + 2 * OFFSET.x, POWERUP_ICON_SIZE.y + 25 + 2 * OFFSET.y));
+				rect.setFillColor(sf::Color(0,0,0,0));
+				rect.setOutlineThickness(2.f);
+				rect.setOutlineColor(sf::Color::Black);
+				rect.setPosition(Vector2f(xCoord, yCoord) - Vector2f(OFFSET) - Vector2f(0.f, 10.f));
+				target.draw(rect, states);
+			}
+			
 			++nTextureDrawn;
 		
 			int nextPositionInLine = nTextureDrawn % POWERUP_PER_LINE;
@@ -198,7 +210,7 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	}
 }
 
-
+		
 //-----------------------------------------------------------------------------
 
 bool Inventory::setPowerUp(PowerUpID::ID id, int value)
