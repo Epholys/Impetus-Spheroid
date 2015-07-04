@@ -49,7 +49,7 @@ Application::Application()
 	stack_.registerState<StateOver>(StateID::GameOver);
 	stack_.registerState<StatePause>(StateID::Pause);
 	stack_.registerState<StateMarket>(StateID::Market);
-	
+
 	stack_.pushState(StateID::Game);
 	
 	crossHairTexture_.loadFromFile(CROSS_HAIR_LOCATION);

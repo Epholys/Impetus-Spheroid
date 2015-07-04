@@ -6,10 +6,12 @@
 void defineText(sf::Text& txt,
                 const std::string& str,
                 Vector2f position,
-                sf::Color color)
+                sf::Color color,
+                bool center)
 {
 	txt.setString(str);
-	centerOrigin(txt);
+	if(center)
+		centerOrigin(txt);
 	txt.setPosition(position);
 	txt.setColor(color);
 }

@@ -48,7 +48,8 @@ void centerOrigin(T& t)
 void defineText(sf::Text& txt,
                 const std::string& str,
                 Vector2f position,
-                sf::Color color = sf::Color::White);
+                sf::Color color = sf::Color::White,
+                bool centerOrigin = true);
 
 //-----------------------------------------------------------------------------
 

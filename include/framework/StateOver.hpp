@@ -21,11 +21,17 @@ public:
 	enum Text
 	{
 		HighScore = 0,
-		Score,
+		ScoreText,
+		ScoreNum,
+		MoneyWon,
 		Money,
 		GameOver,
-		Retry,
-		Market,
+		RetryPre,
+		RetryKey,
+		RetryPost,
+		MarketPre,
+		MarketKey,
+		MarketPost,
 		TextCount
 	};
 
