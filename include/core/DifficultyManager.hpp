@@ -11,6 +11,7 @@
 #include <SFML/Graphics/Text.hpp>
 
 #include "utility/Time.hpp"
+#include "framework/ResourceIdentifiers.hpp"
 #include "data/DifficultyData.hpp"
 #include "gui/Menu.hpp"
 #include "gui/TransitionDeque.hpp"
@@ -81,7 +82,7 @@ private:
 
 	DifficultyContext context_;
 
-	sf::Font font_;
+	sf::Font& font_;
 	sf::Text timer_;
 
 	float score_;

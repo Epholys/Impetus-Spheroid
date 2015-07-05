@@ -4,10 +4,12 @@
 
 //-----------------------------------------------------------------------------
 
-State::Context::Context(sf::RenderWindow& window, MetaData& metaData,
-                        LastGameData& gameData)
+State::Context::Context(sf::RenderWindow& window, FontHolder& fonts, TextureHolder& textures,
+                        MetaData& metaData, LastGameData& gameData)
 	: window(&window)
 	, originalWindowSize(window.getSize())
+	, fonts(&fonts)
+	, textures(&textures)
 	, metaData(&metaData)
 	, lastGameData(&gameData)
 {

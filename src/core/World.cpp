@@ -19,8 +19,10 @@ Vector2f World::CANON_POSITION {40.f, 580.f};
 
 World::World(const Vector2u& originalSize,
              MetaData& metaData,
+             FontHolder& fonts,
              int precision)
 	: originalSize_(originalSize)
+	, font_(fonts.get(FontID::ForcedSquare))
 	, ecs_()
 	, physEng_(ecs_, precision)
 	, evtGen_()
@@ -77,6 +79,14 @@ void World::generateWorld()
 	createTarget(Vector2f(3* originalSize_.x / 4.f, originalSize_.y / 2.f));
 }
 
+
+
+//-----------------------------------------------------------------------------
+
+sf::Font& World::getFontRef()
+{
+	return font_;
+}
 
 ecs::EntityManager& World::getEntityManager()
 {

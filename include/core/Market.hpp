@@ -30,7 +30,7 @@ public:
 	void update(Time dt);
 	
 private:
-	void initText();
+	void initText(sf::Font& font);
 	void initGUI();
 
 	void buy(PowerUpID::ID id, int number, int price);
@@ -42,7 +42,6 @@ private:
 	Inventory& inventory_;
 	
 	gui::Menu::SPtr menu_;
-	sf::Font font_;
 	sf::Text coinsText_;
 
 	sf::Text coinsLost_;

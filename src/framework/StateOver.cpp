@@ -5,13 +5,12 @@
 
 StateOver::StateOver(StateStack& stack, Context context)
 	: State(stack, context)
-	, font_()
 	, texts_(TextCount)
 {
-	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
+	const sf::Font& font = context.fonts->get(FontID::ForcedSquare);
 	for(int i=0; i<TextCount; i++)
 	{
-		texts_[i].setFont(font_);
+		texts_[i].setFont(font);
 	}
 
 	initStaticTexts();

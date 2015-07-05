@@ -54,6 +54,7 @@ public:
 public:
 	World(const Vector2u& originalSize,
 	      MetaData& metaData,
+	      FontHolder& fonts,
 	      int precision = 2);
 	~World() {};
 
@@ -66,14 +67,15 @@ public:
 	LastGameData getGameStats() const;
 
 	ecs::EntityManager& getEntityManager();
-	Vector2f getGravityVect() const;
-	ParticleSystem& getParticleSystem(Particle::Type type);
+	Vector2f getGravityVect() const;	
 	void setGravityVect(Vector2f vect);
+	ParticleSystem& getParticleSystem(Particle::Type type);
 	Vector2u getWindowSize() const;
 	const std::vector<eg::PhysicEngine::entityPair>& getTrackedCollisions() const;
 	Vector2f getMousePosition() const;
-	Wall * getCeiling();
-	Wall * getLeftWall();
+	Wall* getCeiling();
+	Wall* getLeftWall();
+	sf::Font& getFontRef();
 
 	void addEntity(Entity::Ptr entity);
 	template<typename T, typename... Args>
@@ -106,6 +108,8 @@ private:
 
 private:
 	const Vector2f originalSize_;
+	sf::Font& font_;
+
 	ecs::EntityManager ecs_;
 	eg::PhysicEngine physEng_;
 	evt::EventGenerator evtGen_;

@@ -23,30 +23,28 @@ namespace
 Market::Market(State::Context context)
 	: inventory_(context.metaData->inventory)
 	, menu_()
-	, font_()
 	, coinsText_()
 	, coinsLost_()
 	, coinsLostTransition_(nullptr, gui::Transition::Linear, Vector2f(), Vector2f(), Time())
 	, coinsLostFadeOut_{nullptr, Time(), Time()}
 	, context_(context)
 {
-	initText();
+	sf::Font& font (context.fonts->get(FontID::ForcedSquare));
+	initText(font);
 	initGUI();
 }
 
-void Market::initText()
+void Market::initText(sf::Font& font)
 {
 	const sf::Vector2f TEXT_POSITION (context_.originalWindowSize.x / 2.f, 50);
 	
-	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
-
-	coinsText_.setFont(font_);
+	coinsText_.setFont(font);
 	updateCoinsText();
 	coinsText_.setColor(sf::Color::Yellow);
 	centerOrigin(coinsText_);
 	coinsText_.setPosition(TEXT_POSITION);
 
-	coinsLost_.setFont(font_);
+	coinsLost_.setFont(font);
 	coinsLost_.setColor(COIN_LOST_COLOR);
 	centerOrigin(coinsLost_);
 	coinsLost_.setPosition(coinsText_.findCharacterPos(100) + COIN_LOST_OFFSET);

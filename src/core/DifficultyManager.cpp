@@ -45,7 +45,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	: phaseTime_()
 	, phaseNumber_(0)
 	, context_(context)
-	, font_()
+	, font_(context.world->getFontRef())
 	, timer_()
 	, score_(0.f)
 	, objective_(BASE_OBJECTIVE_)
@@ -62,7 +62,6 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	const Vector2u WINDOW_SIZE = context_.world->getWindowSize();
 	const Vector2f TIMER_POSITION (WINDOW_SIZE.x - 90.f, 0.f);
 	const Vector2f SCORE_POSITION (WINDOW_SIZE.x - 90.f, 20.f);
-	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
 
 	timer_.setFont(font_);
 	timer_.setPosition(TIMER_POSITION);

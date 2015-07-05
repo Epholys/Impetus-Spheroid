@@ -22,7 +22,6 @@ public:
 	virtual bool handleInput(const sf::Event& event);
 
 private:
-	sf::Font font_;
 	sf::Text pause_;
 };
 

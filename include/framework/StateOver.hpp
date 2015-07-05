@@ -49,7 +49,6 @@ private:
 	void updateDatas();
 
 private:
-	sf::Font font_;
 	std::vector<sf::Text> texts_;
 };
 

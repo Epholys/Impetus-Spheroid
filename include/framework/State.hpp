@@ -7,6 +7,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 
+#include "framework/ResourceIdentifiers.hpp"
 #include "core/MetaData.hpp"
 #include "core/LastGameData.hpp"
 #include "utility/Time.hpp"
@@ -49,11 +50,15 @@ class State
 public:
 	struct Context
 	{
-		Context(sf::RenderWindow& window, MetaData& metaData, LastGameData& gameData);
+		Context(sf::RenderWindow& window, FontHolder& fonts, TextureHolder& textures,
+		        MetaData& metaData, LastGameData& gameData);
 		
 		sf::RenderWindow* window;
 		const Vector2u originalWindowSize;
 
+		FontHolder* fonts;
+		TextureHolder* textures;
+		
 		MetaData* metaData;
 		LastGameData* lastGameData;
 	};
