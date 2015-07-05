@@ -6,10 +6,25 @@
 
 namespace gui
 {
+	TransformData operator+(const TransformData& left, const TransformData& right)
+	{
+		return TransformData(left.position + right.position,
+		                     left.angle + right.angle,
+		                     left.scale + right.scale);
+	}
+	TransformData operator*(const TransformData& left, float right)
+	{
+		return TransformData(left.position * right,
+		                     left.angle * right,
+		                     left.scale * right);
+	}
+
+	//-----------------------------------------------------------------------------
+	
 	Transition::Transition(sf::Transformable* toMove,
 	                       Type type,
-	                       Vector2f start,
-	                       Vector2f finish,
+	                       const TransformData& start,
+	                       const TransformData& finish,
 	                       Time duration)
 		: toMove_(toMove)
 		, type_(type)
@@ -21,7 +36,7 @@ namespace gui
 	{
 		if(toMove)
 		{
-			toMove->setPosition(start);
+			setTransformation(start);
 		}
 	}
 
@@ -34,15 +49,15 @@ namespace gui
 
 		if(accumulatedTime_ >= duration_)
 		{
-			toMove_->setPosition(finish_);
+			setTransformation(finish_);
 		}
 		else
 		{
-			toMove_->move(transitionFunction_(accumulatedTime_) * dt.asSeconds());
+			applyTransformation(transitionFunction_(accumulatedTime_), dt);
 		}
 	}
 
-	void Transition::updateFinish(Vector2f newFinish, Time toAdd)
+	void Transition::updateFinish(const TransformData& newFinish, Time toAdd)
 	{
 		finish_ = newFinish;
 		duration_ += toAdd;
@@ -54,12 +69,12 @@ namespace gui
 		return accumulatedTime_ >= duration_;
 	}
 	
-	Vector2f Transition::getFinish() const
+	TransformData Transition::getFinish() const
 	{
 		return finish_;
 	}
 
-	Vector2f Transition::getStart() const
+	TransformData Transition::getStart() const
 	{
 		return start_;
 	}
@@ -73,4 +88,26 @@ namespace gui
 	{
 		return duration_;
 	}
+
+	void Transition::setTransformation(const TransformData& data)
+	{
+		if(!toMove_)
+			return;
+		
+		toMove_->setPosition(data.position);
+		toMove_->setRotation(data.angle);
+		toMove_->setScale(data.scale);
+	}
+
+	void Transition::applyTransformation(const TransformData& data, Time dt)
+	{
+		if(!toMove_)
+			return;
+
+		float seconds = dt.asSeconds();
+		toMove_->move(data.position * seconds);
+		toMove_->rotate(data.angle * seconds);
+		toMove_->setScale(start_.scale + data.scale * seconds);
+	}	  
 }
+

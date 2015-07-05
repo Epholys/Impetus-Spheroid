@@ -11,7 +11,7 @@ namespace gui
 	class TransitionDeque
 	{
 	public:
-		TransitionDeque(Vector2f origin, Vector2f space, Transition::Type type, Time duration);
+		TransitionDeque(TransformData origin, TransformData space, Transition::Type type, Time duration);
 
 		void update(Time dt);
 		
@@ -19,8 +19,8 @@ namespace gui
 		void popFront();
 
 	private:
-		const Vector2f ORIGIN_;
-		const Vector2f SPACE_;
+		const TransformData ORIGIN_;
+		const TransformData SPACE_;
 		const Transition::Type TYPE_;
 		const Time DURATION_;
 

@@ -7,21 +7,25 @@ namespace gui
 {
 	namespace
 	{
-		std::function<Vector2f(Time)>
-		linearTransition(Vector2f start, Vector2f finish, Time duration)
+		std::function<TransformData(Time)>
+		linearTransition(const TransformData& start,
+			             const TransformData& finish,
+			             Time duration)
 		{
 			return
 				[=](Time)
 				{
-					return (finish - start) / duration.asSeconds();
+					return TransformData(linearFactor(start.position, finish.position, duration),
+					                     linearFactor(start.angle, finish.angle, duration),
+					                     linearFactor(start.scale, finish.scale, duration));
 				};
 		}
 	}
 
-	std::function<Vector2f(Time)>
+	std::function<TransformData(Time)>
 	generateTransitionFunction(Transition::Type type,
-	                           Vector2f start,
-	                           Vector2f finish,
+	                           const TransformData& start,
+	                           const TransformData& finish,
 	                           Time duration)
 	{
 		switch(type)

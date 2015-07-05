@@ -11,10 +11,16 @@
 
 namespace gui
 {
-	std::function<Vector2f(Time)>
+	template<typename T>
+	T linearFactor(const T& start, const T& finish, Time duration)
+	{
+		return (finish - start) / duration.asSeconds();
+	}
+
+	std::function<TransformData(Time)>
 	generateTransitionFunction(Transition::Type type,
-	                           Vector2f start,
-	                           Vector2f finish,
+	                           const TransformData& start,
+	                           const TransformData& finish,
 	                           Time duration);
 }
 

@@ -40,7 +40,10 @@ Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory)
 	, ballType_(Ball::Normal)
 	, nTouchingBall_(1)
 	, ballBuffer_()
-	, transitionDeque_(BALL_POSITION, BALL_SPACING, gui::Transition::Linear, TRANSITION_DURATION)
+	, transitionDeque_(gui::TransformData(BALL_POSITION),
+	                   gui::TransformData(BALL_SPACING, 0.f, Vector2f()),
+	                   gui::Transition::Linear,
+	                   TRANSITION_DURATION)
 	, cannonBody_()
 	, cannonTube_()
 	, arcPreview_(sf::TrianglesStrip)

@@ -52,7 +52,10 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, ceiling_(BASE_CEILING)
 	, scoreText_()
 	, indicatorTexts_()
-	, indicatorDeque_(INDICATOR_POSITION, INDICATOR_SPACE, gui::Transition::Linear, DEQUE_DURATION)
+	, indicatorDeque_(gui::TransformData(INDICATOR_POSITION),
+	                  gui::TransformData(INDICATOR_SPACE, 0.f, Vector2f()),
+	                  gui::Transition::Linear,
+	                  DEQUE_DURATION)
 	, indicatorAccumulator_()
 	, indicatorDuration_(INDICATOR_DURATION)
 	// , ballCount_()

@@ -25,7 +25,11 @@ Market::Market(State::Context context)
 	, menu_()
 	, coinsText_()
 	, coinsLost_()
-	, coinsLostTransition_(nullptr, gui::Transition::Linear, Vector2f(), Vector2f(), Time())
+	, coinsLostTransition_(nullptr,
+	                       gui::Transition::Linear,
+	                       gui::TransformData(),
+	                       gui::TransformData(),
+	                       Time())
 	, coinsLostFadeOut_{nullptr, Time(), Time()}
 	, context_(context)
 {
@@ -125,7 +129,11 @@ void Market::updateCoinsLoss(int price)
 	coinsLost_.setColor(COIN_LOST_COLOR);
 	Vector2f coinsPos = Vector2f(coinsLost_.getPosition());
 
-	coinsLostTransition_ = gui::Transition(&coinsLost_, gui::Transition::Linear, coinsPos, coinsPos + Vector2f(30.f, 0.f), seconds(1.f));
+	coinsLostTransition_ = gui::Transition(&coinsLost_,
+	                                       gui::Transition::Linear,
+	                                       gui::TransformData(coinsPos),
+	                                       gui::TransformData(coinsPos + Vector2f(30.f, 0.f)),
+	                                       seconds(1.f)); 
 	coinsLostFadeOut_ = gui::FadeOutText {&coinsLost_, seconds(1.f), Time()};
 }
 
