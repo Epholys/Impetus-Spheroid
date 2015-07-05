@@ -16,6 +16,7 @@
 #include "framework/StateOver.hpp"
 #include "framework/StatePause.hpp"
 #include "framework/StateMarket.hpp"
+#include "framework/ResourceIdentifiers.hpp"
 #include "core/MetaData.hpp"
 
 /* Application is the main class of the project. It is instanciated in main(),
@@ -52,6 +53,9 @@ private:
 	sf::Transform globalTransform_;
 	MetaData metaData_;
 	LastGameData lastGameData_;
+
+	FontHolder fontHolder_;
+	TextureHolder textureHolder_;   
 
 	StateStack stack_;
 

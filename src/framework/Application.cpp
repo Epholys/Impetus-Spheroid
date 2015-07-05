@@ -16,7 +16,7 @@ namespace
 	// False in general, but for now it doesn't impact the gameplay
 	const bool IS_AZERTY = true;
 
-	const std::string CROSS_HAIR_LOCATION = "media/sprites/Cross-hair.png";
+	const std::string CROSS_HAIR_LOCATION ("media/sprites/Cross-hair.png");
 }
 
 
@@ -31,7 +31,9 @@ Application::Application()
 	, globalTransform_(sf::Transform::Identity)
 	, metaData_(WINDOW_SIZE, IS_AZERTY)
 	, lastGameData_()
-	, stack_(State::Context(window_, metaData_, lastGameData_))
+	, fontHolder_()
+	, textureHolder_()
+	, stack_(State::Context(window_, fontHolder_, textureHolder_, metaData_, lastGameData_))
 	, crossHairActivated_(false)
 	, crossHairTexture_()
 	, crossHair_()
@@ -52,8 +54,11 @@ Application::Application()
 
 	stack_.pushState(StateID::Game);
 	
-	crossHairTexture_.loadFromFile(CROSS_HAIR_LOCATION);
-	crossHair_.setTexture(crossHairTexture_);
+
+	fontHolder_.load(FontID::ForcedSquare, "./media/font/FORCEDSQUARE.ttf");
+
+	textureHolder_.load(TextureID::CrossHair, CROSS_HAIR_LOCATION);
+	crossHair_.setTexture(textureHolder_.get(TextureID::CrossHair));
 	centerOrigin(crossHair_);
 }
 
