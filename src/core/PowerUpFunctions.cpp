@@ -43,6 +43,16 @@ namespace
 		[](World& w)
 	{
 		w.cancelEvents(true);
+		w.addSprite(TextureID::CancelEventFlash,
+		            "./media/sprites/CancelEventFlash.png",
+		            gui::Transition(nullptr,
+		                            gui::Transition::Linear,
+		                            gui::TransformData(Vector2f(w.getWindowSize()) / 2.f),
+		                            gui::TransformData(Vector2f(w.getWindowSize()) / 2.f,
+		                                               360.f,
+		                                               Vector2f(0.25f, 0.25f)),
+		                            seconds(.5f)),
+		            true);
 	};
 	
 	auto addTime = 

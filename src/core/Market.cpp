@@ -134,7 +134,7 @@ void Market::updateCoinsLoss(int price)
 	                                       gui::TransformData(coinsPos),
 	                                       gui::TransformData(coinsPos + Vector2f(30.f, 0.f)),
 	                                       seconds(1.f)); 
-	coinsLostFadeOut_ = gui::FadeOutText {&coinsLost_, seconds(1.f), Time()};
+	coinsLostFadeOut_ = gui::FadeOut<sf::Text> {&coinsLost_, seconds(1.f), Time()};
 }
 
 //-----------------------------------------------------------------------------

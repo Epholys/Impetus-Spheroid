@@ -20,9 +20,11 @@ Vector2f World::CANON_POSITION {40.f, 580.f};
 World::World(const Vector2u& originalSize,
              MetaData& metaData,
              FontHolder& fonts,
+             TextureHolder& textures,
              int precision)
 	: originalSize_(originalSize)
 	, font_(fonts.get(FontID::ForcedSquare))
+	, textures_(textures)
 	, ecs_()
 	, physEng_(ecs_, precision)
 	, evtGen_()
@@ -38,6 +40,7 @@ World::World(const Vector2u& originalSize,
 	, targetHighlight_(Vector2f(3* originalSize_.x / 4.f, originalSize_.y / 2.f),
 	                   sf::FloatRect(0.f, 0.f, originalSize_.x, originalSize_.y))
 	, particleSystems_()
+	, otherDrawings_()
 {
 	for(int i=0; i<Particle::TypeCount; ++i)
 	{
@@ -296,8 +299,15 @@ void World::update(Time dt)
 		system.update(dt);
 	}
 
+	for(auto& entry : otherDrawings_)
+	{
+		entry.second.transition.update(dt);
+		entry.second.fadeOut.update(dt);
+	}
+	
 	cleanEntities();
 	cleanModifiers();
+	cleanOtherDrawings();
 }
 
 
@@ -355,6 +365,20 @@ void World::cleanEntities()
 	}
 }
 
+void World::cleanOtherDrawings()
+{
+	for(auto it=otherDrawings_.begin(); it!=otherDrawings_.end();)
+	{
+		if(it->second.transition.isOver())
+		{
+			it = otherDrawings_.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
 
 void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
@@ -376,4 +400,30 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	cannon_.draw(target, states);
 
 	difficulty_.draw(target, states);
+
+	for(const auto& entry : otherDrawings_)
+	{
+		target.draw(entry.second.sprite, states);
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+
+void World::addSprite(TextureID::ID id, const std::string& path, gui::Transition transition, bool fadeOut)
+{
+	textures_.load(id, path);
+
+	sf::Sprite sprite (textures_.get(id));
+	centerOrigin(sprite);
+
+	otherDrawings_[id] = {sprite, transition, {nullptr, Time(), Time()}};
+	otherDrawings_[id].transition.setTransformable(&otherDrawings_[id].sprite);
+	
+	if(fadeOut)
+	{
+		otherDrawings_[id].fadeOut = {&otherDrawings_[id].sprite,
+		                              otherDrawings_[id].transition.getDuration(),
+		                              Time()};
+	}
 }

@@ -32,19 +32,22 @@ namespace gui
 	public:
 		enum Type
 		{
+			None,
 			Linear
 		};
 		
 	public:
+		Transition();
 		Transition(sf::Transformable* toMove,
 		           Type type,
-		           const TransformData& begin,
-		           const TransformData& end,
+		           TransformData begin,
+		           TransformData end,
 		           Time duration);
 
 		void update(Time dt);
 		void updateFinish(const TransformData& newFinish, Time toAdd = Time());
 
+		void setTransformable(sf::Transformable* toMove);
 		bool isOver() const;
 		TransformData getStart() const;
 		TransformData getFinish() const;

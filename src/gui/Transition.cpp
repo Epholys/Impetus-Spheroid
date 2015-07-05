@@ -20,11 +20,15 @@ namespace gui
 	}
 
 	//-----------------------------------------------------------------------------
+
+	Transition::Transition()
+		: Transition(nullptr, None, TransformData(), TransformData(), Time())
+	{}
 	
 	Transition::Transition(sf::Transformable* toMove,
 	                       Type type,
-	                       const TransformData& start,
-	                       const TransformData& finish,
+	                       TransformData start,
+	                       TransformData finish,
 	                       Time duration)
 		: toMove_(toMove)
 		, type_(type)
@@ -62,6 +66,13 @@ namespace gui
 		finish_ = newFinish;
 		duration_ += toAdd;
 		transitionFunction_ = generateTransitionFunction(type_, start_, finish_, duration_);
+	}
+
+	void Transition::setTransformable(sf::Transformable* toMove)
+	{
+		toMove_ = toMove;
+		setTransformation(start_);
+		accumulatedTime_ = Time();
 	}
 
 	bool Transition::isOver() const
@@ -107,7 +118,7 @@ namespace gui
 		float seconds = dt.asSeconds();
 		toMove_->move(data.position * seconds);
 		toMove_->rotate(data.angle * seconds);
-		toMove_->setScale(start_.scale + data.scale * seconds);
+		toMove_->setScale(toMove_->getScale() + data.scale * seconds);
 	}	  
 }
 

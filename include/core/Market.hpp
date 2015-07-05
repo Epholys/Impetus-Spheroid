@@ -46,7 +46,7 @@ private:
 
 	sf::Text coinsLost_;
 	gui::Transition coinsLostTransition_;
-	gui::FadeOutText coinsLostFadeOut_;
+	gui::FadeOut<sf::Text> coinsLostFadeOut_;
 	
 	State::Context context_;
 };

@@ -5,7 +5,7 @@
 
 StateGame::StateGame(StateStack& stack, Context context)
 	: State(stack, context)
-	, world_(context.originalWindowSize, *context.metaData, *context.fonts)
+	, world_(context.originalWindowSize, *context.metaData, *context.fonts, *context.textures)
 	, overScreenUp_(false)
 {
 	context_.metaData->inventory.addWorld(&world_);

@@ -34,6 +34,7 @@
 #include "core/SunHighlight.hpp"
 #include "data/DifficultyData.hpp"
 #include "data/BallData.hpp"
+#include "gui/utility.hpp"
 
 
 class Inventory;
@@ -55,6 +56,7 @@ public:
 	World(const Vector2u& originalSize,
 	      MetaData& metaData,
 	      FontHolder& fonts,
+	      TextureHolder& textures,
 	      int precision = 2);
 	~World() {};
 
@@ -87,6 +89,8 @@ public:
 	template<typename T>
 	void forwardModifier(Modifier<T> modifier);
 
+	void addSprite(TextureID::ID id, const std::string& path, gui::Transition transition, bool fadeOut);
+	
 	bool hasStarted() const;
 	bool isGameOver() const;
 	void setState(GameState state);
@@ -102,6 +106,7 @@ private:
 	void getEvent(Time dt);
 
 	void cleanEntities();
+	void cleanOtherDrawings();
 
 private:
 	static Vector2f CANON_POSITION;
@@ -109,6 +114,7 @@ private:
 private:
 	const Vector2f originalSize_;
 	sf::Font& font_;
+	TextureHolder& textures_;
 
 	ecs::EntityManager ecs_;
 	eg::PhysicEngine physEng_;
@@ -130,6 +136,14 @@ private:
 	SunHighlight targetHighlight_;
 
 	std::vector<ParticleSystem> particleSystems_;
+
+	struct DrawingEntry
+	{
+		sf::Sprite sprite;
+		gui::Transition transition;
+		gui::FadeOut<sf::Sprite> fadeOut;
+	};
+	std::map<TextureID::ID, DrawingEntry> otherDrawings_;
 };
 
 #include "World.ipp"

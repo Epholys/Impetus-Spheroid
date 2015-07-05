@@ -9,14 +9,17 @@
 namespace gui
 {
 	// Quick and dangerous, but better than a useless behemoth
-	struct FadeOutText
+	template<typename T>
+	struct FadeOut
 	{
-		sf::Text* pText_;
+		T* pT_;
 		Time duration_;
 		Time accumulatedTime_;
 
 		void update(Time dt);
 	};
+
+	#include "gui/utility.ipp"
 }
 
 #endif // GUI_UTILITY_HPP
