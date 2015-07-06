@@ -30,11 +30,11 @@ and you'll have a game freshly installed from source!
   	* More explicit beggining: Cannon sprite w/ aiming visualized (__DONE!__), cross-hair for mouse's cursor (__DONE!__) (, maybe arc trajectory __DONE!__ for the first shot and maybe a glowing target __DONE!__).
 	* Alternate beetween cross-hair and "normal" cursor __DONE!__ | Replace the grey cross-hair by something more visible(?)
 	* More explicit Events: Icons, Particule Effects, other Graphic Effects...
-	* More explicit PowerUps: Icons _selected_ visualization, Particule Effects, other graphics Effects
+	* More explicit PowerUps: Icons, _selected_ visualization __DONE!__, Particule Effects, other graphics Effects
 	* More explicit scoring: Little indication each time a ball touch the target (+1, +10, +100, ...) __DONE!__
   * Make the game more addictive
   	* Permanent Power-Ups
-	* Unlocking Power-Ups
+	* Unlocking Power-Ups __DONE!__
 	* Achievement? Ranking System (Bronze, Silver, Gold, etc)?
 	* Rewarding: animation? sound?
 
