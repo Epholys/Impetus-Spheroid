@@ -31,17 +31,21 @@ public:
 	
 private:
 	void initText(sf::Font& font);
-	void initGUI();
+	void initGUI(sf::Font& font);
 
 	void buy(PowerUpID::ID id, int number, int price);
 
 	void updateCoinsText();
 	void updateCoinsLoss(int price);
 
+	void createBlankButton(sf::Texture& texture, int price, sf::Font& font);
+
 private:
 	Inventory& inventory_;
+	std::vector<bool>& isUnlocked_;
 	
 	gui::Menu::SPtr menu_;
+	std::map<PowerUpID::ID, gui::Button::SPtr> buttons_;
 	sf::Text coinsText_;
 
 	sf::Text coinsLost_;

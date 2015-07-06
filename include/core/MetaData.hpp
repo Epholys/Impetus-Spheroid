@@ -18,14 +18,15 @@ struct MetaData
 	std::vector<bool> isPowerUpUnlocked;
 
 	MetaData()
-		: inventory()
+		: inventory(), isPowerUpUnlocked(PowerUpID::PowerUpCount, true)
 		{
 		}
 
 	MetaData(
 		Vector2u originalSize,
 		bool isAzerty)
-		: inventory(originalSize, isAzerty)
+		: inventory(originalSize, isAzerty),
+		  isPowerUpUnlocked(PowerUpID::PowerUpCount, true)
 		{
 		}
 };
