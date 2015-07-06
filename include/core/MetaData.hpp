@@ -2,6 +2,8 @@
 #define META_DATA_HPP
 
 
+#include <vector>
+
 #include "core/Inventory.hpp"
 
 
@@ -13,6 +15,7 @@ struct MetaData
 {
 	int highScore;
 	Inventory inventory;
+	std::vector<bool> isPowerUpUnlocked;
 
 	MetaData()
 		: inventory()

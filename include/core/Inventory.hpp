@@ -7,7 +7,6 @@
 #include <memory>
 #include <algorithm>
 
-#include <SFML/System/NonCopyable.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -31,8 +30,7 @@ struct PowerUpEntry
 	sf::Texture texture;
 };
 
-class Inventory : public sf::NonCopyable,
-                  public sf::Drawable, public sf::Transformable
+class Inventory : public sf::Drawable, public sf::Transformable
 {
 public:
 	Inventory();

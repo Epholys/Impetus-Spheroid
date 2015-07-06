@@ -26,6 +26,17 @@ namespace DataSaver
 		}
 	}
 
+	// Not really necessary, but I'm sured of the result with that
+	bool toBool(int n)
+	{
+		return n != 0;
+	}
+
+	int toInt(bool b)
+	{
+		return b ? 1 : 0;
+	}
+
 	int endecode(int n)
 	{
 		return n ^ key;
@@ -54,6 +65,16 @@ namespace DataSaver
 			   !metaData.inventory.setPowerUp(PowerUpID::ID(i), endecode(value)))
 				return false;
 		}
+
+		metaData.isPowerUpUnlocked.clear();
+		metaData.isPowerUpUnlocked = std::vector<bool>(PowerUpID::PowerUpCount-1, true);
+		for(int i=1; i<PowerUpID::PowerUpCount; ++i)
+		{
+			if(!readInt(ist, value))
+				return false;
+			metaData.isPowerUpUnlocked[i] = toBool(endecode(value));
+		}
+			    
 		return true;
 	}
 
@@ -71,14 +92,35 @@ namespace DataSaver
 		{
 			ost << endecode(metaData.inventory.getPowerUp(PowerUpID::ID(i))) << separator;
 		}
+		for(int i=1; i<PowerUpID::PowerUpCount; ++i)
+		{
+			ost << endecode(toInt(metaData.isPowerUpUnlocked[i])) << separator;
+		}
 
 		return true;
 	}		
 
-	void makeDefaultFile()
+	void salvageDatas()
 	{
-		MetaData metaData;
-		metaData.highScore = 0;
+		MetaData metaData = makeDefaultFile();
+		retrieveDatas(metaData);
 		saveDatas(metaData);
+	}
+	
+	MetaData makeDefaultFile()
+	{
+		using namespace PowerUpID;
+		MetaData metaData;
+		
+		metaData.highScore = 0;
+		
+		metaData.isPowerUpUnlocked = std::vector<bool>(PowerUpCount-1, true);
+		std::vector<PowerUpID::ID> locked {CancelEvents, AddTime, AddTarget, PointMultiplier};
+		for(auto id : locked)
+		{
+			metaData.isPowerUpUnlocked[id-1] = false;
+		}
+
+		return metaData;
 	}
 }

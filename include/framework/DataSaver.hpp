@@ -19,9 +19,12 @@ namespace DataSaver
 
 	bool retrieveDatas(MetaData& metaData);
 	bool saveDatas(const MetaData& metaData);
-	void makeDefaultFile();
+	void salvageDatas();
+	MetaData makeDefaultFile();
 
 	bool readInt(std::istream& is, int& toRead);
+	bool toBool(int n);
+	int toInt(bool b);
 	int endecode(int n);
    
 }

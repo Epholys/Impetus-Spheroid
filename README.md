@@ -64,6 +64,7 @@ and you'll have a game freshly installed from source!
 * (Heavy) Refactoring
   * FontHolder (or a general ResourceHolder<>) __DONE!__
   	* Now replace every convenient ```const std::string&``` by the ResourceHolder managment
+  * Transition from simple position movement to complex Transformation __DONE!__
   * Separate DifficultyManager into two classes
   * Remove gui::EffectColor<T> if it is only used for Market, you can make a little utility function instead of this behemoth __DONE!__
   * Refactor TransitionDeque to have one an only Transition?
