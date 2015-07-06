@@ -19,7 +19,7 @@ namespace PowerUpID
 {
 	enum ID
 	{
-		None = 0,
+		None = -1,
 		GhostBall,
 		NoGravBall,
 		CancelEvents,

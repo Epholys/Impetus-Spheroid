@@ -59,16 +59,14 @@ namespace DataSaver
 			return false;
 		metaData.inventory.addCoins(endecode(value));
 		
-		for(int i=1; i<PowerUpID::PowerUpCount; ++i)
+		for(int i=0; i<PowerUpID::PowerUpCount; ++i)
 		{
 			if(!readInt(ist, value) ||
 			   !metaData.inventory.setPowerUp(PowerUpID::ID(i), endecode(value)))
 				return false;
 		}
 
-		metaData.isPowerUpUnlocked.clear();
-		metaData.isPowerUpUnlocked = std::vector<bool>(PowerUpID::PowerUpCount-1, true);
-		for(int i=1; i<PowerUpID::PowerUpCount; ++i)
+		for(int i=0; i<PowerUpID::PowerUpCount; ++i)
 		{
 			if(!readInt(ist, value))
 				return false;
@@ -88,11 +86,11 @@ namespace DataSaver
 		ost << endecode(metaData.highScore) << separator;
 		ost << endecode(metaData.inventory.getCoins()) << separator;
 		
-		for(int i=1; i<PowerUpID::PowerUpCount; ++i)
+		for(int i=0; i<PowerUpID::PowerUpCount; ++i)
 		{
 			ost << endecode(metaData.inventory.getPowerUp(PowerUpID::ID(i))) << separator;
 		}
-		for(int i=1; i<PowerUpID::PowerUpCount; ++i)
+		for(int i=0; i<PowerUpID::PowerUpCount; ++i)
 		{
 			ost << endecode(toInt(metaData.isPowerUpUnlocked[i])) << separator;
 		}
@@ -118,7 +116,7 @@ namespace DataSaver
 		std::vector<PowerUpID::ID> locked {CancelEvents, AddTime, AddTarget, PointMultiplier};
 		for(auto id : locked)
 		{
-			metaData.isPowerUpUnlocked[id-1] = false;
+			metaData.isPowerUpUnlocked[id] = false;
 		}
 
 		return metaData;
