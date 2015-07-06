@@ -45,11 +45,12 @@ namespace
 		w.cancelEvents(true);
 		w.addSprite(TextureID::CancelEventFlash,
 		            "./media/sprites/CancelEventFlash.png",
+		            sf::Color(255, 255, 255, 150),
 		            gui::Transition(nullptr,
 		                            gui::Transition::Linear,
 		                            gui::TransformData(Vector2f(w.getWindowSize()) / 2.f),
 		                            gui::TransformData(Vector2f(w.getWindowSize()) / 2.f,
-		                                               360.f,
+		                                               180.f,
 		                                               Vector2f(0.25f, 0.25f)),
 		                            seconds(.5f)),
 		            true);

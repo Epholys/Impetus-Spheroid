@@ -45,14 +45,14 @@ namespace gui
 			numberItems.setCharacterSize(chSize);
 			centerOrigin(numberItems);
 			numberItems.setPosition(iconSize.x * scale * 1.5f,
-			                        (height - chSize) / 2.f);
+			                        (height) / 2.f);
 			
 			sf::Text legendText(legend, font);
 			legendText.setColor(sf::Color::Black);
 			chSize = height * 0.4f;
 			legendText.setCharacterSize(chSize);
 			centerOrigin(legendText);
-			legendText.setPosition(width / 2.f, (height - chSize) / 2.f );
+			legendText.setPosition(width / 2.f, (height) / 2.f );
 			
 			ss.str("");
 			ss << price;
@@ -61,7 +61,7 @@ namespace gui
 			chSize = height * 0.7f;
 			priceText.setCharacterSize(chSize);
 			centerOrigin(priceText);
-			priceText.setPosition(width * 0.9f, (height - chSize) / 2.f);
+			priceText.setPosition(width * 0.9f, (height) / 2.f);
 
 			rTexture.clear(sf::Color(230,230,230));
 			rTexture.draw(iconSprite);
@@ -78,7 +78,7 @@ namespace gui
 				
 			sf::Text shortcutText(shortcut, font);
 			centerOrigin(shortcutText);
-			shortcutText.setPosition(width + height / 2.f, (height - shortcutText.getCharacterSize()) / 2.f);
+			shortcutText.setPosition(width + height / 2.f, (height) / 2.f);
 			
 			rTextureShortcut.clear(sf::Color::Black);
 			rTextureShortcut.draw(firstPart);

@@ -53,8 +53,9 @@ Application::Application()
 	stack_.registerState<StateMarket>(StateID::Market);
 
 	stack_.pushState(StateID::Game);
-	
 
+	// gui::TextureGenerator::createMarketButtons(metaData_.inventory.getKeys());
+	
 	fontHolder_.load(FontID::ForcedSquare, "./media/font/FORCEDSQUARE.ttf");
 
 	textureHolder_.load(TextureID::CrossHair, CROSS_HAIR_LOCATION);

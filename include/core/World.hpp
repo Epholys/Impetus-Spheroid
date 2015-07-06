@@ -89,7 +89,7 @@ public:
 	template<typename T>
 	void forwardModifier(Modifier<T> modifier);
 
-	void addSprite(TextureID::ID id, const std::string& path, gui::Transition transition, bool fadeOut);
+	void addSprite(TextureID::ID id, const std::string& path, sf::Color color, gui::Transition transition, bool fadeOut);
 	
 	bool hasStarted() const;
 	bool isGameOver() const;

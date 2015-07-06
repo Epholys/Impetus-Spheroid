@@ -113,7 +113,7 @@ namespace DataSaver
 		metaData.highScore = 0;
 		
 		metaData.isPowerUpUnlocked = std::vector<bool>(PowerUpCount-1, true);
-		std::vector<PowerUpID::ID> locked {CancelEvents, AddTime, AddTarget, PointMultiplier};
+		std::vector<PowerUpID::ID> locked {CancelEvents, AddTime, AddTarget, PointMultiplier, BallTouchDouble};
 		for(auto id : locked)
 		{
 			metaData.isPowerUpUnlocked[id] = false;

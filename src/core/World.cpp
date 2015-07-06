@@ -410,12 +410,13 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 //-----------------------------------------------------------------------------
 
-void World::addSprite(TextureID::ID id, const std::string& path, gui::Transition transition, bool fadeOut)
+void World::addSprite(TextureID::ID id, const std::string& path, sf::Color color, gui::Transition transition, bool fadeOut)
 {
 	textures_.load(id, path);
 
 	sf::Sprite sprite (textures_.get(id));
 	centerOrigin(sprite);
+	sprite.setColor(color);
 
 	otherDrawings_[id] = {sprite, transition, {nullptr, Time(), Time()}};
 	otherDrawings_[id].transition.setTransformable(&otherDrawings_[id].sprite);
