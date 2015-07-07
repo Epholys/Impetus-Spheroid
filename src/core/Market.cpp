@@ -96,9 +96,12 @@ void Market::initGUI(sf::Font& font)
 		++buttonPosition;
 	}
 	
-	menu->select();
+	gui::MenuMeta::SPtr metaMenu = std::make_shared<gui::MenuMeta>(gui::Menu::Horizontal);
+	metaMenu->pack(menu, "PowerUp");
+
+	metaMenu->select();
 	
-	menu_ = menu;
+	menu_ = metaMenu;
 }
 
 

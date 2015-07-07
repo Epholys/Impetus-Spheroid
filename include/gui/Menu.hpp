@@ -12,6 +12,8 @@
 namespace gui
 {
 
+class MenuMeta;
+	
 class Menu : public Component
 {
 public:
@@ -31,10 +33,10 @@ public:
 
 	void pack(Component::SPtr component);
 
-	virtual bool isSelectable() const;
 	virtual void handleEvent(const sf::Event& event);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+	virtual bool isSelectable() const;
 	virtual void select();
 	virtual void deselect();
 
@@ -45,6 +47,9 @@ protected:
 	void selectPrevious();
 	
 protected:
+	//ugly hack
+	friend class MenuMeta;
+	
 	std::vector<Component::SPtr> children_;
 	int selectedChild_;
 

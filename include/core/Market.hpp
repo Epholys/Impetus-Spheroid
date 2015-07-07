@@ -13,6 +13,7 @@
 #include "framework/State.hpp"
 #include "framework/DataSaver.hpp"
 #include "gui/Menu.hpp"
+#include "gui/MenuMeta.hpp"
 #include "gui/Button.hpp"
 #include "gui/TextureGenerator.hpp"
 #include "gui/utility.hpp"
