@@ -68,8 +68,7 @@ namespace gui
 	void Button::deactivate()
 	{
 		Component::deactivate();
-		sprite_.setColor(sf::Color(255, 255, 255));
-
+		sprite_.setColor((isSelected()) ? sf::Color(255, 225, 225) : sf::Color(255, 255, 255));
 		if(callback_)
 		{
 			callback_();

@@ -95,6 +95,6 @@ namespace gui
 	}
 }
 
-#include "Slider.inl"
+#include "Slider.ipp"
 
 #endif // GUI_SLIDER_HPP

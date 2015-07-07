@@ -62,8 +62,7 @@ void Market::initText(sf::Font& font)
 
 void Market::initGUI(sf::Font& font)
 {
-	gui::Menu::SPtr menu = std::make_shared<gui::Menu>
-		(gui::Menu::Vertical, "Welcome to the Market!");
+	gui::Menu::SPtr menu = std::make_shared<gui::Menu>(gui::Menu::Vertical);
 
 
 	const sf::Vector2u BEGIN_MIDDLE (400, 100);

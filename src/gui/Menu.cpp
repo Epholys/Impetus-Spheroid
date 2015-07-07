@@ -10,14 +10,10 @@ namespace gui
 //-----------------------------------------------------------------------------
 // *** Constructor and helper: ***
 
-	Menu::Menu(SelectionType type, const std::string& name, bool hasSlider, bool hideChild)
+	Menu::Menu(SelectionType type)
 	: Component()
 	, children_()
 	, selectedChild_(-1)
-	, menuSlider_(nullptr)
-	, name_(name)
-	, hidingChildren_(hideChild)
-	, isMeta_(hasSlider)
 	, nextKey_()
 	, previousKey_()
 {
@@ -33,38 +29,38 @@ namespace gui
 	}
 
 
-	if (hasSlider)
-	{
-		std::shared_ptr<Slider<int>> slider (new Slider<int>(selectedChild_,
-		                                                     Vector2f(50.f, 25.f),
-		                                                     name));
-		slider->setOperationPlus([](int&){});
-		slider->setOperationMinus([](int&){});
+	// if (hasSlider)
+	// {
+	// 	std::shared_ptr<Slider<int>> slider (new Slider<int>(selectedChild_,
+	// 	                                                     Vector2f(50.f, 25.f),
+	// 	                                                     name));
+	// 	slider->setOperationPlus([](int&){});
+	// 	slider->setOperationMinus([](int&){});
 
 
-		menuSlider_ = slider.get();
-		pack(std::move(slider));
-	}
+	// 	menuSlider_ = slider.get();
+	// 	pack(std::move(slider));
+	// }
 }
 
-void Menu::pack(Component::SPtr component, bool overrideFirst)
+void Menu::pack(Component::SPtr component)
 {
-	if(overrideFirst)
-	{
-		auto it = children_.begin();
-		children_.insert(it, component);
-	}
-	else
-	{
+	// if(overrideFirst)
+	// {
+	// 	auto it = children_.begin();
+	// 	children_.insert(it, component);
+	// }
+	// else
+	// {
 		children_.push_back(component);
-	}
+	// }
 
-	auto childMenu = std::dynamic_pointer_cast<Menu>(component);
-	if(childMenu && isMeta_)
-	{
-		childMenu->pack(children_[0], true);
-		childMenu->menuSlider_ = menuSlider_;
-	}
+	// auto childMenu = std::dynamic_pointer_cast<Menu>(component);
+	// if(childMenu && isMeta_)
+	// {
+	// 	childMenu->pack(children_[0], true);
+	// 	childMenu->menuSlider_ = menuSlider_;
+	// }
 }
 
 Menu::~Menu()
@@ -82,6 +78,10 @@ bool Menu::isSelectable() const
 void Menu::select()
 {
 	Component::select();
+
+	if(children_.empty())
+		return;
+
 	if(!hasSelection())
 	{
 		std::size_t index = 0;
@@ -95,11 +95,11 @@ void Menu::select()
 			select(index);
 		}
 
-		if(menuSlider_)
-		{
-			menuSlider_->updateText();
-			menuSlider_->setName(name_);
-		}
+		// if(menuSlider_)
+		// {
+		// 	menuSlider_->updateText();
+		// 	menuSlider_->setName(name_);
+		// }
 	}
 }
 
@@ -107,10 +107,10 @@ void Menu::deselect()
 {
 	Component::deselect();
 	selectedChild_ = -1;
-	if(menuSlider_)
-	{
-		menuSlider_->setName("Main Menu");
-	}
+	// if(menuSlider_)
+	// {
+	// 	menuSlider_->setName("Main Menu");
+	// }
 }
 
 //-----------------------------------------------------------------------------
@@ -201,12 +201,12 @@ void Menu::handleEvent(const sf::Event& event)
 			children_[selectedChild_]->handleEvent(event);
 		}
 
-		else if( (!isMeta_ || children_[0]->isSelected()) &&
+		else if( /*(!isMeta_ || children_[0]->isSelected()) &&*/
 		         event.key.code == previousKey_)
 		{
 			selectPrevious();
 		}
-		else if( (!isMeta_ || children_[0]->isSelected()) &&
+		else if( /*(!isMeta_ || children_[0]->isSelected()) &&*/
 		         event.key.code == nextKey_)
 		{
 			selectNext();
@@ -237,28 +237,28 @@ void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     states.transform *= getTransform();
 
-    if(hidingChildren_ && hasSelection())
-    {
-	    bool menuSliderDrawn = false;
+    // if(hidingChildren_ && hasSelection())
+    // {
+	//     bool menuSliderDrawn = false;
 
-	    if(menuSlider_ && !std::dynamic_pointer_cast<Menu>(children_[selectedChild_]))
-	    {
-		    target.draw(*menuSlider_, states);
-		    menuSliderDrawn = true;
-	    }
+	//     if(menuSlider_ && !std::dynamic_pointer_cast<Menu>(children_[selectedChild_]))
+	//     {
+	// 	    target.draw(*menuSlider_, states);
+	// 	    menuSliderDrawn = true;
+	//     }
 
-	    if(!menuSliderDrawn)
-	    {
-		    target.draw(*children_[selectedChild_], states);
-	    }
-    }
-    else
-    {
+	//     if(!menuSliderDrawn)
+	//     {
+	// 	    target.draw(*children_[selectedChild_], states);
+	//     }
+    // }
+    // else
+    // {
 	    for (const auto& child : children_)
 	    {
 		    target.draw(*child, states);
 	    }
-    }
+    // }
 }
 
 } // namespace gui

@@ -26,10 +26,10 @@ public:
 	typedef std::shared_ptr<Menu> SPtr;
 
 public:
-	Menu(SelectionType type, const std::string& name = "Menu", bool hasSlider = false, bool hideChild = false);
+	Menu(SelectionType type);
 	virtual ~Menu();
 
-	void pack(Component::SPtr component, bool overrideFirst = false);
+	void pack(Component::SPtr component);
 
 	virtual bool isSelectable() const;
 	virtual void handleEvent(const sf::Event& event);
@@ -47,11 +47,6 @@ protected:
 protected:
 	std::vector<Component::SPtr> children_;
 	int selectedChild_;
-	Slider<int>* menuSlider_;
-	std::string name_;
-
-	bool hidingChildren_;
-	bool isMeta_;
 
 	sf::Keyboard::Key nextKey_;
 	sf::Keyboard::Key previousKey_;
