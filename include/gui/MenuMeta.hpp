@@ -28,7 +28,7 @@ namespace gui
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	protected:
-		void addButton(Menu::SPtr menu, const std::string& name);
+		void addButton(const std::string& name);
 		void createButtonTexture(sf::Texture& texture, Vector2f size,  const std::string& name);
 
 	protected:

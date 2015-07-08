@@ -52,7 +52,8 @@ void Menu::pack(Component::SPtr component)
 	// }
 	// else
 	// {
-		children_.push_back(component);
+	component->setParent(this);
+	children_.push_back(component);
 	// }
 
 	// auto childMenu = std::dynamic_pointer_cast<Menu>(component);
@@ -235,7 +236,7 @@ void Menu::handleEvent(const sf::Event& event)
 
 void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    states.transform *= getTransform();
+	states.transform *= getTransform();
 
     // if(hidingChildren_ && hasSelection())
     // {

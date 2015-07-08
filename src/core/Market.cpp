@@ -64,18 +64,16 @@ void Market::initGUI(sf::Font& font)
 {
 	gui::Menu::SPtr menu = std::make_shared<gui::Menu>(gui::Menu::Vertical);
 
-
-	const sf::Vector2u BEGIN_MIDDLE (400, 100);
+	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x) / 2.f, 100);
 	const int SPACE_SIZE = 10;
 	const auto KEYS = inventory_.getKeys();
-	int buttonPosition = 0;
+	int buttonPosition = 1;
 	
 	for(auto it=datas.begin(); it!=datas.end(); ++it)
 	{
 		gui::Button::SPtr button = std::make_shared<gui::Button>();
 		button->setKey(KEYS.at(it->id));
-		button->setOrigin(BUTTON_SIZE.x / 2.f, 0.f);
-		button->setPosition(BEGIN_MIDDLE.x, BEGIN_MIDDLE.y + buttonPosition * (BUTTON_SIZE.y + SPACE_SIZE));
+		button->move(0.f, buttonPosition * (BUTTON_SIZE.y + SPACE_SIZE));
 
 		sf::Texture texture;
 		if(isUnlocked_[it->id])
@@ -95,10 +93,15 @@ void Market::initGUI(sf::Font& font)
 		
 		++buttonPosition;
 	}
-	
-	gui::MenuMeta::SPtr metaMenu = std::make_shared<gui::MenuMeta>(gui::Menu::Horizontal);
-	metaMenu->pack(menu, "PowerUp");
 
+	
+	gui::Menu::SPtr menu2 = std::make_shared<gui::Menu>(gui::Menu::Vertical);
+
+	gui::MenuMeta::SPtr metaMenu = std::make_shared<gui::MenuMeta>(gui::Menu::Horizontal);
+	metaMenu->move(Vector2f(BEGIN_MIDDLE));
+	metaMenu->pack(menu, "PowerUp");
+	metaMenu->pack(menu2, "Test");
+	
 	metaMenu->select();
 	
 	menu_ = metaMenu;

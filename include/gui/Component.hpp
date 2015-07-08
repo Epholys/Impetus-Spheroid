@@ -41,6 +41,12 @@ public:
 
 	virtual void handleEvent(const sf::Event& event) =0;
 
+	void setParent(Component* comp);
+	sf::Transform getGlobalTransform() const;
+
+protected:
+    Component* parent_;
+	
 private:
 	bool isSelected_;
 	bool isActive_;

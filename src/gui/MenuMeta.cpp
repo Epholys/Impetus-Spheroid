@@ -7,7 +7,7 @@ namespace gui
 {
 	namespace
 	{
-		const Vector2f SIZE (600, 50);
+		const Vector2f SIZE (650, 50);
 		const float SPACE = 5.f;
 	}
 	
@@ -29,19 +29,14 @@ namespace gui
 	void MenuMeta::pack(Menu::SPtr menu, const std::string& name)
 	{
 		Menu::pack(menu);
-		addButton(menu, name);
+		addButton(name);
 	}
 
-	void MenuMeta::addButton(Menu::SPtr menu, const std::string& name)
+	void MenuMeta::addButton(const std::string& name)
 	{
 		int nButton = children_.size();
-		float width = (SIZE.x - SPACE*(nButton-1)) / nButton;
-		Vector2f buttonSize (width, SIZE.y);
-
-		for(auto component : menu->children_)
-		{
-			component->move(Vector2f(0.f, SIZE.y + SPACE));
-		}
+		float length = (SIZE.x - SPACE*(nButton-1)) / nButton;
+		Vector2f buttonSize (length, SIZE.y);
 		
 		buttons_.push_back({Button(), name});
 		
@@ -50,6 +45,9 @@ namespace gui
 			sf::Texture texture;
 			createButtonTexture(texture, buttonSize, buttons_[i].name);
 			buttons_[i].button.setTexture(texture);
+			buttons_[i].button.setParent(this);
+			buttons_[i].button.setPosition(Vector2f());
+			buttons_[i].button.move((length + SPACE) * i, 0.f);
 		}
 	}
 
@@ -93,11 +91,14 @@ namespace gui
 	{
 		states.transform *= getTransform();
 		
-		Menu::draw(target, states);
-
 		for(auto& entry : buttons_)
 		{
 			target.draw(entry.button, states);
 		}
+
+		for (const auto& child : children_)
+	    {
+		    target.draw(*child, states);
+	    }
 	}
 }

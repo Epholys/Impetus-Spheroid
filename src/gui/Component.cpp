@@ -8,7 +8,8 @@ namespace gui
 // *** Construction and Destruction: ***
 
 Component::Component()
-	: isSelected_(false)
+	: parent_(nullptr)
+	, isSelected_(false)
 	, isActive_(false)
 {
 }
@@ -51,6 +52,25 @@ void Component::activate()
 void Component::deactivate()
 {
 	isActive_ = false;
+}
+
+
+//-----------------------------------------------------------------------------
+// *** Parent: ***
+
+void Component::setParent(Component* comp)
+{
+	parent_ = comp;
+}
+
+sf::Transform Component::getGlobalTransform() const
+{
+	sf::Transform transform (sf::Transform::Identity);
+	if(parent_)
+	{
+		transform = parent_->getGlobalTransform();
+	}
+	return transform * getTransform();
 }
 
 }

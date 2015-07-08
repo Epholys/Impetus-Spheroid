@@ -47,9 +47,6 @@ protected:
 	void selectPrevious();
 	
 protected:
-	//ugly hack
-	friend class MenuMeta;
-	
 	std::vector<Component::SPtr> children_;
 	int selectedChild_;
 
