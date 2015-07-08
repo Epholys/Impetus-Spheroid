@@ -42,7 +42,7 @@ public:
 
 protected:
 	bool hasSelection() const;
-	void select(std::size_t index);
+	virtual void select(std::size_t index);
 	void selectNext();
 	void selectPrevious();
 	

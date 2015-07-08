@@ -26,6 +26,7 @@ namespace gui
 
 		void setCallback(Callback callback);
 		void setTexture(sf::Texture texture);
+		void setAlpha(sf::Uint8 alpha);
 		void setKey(sf::Keyboard::Key key);
 
 		virtual bool isSelectable() const;
@@ -44,6 +45,7 @@ namespace gui
 
 		sf::Sprite sprite_;
 		sf::Texture texture_;
+		sf::Uint8 alpha_;
 	};
 }
 

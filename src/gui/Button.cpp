@@ -12,6 +12,7 @@ namespace gui
 		, shortcut_(sf::Keyboard::KeyCount)
 		, sprite_()
 		, texture_()
+		, alpha_(255)
 	{
 	}
 
@@ -31,7 +32,15 @@ namespace gui
 	void Button::setTexture(sf::Texture texture)
 	{
 		texture_ = texture;
-		sprite_.setTexture(texture_);
+		sprite_.setTexture(texture_, true);
+	}
+
+	void Button::setAlpha(sf::Uint8 alpha)
+	{
+		alpha_ = alpha;
+		sf::Color color = sprite_.getColor();
+		color.a = alpha_;
+		sprite_.setColor(color);
 	}
 
 	void Button::setKey(sf::Keyboard::Key key)
@@ -50,25 +59,26 @@ namespace gui
 	void Button::select()
 	{
 		Component::select();
-		sprite_.setColor(sf::Color(255, 225, 225));
+		sprite_.setColor(sf::Color(255, 225, 225, alpha_));
 	}
 
 	void Button::deselect()
 	{
 		Component::deselect();
-		sprite_.setColor(sf::Color(255, 255, 255));
+		sprite_.setColor(sf::Color(255, 255, 255, alpha_));
 	}
 
 	void Button::activate()
 	{
 		Component::activate();
-		sprite_.setColor(sf::Color(255, 200, 200));
+		sprite_.setColor(sf::Color(255, 200, 200, alpha_));
 	}
 
 	void Button::deactivate()
 	{
 		Component::deactivate();
-		sprite_.setColor((isSelected()) ? sf::Color(255, 225, 225) : sf::Color(255, 255, 255));
+		sf::Color color = (isSelected()) ? sf::Color(255, 225, 225, alpha_) : sf::Color(255, 255, 255, alpha_);
+		sprite_.setColor(color);
 		if(callback_)
 		{
 			callback_();
@@ -80,8 +90,8 @@ namespace gui
 
 	void Button::handleEvent(const sf::Event& event)
 	{
-		sf::FloatRect spriteRect = sprite_.getGlobalBounds();
-		spriteRect = getTransform().transformRect(spriteRect);
+		sf::FloatRect spriteRect = sprite_.getLocalBounds();
+		spriteRect = getGlobalTransform().transformRect(spriteRect);
 		bool isMouseOver = false;
 
 		if(event.type == sf::Event::MouseMoved)

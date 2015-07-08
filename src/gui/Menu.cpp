@@ -52,8 +52,8 @@ void Menu::pack(Component::SPtr component)
 	// }
 	// else
 	// {
-	component->setParent(this);
 	children_.push_back(component);
+	children_.back()->setParent(this);
 	// }
 
 	// auto childMenu = std::dynamic_pointer_cast<Menu>(component);
@@ -107,6 +107,8 @@ void Menu::select()
 void Menu::deselect()
 {
 	Component::deselect();
+	if(hasSelection())
+			children_[selectedChild_]->deselect();
 	selectedChild_ = -1;
 	// if(menuSlider_)
 	// {

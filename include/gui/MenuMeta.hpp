@@ -27,7 +27,11 @@ namespace gui
 		virtual void handleEvent(const sf::Event& event);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+		virtual void select();
+		
 	protected:
+		virtual void select(std::size_t index);
+		
 		void addButton(const std::string& name);
 		void createButtonTexture(sf::Texture& texture, Vector2f size,  const std::string& name);
 
