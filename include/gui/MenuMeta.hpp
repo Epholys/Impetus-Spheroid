@@ -23,6 +23,7 @@ namespace gui
 		virtual ~MenuMeta();
 
 		void pack(Menu::SPtr menu, const std::string& name);
+		void unpack(const std::string& name);
 
 		virtual void handleEvent(const sf::Event& event);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -33,7 +34,7 @@ namespace gui
 		virtual void select(std::size_t index);
 		
 		void addButton(const std::string& name);
-		void createButtonTexture(sf::Texture& texture, Vector2f size,  const std::string& name);
+		void createButtonTexture(sf::Texture& texture, Vector2f size);
 
 	protected:
 		sf::Font font_;
@@ -42,6 +43,7 @@ namespace gui
 		{
 			gui::Button button;
 			std::string name;
+			std::size_t menuIndex;
 		};
 		std::vector<ButtonEntry> buttons_;
 	};

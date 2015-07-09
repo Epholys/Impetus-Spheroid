@@ -30,7 +30,7 @@ World::World(const Vector2u& originalSize,
 	, evtGen_()
 	, difficulty_(DifficultyContext{this, &evtGen_, &metaData, &(metaData.inventory)})
 	, inventory_(metaData.inventory)
-	, cannon_(CANON_POSITION, *this, inventory_)
+	, cannon_(CANON_POSITION, *this, inventory_, metaData.improvementValue[ImprovementID::BallsPerSecond])
 	, state_(Waiting)
 	, speedCoeff_(1.f)
 	, gravityVect_(0.f, 1000.f)

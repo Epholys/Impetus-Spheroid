@@ -33,19 +33,19 @@ and you'll have a game freshly installed from source!
 	* More explicit PowerUps: Icons, _selected_ visualization __DONE!__, Particule Effects, other graphics Effects
 	* More explicit scoring: Little indication each time a ball touch the target (+1, +10, +100, ...) __DONE!__
   * Make the game more addictive
-  	* Permanent Power-Ups
+  	* Permanent Power-Ups __DONE!__
 	* Unlocking Power-Ups __DONE!__
 	* Achievement? Ranking System (Bronze, Silver, Gold, etc)?
-	* Rewarding: animation? sound?
+	* Rewarding: animation __DONE!__? sound?
 
 * Graphics
   * Particle Effects (for Balls, PowerUps, Events, etc...)
   	* Base (ParticleSystem, ParticleEmitter, Emitter) __DONE!__
 	* Affector __DONE!__
 	* Apply
-	  * Ball _WIP_
-	  * Events _WIP_
-	  * PowerUps _WIP_
+	  * Ball _DONE!_
+	  * Events _DONE!_
+	  * PowerUps _DONE!_
   * Transition
   	* Transition __DONE!__
 	* TransitionFunctions __DONE!__

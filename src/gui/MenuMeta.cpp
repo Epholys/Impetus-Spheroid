@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "gui/MenuMeta.hpp"
 
 
@@ -60,13 +61,15 @@ namespace gui
 		ButtonEntry entry;
 		entry.button = Button();
 		entry.name = name;
+		entry.menuIndex = children_.size() - 1; 
 		buttons_.push_back(entry);
 		
 		for(int i=0; i<nButton; ++i)
 		{
 			sf::Texture texture;
-			createButtonTexture(texture, buttonSize, buttons_[i].name);
+			createButtonTexture(texture, buttonSize);
 			buttons_[i].button.setTexture(texture);
+			buttons_[i].button.setLabel(gui::Button::Middle, buttons_[i].name, font_, 30, sf::Color::Black);
 			buttons_[i].button.setAlpha(150);
 			buttons_[i].button.setParent(this);
 			buttons_[i].button.setPosition(Vector2f());
@@ -75,23 +78,31 @@ namespace gui
 		}
 	}
 
-	void MenuMeta::createButtonTexture(sf::Texture& texture, Vector2f size, const std::string& name)
+	void MenuMeta::createButtonTexture(sf::Texture& texture, Vector2f size)
 	{
 		const sf::Color COLOR (230, 230, 230);
-		const sf::Color TEXT_COLOR = sf::Color::Black;
 		
 		sf::RenderTexture rTexture;
 		assert(rTexture.create(size.x, size.y));
 
-		sf::Text text(name, font_);
-		text.setColor(TEXT_COLOR);
-		centerOrigin(text);
-		text.setPosition(size / 2.f);
-
 		rTexture.clear(COLOR);
-		rTexture.draw(text);
 		rTexture.display();
 		texture = sf::Texture(rTexture.getTexture());
+	}
+
+	void MenuMeta::unpack(const std::string& name)
+	{
+		auto foundIt = std::find_if(buttons_.begin(),
+		                            buttons_.end(),
+		                            [name](const ButtonEntry& entry)
+		                            {
+			                            return entry.name == name;
+		                            });
+		if(foundIt != buttons_.end())
+		{
+			children_.erase(children_.begin() + foundIt->menuIndex);
+			buttons_.erase(foundIt);
+		}
 	}
 	
 //------------------------------------------------------------------------------
@@ -108,7 +119,7 @@ namespace gui
 			}
 		}
 
-		Menu::handleEvent(event);
+		children_[selectedChild_]->handleEvent(event);
 	}
 	
 	void MenuMeta::draw(sf::RenderTarget& target, sf::RenderStates states) const

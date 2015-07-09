@@ -20,7 +20,6 @@ namespace
 //-----------------------------------------------------------------------------
 // *** public static const attribute: ***
 
-const int DifficultyManager::COINS_PER_POINTS_ = 10;
 const int DifficultyManager::BASE_OBJECTIVE_ = 20;
 const Time DifficultyManager::PHASE_TIME_ {seconds(20.f)};
 
@@ -51,6 +50,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, objective_(BASE_OBJECTIVE_)
 	, ceiling_(BASE_CEILING)
 	, scoreText_()
+	, coinsPerPointScore_(context.metaData->improvementValue[ImprovementID::CoinsPerPointScore])
 	, indicatorTexts_()
 	, indicatorDeque_(gui::TransformData(INDICATOR_POSITION),
 	                  gui::TransformData(INDICATOR_SPACE, 0.f, Vector2f()),
@@ -178,8 +178,6 @@ void DifficultyManager::updateDifficulty()
 
 void DifficultyManager::updateScore()
 {
-	int COINS_PER_EXCESS = 1;
-
 	auto collisions = context_.world->getTrackedCollisions();
 	auto ecs = context_.world->getEntityManager();
 	float points = 0;
@@ -207,7 +205,7 @@ void DifficultyManager::updateScore()
 
 	if(score_ + points > objective_)
 	{
-		int coins = (points - std::max(0.f, objective_ - score_)) * COINS_PER_EXCESS;
+		int coins = (points - std::max(0.f, objective_ - score_)) * coinsPerPointScore_;
 		context_.inventory->addCoins(coins);
 	}
 

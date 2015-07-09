@@ -50,7 +50,7 @@ namespace gui
 		              unsigned int characterSize = 30,
 		              sf::Color color = sf::Color::White,
 		              Vector2f toMove = Vector2f());
-
+		void removeLabel(LabelPosition position);
 		void setKey(sf::Keyboard::Key key);
 		
 

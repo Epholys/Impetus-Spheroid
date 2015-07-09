@@ -20,6 +20,7 @@
 #include "gui/Transition.hpp"
 #include "core/Inventory.hpp"
 #include "data/MarketData.hpp"
+#include "data/ImprovementData.hpp"
 
 class Market : public sf::Drawable
 {
@@ -33,20 +34,24 @@ public:
 private:
 	void initText(sf::Font& font);
 	void initGUI(sf::Font& font);
+	void initPowerUps(gui::Menu::SPtr menu, sf::Font& font);
+	void initImprovement(gui::Menu::SPtr menu, sf::Font& font);
 
-	void buy(PowerUpID::ID id, int number, int price);
+	void buyPowerUp(PowerUpID::ID id, int number, int price);
+	void buyImprovement(ImprovementID::ID id, int increment, int price);
 
 	void updateCoinsText();
 	void updateCoinsLoss(int price);
 
-	void createBlankButton(sf::Texture& texture, int price, sf::Font& font);
-
 private:
 	Inventory& inventory_;
 	std::vector<bool>& isUnlocked_;
+	std::vector<int>& improvementValue_;
+	bool needUpdate_;
 	
-	gui::Menu::SPtr menu_;
-	std::map<PowerUpID::ID, gui::Button::SPtr> buttons_;
+	gui::MenuMeta::SPtr menu_;
+	std::map<PowerUpID::ID, gui::Button::SPtr> powerUpButtons_;
+	std::map<ImprovementID::ID, gui::Button::SPtr> improvementButtons_;
 	sf::Text coinsText_;
 
 	sf::Text coinsLost_;

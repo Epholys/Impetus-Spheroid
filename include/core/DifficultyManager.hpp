@@ -72,7 +72,6 @@ private:
 	sf::Color findColor(int points);
 
 public:
-	static const int COINS_PER_POINTS_;
 	static const int BASE_OBJECTIVE_;
 	static const Time PHASE_TIME_;
 
@@ -89,6 +88,7 @@ private:
 	int objective_;
 	int ceiling_;
 	sf::Text scoreText_;
+	int coinsPerPointScore_;
 
 	std::deque<sf::Text> indicatorTexts_;
 	gui::TransitionDeque indicatorDeque_;

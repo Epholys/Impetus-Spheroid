@@ -3,6 +3,7 @@
 
 namespace DataSaver
 {
+	
 	bool readInt(std::istream& is, int& toRead)
 	{
 		int value = 0;
@@ -65,12 +66,18 @@ namespace DataSaver
 			   !metaData.inventory.setPowerUp(PowerUpID::ID(i), endecode(value)))
 				return false;
 		}
-
 		for(int i=0; i<PowerUpID::PowerUpCount; ++i)
 		{
 			if(!readInt(ist, value))
 				return false;
 			metaData.isPowerUpUnlocked[i] = toBool(endecode(value));
+		}
+
+		for(int i=0; i<ImprovementID::ImprovementCount; ++i)
+		{
+			if(!readInt(ist, value))
+				return false;
+			metaData.improvementValue[i] = endecode(value);
 		}
 			    
 		return true;
@@ -94,6 +101,10 @@ namespace DataSaver
 		{
 			ost << endecode(toInt(metaData.isPowerUpUnlocked[i])) << separator;
 		}
+		for(int i=0; i<ImprovementID::ImprovementCount; ++i)
+		{
+			ost << endecode(metaData.improvementValue[i]) << separator;
+		}
 
 		return true;
 	}		
@@ -104,19 +115,31 @@ namespace DataSaver
 		retrieveDatas(metaData);
 		saveDatas(metaData);
 	}
+
+	namespace
+	{
+		auto improvementDatas = genImprovementData();
+	}
 	
 	MetaData makeDefaultFile()
 	{
 		using namespace PowerUpID;
+		using namespace ImprovementID;
 		MetaData metaData;
 		
 		metaData.highScore = 0;
 		
-		metaData.isPowerUpUnlocked = std::vector<bool>(PowerUpCount-1, true);
+		metaData.isPowerUpUnlocked = std::vector<bool>(PowerUpCount, true);
 		std::vector<PowerUpID::ID> locked {CancelEvents, AddTime, AddTarget, PointMultiplier, BallTouchDouble};
 		for(auto id : locked)
 		{
 			metaData.isPowerUpUnlocked[id] = false;
+		}
+
+		metaData.improvementValue = std::vector<int>(ImprovementCount, 1);
+		for(int i=0; i<ImprovementCount; ++i)
+		{
+			metaData.improvementValue.at(i) = improvementDatas.at(i).baseValue;
 		}
 
 		return metaData;

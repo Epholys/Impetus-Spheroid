@@ -45,8 +45,8 @@ public:
 
 private:
 	void initStaticTexts();
-	void initVariableTexts();
-	void updateDatas();
+	void initVariableTexts(Context context);
+	void updateDatas(Context context);
 
 private:
 	std::vector<sf::Text> texts_;

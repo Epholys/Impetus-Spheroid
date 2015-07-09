@@ -31,12 +31,12 @@ namespace
 
 //-----------------------------------------------------------------------------
 
-Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory)
+Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory, int ballsPerSecond)
 	: world_(world)
 	, inventory_(inventory)
 	, position_(position)
 	, untilNextFire_(Time::Zero)
-	, timeBeetweenFire_(milliseconds(333))
+	, timeBeetweenFire_()
 	, ballType_(Ball::Normal)
 	, nTouchingBall_(1)
 	, ballBuffer_()
@@ -48,6 +48,9 @@ Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory)
 	, cannonTube_()
 	, arcPreview_(sf::TrianglesStrip)
 {
+	assert(ballsPerSecond);
+	timeBeetweenFire_ = seconds(1 / static_cast<float>(ballsPerSecond));
+	
 	for(int i=0; i<15; ++i)
 	{
 		BufferEntry entry { randomBallData(), Ball::Normal, sf::CircleShape(Ball::RADIUS_) };

@@ -5,7 +5,8 @@
 
 namespace
 {
-	auto datas = genMarketData();
+	auto marketDatas = genMarketData();
+	auto improvementDatas = genImprovementData();
 }
 
 
@@ -27,8 +28,11 @@ namespace
 Market::Market(State::Context context)
 	: inventory_(context.metaData->inventory)
 	, isUnlocked_(context.metaData->isPowerUpUnlocked)
+	, improvementValue_(context.metaData->improvementValue)
+	, needUpdate_(false)
 	, menu_()
-	, buttons_()
+	, powerUpButtons_()
+	, improvementButtons_()
 	, coinsText_()
 	, coinsLost_()
 	, coinsLostTransition_(nullptr,
@@ -62,51 +66,105 @@ void Market::initText(sf::Font& font)
 
 void Market::initGUI(sf::Font& font)
 {
-	gui::Menu::SPtr menu = std::make_shared<gui::Menu>(gui::Menu::Vertical);
-
 	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x) / 2.f, 100);
-	const int SPACE_SIZE = 10;
-	const auto KEYS = inventory_.getKeys();
-	int buttonPosition = 1;
 	
-	for(auto it=datas.begin(); it!=datas.end(); ++it)
-	{
-		gui::Button::SPtr button = std::make_shared<gui::Button>();
-		button->setKey(KEYS.at(it->id));
-		button->move(0.f, buttonPosition * (BUTTON_SIZE.y + SPACE_SIZE));
-
-		sf::Texture texture;
-		if(isUnlocked_[it->id])
-		{
-			texture.loadFromFile(it->texturePath);
-		}
-		else
-		{
-			createBlankButton(texture, it->price * UNLOCKING_COEFF, font);
-		}
-		button->setTexture(texture);
-			
-		button->setCallback(std::bind(&Market::buy, this, it->id, it->number, it->price));
-		
-		menu->pack(button);
-		buttons_[it->id] = button;
-		
-		++buttonPosition;
-	}
-
-	
-	gui::Menu::SPtr menu2 = std::make_shared<gui::Menu>(gui::Menu::Vertical);
+	gui::Menu::SPtr puMenu = std::make_shared<gui::Menu>(gui::Menu::Vertical);
+	initPowerUps(puMenu, font);
+   	
+	gui::Menu::SPtr improvMenu = std::make_shared<gui::Menu>(gui::Menu::Vertical);
+	initImprovement(improvMenu, font);
 
 	gui::MenuMeta::SPtr metaMenu = std::make_shared<gui::MenuMeta>(gui::Menu::Horizontal);
 	metaMenu->move(Vector2f(BEGIN_MIDDLE));
-	metaMenu->pack(menu, "PowerUp");
-	metaMenu->pack(menu2, "Test");
+	metaMenu->pack(puMenu, "PowerUp");
+	metaMenu->pack(improvMenu, "Improvements");
 	
 	metaMenu->select();
 	
 	menu_ = metaMenu;
 }
 
+void Market::initPowerUps(gui::Menu::SPtr menu, sf::Font& font)
+{
+	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x) / 2.f, 100);
+	const int SPACE_SIZE = 10;
+	const auto KEYS = inventory_.getKeys();
+	int buttonPosition = 1;
+	for(auto it=marketDatas.begin(); it!=marketDatas.end(); ++it)
+	{
+		gui::Button::SPtr button = std::make_shared<gui::Button>();
+		button->setKey(KEYS.at(it->id));
+		button->move(0.f, buttonPosition * (BUTTON_SIZE.y + SPACE_SIZE));
+
+		if(isUnlocked_[it->id])
+		{
+			sf::Texture texture;
+			texture.loadFromFile(it->texturePath);
+			button->setTexture(texture);
+		}
+		else
+		{
+			button->setDefaultTexture();
+			std::stringstream ss;
+			ss << it->price * UNLOCKING_COEFF;
+			button->setLabel(gui::Button::Middle, ss.str(), font, BUTTON_SIZE.y * 0.7f, sf::Color::Yellow);
+		}
+			
+		button->setCallback(std::bind(&Market::buyPowerUp, this, it->id, it->number, it->price));
+		
+		menu->pack(button);
+		powerUpButtons_[it->id] = button;
+		
+		++buttonPosition;
+	}
+}
+
+void Market::initImprovement(gui::Menu::SPtr menu, sf::Font& font)
+{
+	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x) / 2.f, 100);
+	const int SPACE_SIZE = 10;
+	int buttonPosition = 1;
+	for(unsigned int i=0; i<improvementValue_.size(); ++i)
+	{
+		gui::Button::SPtr button = std::make_shared<gui::Button>();
+		button->move(0.f, buttonPosition * (BUTTON_SIZE.y + SPACE_SIZE));
+
+		button->setDefaultTexture();
+
+		const auto& data = improvementDatas[i];
+		std::stringstream ss;
+		ss << improvementValue_[i];
+		button->setLabel(gui::Button::Left,
+		                 ss.str(),
+		                 font,
+		                 30,
+		                 sf::Color::Black);
+		button->setLabel(gui::Button::Middle,
+		                 data.description,
+		                 font,
+		                 BUTTON_SIZE.y * 0.7f,
+		                 sf::Color::Black);
+		
+		int price = data.basePrice + (improvementValue_[i] - data.baseValue) * data.priceIncrement / data.increment;
+		ss.str("");
+		ss << price;
+		button->setLabel(gui::Button::Right,
+		                 ss.str(),
+		                 font,
+		                 30,
+		                 sf::Color::Yellow);
+		                 
+		button->setCallback(
+			[this, data, price, i]()
+			{
+				buyImprovement(ImprovementID::ID(i), data.increment, price);
+			});
+		
+		menu->pack(button);
+		
+		++buttonPosition;
+	}
+}
 
 //-----------------------------------------------------------------------------
 
@@ -114,12 +172,21 @@ void Market::update(Time dt)
 {
 	coinsLostTransition_.update(dt);
 	coinsLostFadeOut_.update(dt);
+
+	if(needUpdate_)
+	{
+		menu_->unpack("Improvements");
+		gui::Menu::SPtr improvMenu = std::make_shared<gui::Menu>(gui::Menu::Vertical);
+		initImprovement(improvMenu, context_.fonts->get(FontID::ForcedSquare));
+		menu_->pack(improvMenu, "Improvements");
+		needUpdate_ = false;
+	}
 }
 
 
 //-----------------------------------------------------------------------------
 
-void Market::buy(PowerUpID::ID id, int number, int price)
+void Market::buyPowerUp(PowerUpID::ID id, int number, int price)
 {
 	if(isUnlocked_[id] && price <= inventory_.getCoins())
 	{
@@ -131,14 +198,27 @@ void Market::buy(PowerUpID::ID id, int number, int price)
 	}
 	else if(!isUnlocked_[id] && price * UNLOCKING_COEFF <= inventory_.getCoins())
 	{
-		inventory_.removeCoins(price);
+		inventory_.removeCoins(price * UNLOCKING_COEFF);
 		isUnlocked_[id] = true;
 		sf::Texture texture;
-		assert(texture.loadFromFile(datas[id].texturePath));
-		buttons_[id]->setTexture(texture);
+		assert(texture.loadFromFile(marketDatas[id].texturePath));
+		powerUpButtons_[id]->setTexture(texture);
 		updateCoinsLoss(price * UNLOCKING_COEFF);
 		updateCoinsText();
 		DataSaver::saveDatas(*context_.metaData);
+	}
+}
+
+void Market::buyImprovement(ImprovementID::ID id, int increment, int price)
+{
+	if(price < inventory_.getCoins())
+	{
+		inventory_.removeCoins(price);
+		improvementValue_[id] += increment;
+		updateCoinsLoss(price);
+		updateCoinsText();
+		DataSaver::saveDatas(*context_.metaData);
+		needUpdate_ = true;
 	}
 }
 
@@ -183,27 +263,3 @@ void Market::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	target.draw(coinsText_, states);
 	target.draw(coinsLost_, states);
 }
-
-void Market::createBlankButton(sf::Texture& texture, int price, sf::Font& font)
-{
-	sf::RenderTexture rTexture;
-	assert(rTexture.create(BUTTON_SIZE.x + BUTTON_SIZE.y, BUTTON_SIZE.y));
-	
-	sf::Text priceText(std::to_string(price), font);
-	priceText.setColor(sf::Color::Yellow);
-	priceText.setCharacterSize(BUTTON_SIZE.y * 0.7f);
-	centerOrigin(priceText);
-	priceText.setPosition(Vector2f(BUTTON_SIZE) / 2.f);
-
-	sf::RectangleShape rect (Vector2f(BUTTON_SIZE.y, BUTTON_SIZE.y));
-	rect.setFillColor(sf::Color::Black);
-	rect.setPosition(BUTTON_SIZE.x, 0.f);
-
-	rTexture.clear(sf::Color(230,230,230));
-	rTexture.draw(priceText);
-	rTexture.draw(rect);
-	rTexture.display();
-
-	texture = rTexture.getTexture();
-}
-

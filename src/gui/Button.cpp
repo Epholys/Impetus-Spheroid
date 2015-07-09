@@ -81,19 +81,24 @@ namespace gui
 			text.move(textureSize / 2.f);
 			break;
 		case Up:
-			text.move(textureSize.x / 2.f, -textRect.height / 2.f);
+			text.move(textureSize.x / 2.f, +textRect.height / 2.f);
 			break;
 		case Right:
-			text.move(textureSize.x + textRect.width / 2.f, textureSize.y / 2.f);
+			text.move(textureSize.x - textRect.width / 2.f, textureSize.y / 2.f);
 			break;
 		case Bottom:
-			text.move(textureSize.x / 2.f, textureSize.y + textRect.height / 2.f);
+			text.move(textureSize.x / 2.f, textureSize.y - textRect.height / 2.f);
 			break;
 		case Left:
-			text.move(-textRect.width / 2.f, textureSize.y / 2.f);
+			text.move(+textRect.width / 2.f, textureSize.y / 2.f);
 			break;
 		}
 		text.move(toMove);
+	}
+
+	void Button::removeLabel(LabelPosition position)
+	{
+		labels_[position] = sf::Text();
 	}
 
 	void Button::setKey(sf::Keyboard::Key key)

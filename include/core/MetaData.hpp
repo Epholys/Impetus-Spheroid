@@ -4,6 +4,7 @@
 
 #include <vector>
 
+#include "data/ImprovementData.hpp"
 #include "core/Inventory.hpp"
 
 
@@ -16,9 +17,10 @@ struct MetaData
 	int highScore;
 	Inventory inventory;
 	std::vector<bool> isPowerUpUnlocked;
+	std::vector<int> improvementValue;
 
 	MetaData()
-		: inventory(), isPowerUpUnlocked(PowerUpID::PowerUpCount, true)
+		: MetaData({800u,600u}, true)
 		{
 		}
 
@@ -26,7 +28,8 @@ struct MetaData
 		Vector2u originalSize,
 		bool isAzerty)
 		: inventory(originalSize, isAzerty),
-		  isPowerUpUnlocked(PowerUpID::PowerUpCount, true)
+		  isPowerUpUnlocked(PowerUpID::PowerUpCount, true),
+		  improvementValue(ImprovementID::ImprovementCount, 1)
 		{
 		}
 };

@@ -14,8 +14,8 @@ StateOver::StateOver(StateStack& stack, Context context)
 	}
 
 	initStaticTexts();
-	initVariableTexts();
-	updateDatas();
+	initVariableTexts(context);
+	updateDatas(context);
 }
 
 StateOver::~StateOver()
@@ -55,7 +55,7 @@ void StateOver::initStaticTexts()
 	texts_[RetryPost].move(RETRY_POS - centerOfTexts);
 }
 
-void StateOver::initVariableTexts()
+void StateOver::initVariableTexts(Context context)
 {
 	Vector2u winSize = context_.originalWindowSize;
 	const MetaData* const metaData = context_.metaData;
@@ -66,7 +66,7 @@ void StateOver::initVariableTexts()
 	const Vector2f MONEY_POS (3* winSize.x / 5, winSize.y / 5);
 
 	int coinsWon = std::max(0, lastObjective - DifficultyManager::BASE_OBJECTIVE_)
-		                    * DifficultyManager::COINS_PER_POINTS_;
+		           * context.metaData->improvementValue[ImprovementID::CoinsPerPointObjective];
 
 	const sf::Color DEFAULT (255,255,255);
 	bool centerOrigin = true;
@@ -98,7 +98,7 @@ void StateOver::initVariableTexts()
 
 //-----------------------------------------------------------------------------
 
-void StateOver::updateDatas()
+void StateOver::updateDatas(Context context)
 {
 	MetaData* const metaData = context_.metaData;
 	int lastObjective = context_.lastGameData->lastObjective;
@@ -115,7 +115,7 @@ void StateOver::updateDatas()
 	}
 	metaData->inventory.addCoins(
 		std::max(0, lastObjective - DifficultyManager::BASE_OBJECTIVE_)
-		* DifficultyManager::COINS_PER_POINTS_);
+		* context.metaData->improvementValue[ImprovementID::CoinsPerPointObjective]);
 
 	DataSaver::saveDatas(*metaData);
 }
