@@ -6,6 +6,18 @@
 
 namespace gui
 {
+
+	namespace
+	{
+		sf::Texture defaultTexture;
+		void initDefaultTexture (sf::Texture& texture)
+		{
+			texture.loadFromFile("./media/sprites/Blankbutton.png");
+		}
+	}
+	
+//-----------------------------------------------------------------------------
+   
 	Button::Button()
 		: Component()
 		, callback_()
@@ -13,7 +25,9 @@ namespace gui
 		, sprite_()
 		, texture_()
 		, alpha_(255)
+		, labels_(5)
 	{
+		initDefaultTexture(defaultTexture);
 	}
 
 	Button::~Button()
@@ -35,12 +49,51 @@ namespace gui
 		sprite_.setTexture(texture_, true);
 	}
 
+	void Button::setDefaultTexture()
+	{
+		setTexture(defaultTexture);
+	}
+
 	void Button::setAlpha(sf::Uint8 alpha)
 	{
 		alpha_ = alpha;
 		sf::Color color = sprite_.getColor();
 		color.a = alpha_;
 		sprite_.setColor(color);
+	}
+
+	void Button::setLabel(LabelPosition position,
+	                      const std::string& string,
+	                      const sf::Font& font,
+	                      unsigned int characterSize,
+	                      sf::Color color,
+	                      Vector2f toMove)
+	{
+		sf::Text& text = labels_[position];
+	    text = sf::Text(string, font, characterSize);
+		text.setColor(color);
+		Vector2f textureSize = Vector2f(texture_.getSize());
+		sf::FloatRect textRect = text.getGlobalBounds();
+		centerOrigin(text);
+		switch(position)
+		{
+		case Middle:
+			text.move(textureSize / 2.f);
+			break;
+		case Up:
+			text.move(textureSize.x / 2.f, -textRect.height / 2.f);
+			break;
+		case Right:
+			text.move(textureSize.x + textRect.width / 2.f, textureSize.y / 2.f);
+			break;
+		case Bottom:
+			text.move(textureSize.x / 2.f, textureSize.y + textRect.height / 2.f);
+			break;
+		case Left:
+			text.move(-textRect.width / 2.f, textureSize.y / 2.f);
+			break;
+		}
+		text.move(toMove);
 	}
 
 	void Button::setKey(sf::Keyboard::Key key)
@@ -142,5 +195,9 @@ namespace gui
 	{
 		states.transform *= getTransform();
 		target.draw(sprite_, states);
+		for(const auto& text : labels_)
+		{
+			target.draw(text, states);
+		}
  	}
 }
