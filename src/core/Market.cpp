@@ -203,6 +203,7 @@ void Market::buyPowerUp(PowerUpID::ID id, int number, int price)
 		sf::Texture texture;
 		assert(texture.loadFromFile(marketDatas[id].texturePath));
 		powerUpButtons_[id]->setTexture(texture);
+		powerUpButtons_[id]->removeLabel(gui::Button::Middle);
 		updateCoinsLoss(price * UNLOCKING_COEFF);
 		updateCoinsText();
 		DataSaver::saveDatas(*context_.metaData);

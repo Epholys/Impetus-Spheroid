@@ -9,9 +9,17 @@ namespace gui
 		: ORIGIN_(origin)
 		, SPACE_(space)
 		, TYPE_(type)
-		, DURATION_(duration)
+		, duration_(duration)
 		, deque_()
 	{
+	}
+
+
+//-----------------------------------------------------------------------------
+
+	void TransitionDeque::setDuration(Time duration)
+	{
+		duration_ = duration;
 	}
 
 
@@ -58,7 +66,7 @@ namespace gui
 		deque_.pop_front();
 		for(std::size_t i=0; i<deque_.size(); ++i)
 		{
-			deque_[i].updateFinish(ORIGIN_ + SPACE_ * static_cast<float>(i), DURATION_);
+			deque_[i].updateFinish(ORIGIN_ + SPACE_ * static_cast<float>(i), duration_);
 		}
 	}
 }

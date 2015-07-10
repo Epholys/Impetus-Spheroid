@@ -287,18 +287,20 @@ void DifficultyManager::updateObjective()
 
 void DifficultyManager::updateIndicatorDuration()
 {
-	if(indicatorTexts_.size() > 5)
-	{
-		indicatorDuration_ = INDICATOR_DURATION / 4.f;
-	}
-	else if(indicatorTexts_.size() > 3)
-	{
-		indicatorDuration_ = INDICATOR_DURATION / 2.f;
-	}
-	else
-	{
-		indicatorDuration_ = INDICATOR_DURATION;
-	}
+	// if(indicatorTexts_.size() > 5)
+	// {
+	// 	indicatorDuration_ = INDICATOR_DURATION / 4.f;
+	// }
+	// else if(indicatorTexts_.size() > 3)
+	// {
+	// 	indicatorDuration_ = INDICATOR_DURATION / 2.f;
+	// }
+	// else
+	// {
+	// 	indicatorDuration_ = INDICATOR_DURATION;
+	// }
+	indicatorDuration_ = INDICATOR_DURATION / std::max(1.f, (2.f * static_cast<int>(indicatorTexts_.size() / 5)));
+	indicatorDeque_.setDuration(std::min(DEQUE_DURATION, indicatorDuration_ / 2.f));
 }
 
 void DifficultyManager::updateIndicator(int points)

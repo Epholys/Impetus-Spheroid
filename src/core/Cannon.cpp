@@ -25,7 +25,7 @@ namespace
 
 	const Vector2f BALL_POSITION {2.5f, 570.f};
 	const Vector2f BALL_SPACING  {0.f, -40.f};
-	const Time TRANSITION_DURATION = milliseconds(125);
+	const Time MAX_TRANSITION_DURATION = milliseconds(125);
 }
 
 
@@ -43,13 +43,14 @@ Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory, int
 	, transitionDeque_(gui::TransformData(BALL_POSITION),
 	                   gui::TransformData(BALL_SPACING, 0.f, Vector2f()),
 	                   gui::Transition::Linear,
-	                   TRANSITION_DURATION)
+	                   MAX_TRANSITION_DURATION)
 	, cannonBody_()
 	, cannonTube_()
 	, arcPreview_(sf::TrianglesStrip)
 {
 	assert(ballsPerSecond);
 	timeBeetweenFire_ = seconds(1 / static_cast<float>(ballsPerSecond));
+	transitionDeque_.setDuration(std::min(MAX_TRANSITION_DURATION, timeBeetweenFire_ * 0.9f));
 	
 	for(int i=0; i<15; ++i)
 	{

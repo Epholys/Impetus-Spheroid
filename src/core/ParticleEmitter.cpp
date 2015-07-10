@@ -38,7 +38,7 @@ void ParticleEmitter::update(Time dt)
 
 	/*else*/
 	Vector2f gap = position_ - previousPosition_;
-	Vector2f fillingDistance = gap / float(nParticuleToEmit);
+	Vector2f fillingDistance = gap / static_cast<float>(nParticuleToEmit);
 	Vector2f particulePosition = previousPosition_;
 	for(int i=0; i<nParticuleToEmit; ++i)
 	{

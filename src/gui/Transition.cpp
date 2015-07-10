@@ -63,8 +63,15 @@ namespace gui
 
 	void Transition::updateFinish(const TransformData& newFinish, Time toAdd)
 	{
+		if(!toMove_)
+			return;
+		
 		finish_ = newFinish;
-		duration_ += toAdd;
+		start_ = TransformData(Vector2f(toMove_->getPosition()),
+		                       toMove_->getRotation(),
+		                       Vector2f(toMove_->getScale()));
+		duration_ = duration_ - accumulatedTime_ + toAdd;
+		accumulatedTime_ = Time();
 		transitionFunction_ = generateTransitionFunction(type_, start_, finish_, duration_);
 	}
 

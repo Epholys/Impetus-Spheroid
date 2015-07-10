@@ -8,7 +8,7 @@ namespace
 {
 	const float RADIUS = 10.f;
 	const float MASS = 1.f;
-	const unsigned int PARTICLE_RATE = 500;
+	const unsigned int PARTICLE_RATE = 300;
 }
 
 
@@ -90,17 +90,20 @@ void Ball::reverseOutlineColor()
 
 void Ball::update(Time dt)
 {
-	Entity::update(dt);
-
 	// NOT ball_.setPosition(...): ball_'s Transformable base class isn't
 	// used because if suddenly Ball's view become several sf::Sprites and
 	// sf::Shapes, it would mean I'll have to update every single one of them.
 	setPosition(position_->x, position_->y);
 
+	if(trailEmitter_ != -1)
+	{
+		updatePosition(trailEmitter_, *position_);
+	}
+
+	Entity::update(dt);
+
 	
 	if(trailEmitter_ == -1) return;
-
-	updatePosition(trailEmitter_, *position_);
 	
 	auto projectileComponent = dynCast<ecs::Projectile>
 		(ecs_.getComponent(label_, ecs::Component::Projectile));

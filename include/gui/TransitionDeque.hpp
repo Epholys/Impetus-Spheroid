@@ -18,13 +18,15 @@ namespace gui
 		void pushBack(sf::Transformable* transformable);
 		void popFront();
 
+		void setDuration(Time duration);
+
 	private:
 		const TransformData ORIGIN_;
 		const TransformData SPACE_;
 		const Transition::Type TYPE_;
-		const Time DURATION_;
 
 	private:
+		Time duration_;
 		std::deque<Transition> deque_;
 	};
 }
