@@ -134,16 +134,22 @@ void Market::initImprovement(gui::Menu::SPtr menu, sf::Font& font)
 		const auto& data = improvementDatas[i];
 		std::stringstream ss;
 		ss << improvementValue_[i];
+		button->setLabel(gui::Button::Middle,
+		                 data.description,
+		                 font,
+		                 BUTTON_SIZE.y * 0.4f,
+		                 sf::Color::Black);
+		sf::Text& labelMid = button->getLabel(gui::Button::Middle);
+		Vector2f position (labelMid.findCharacterPos(0));
 		button->setLabel(gui::Button::Left,
 		                 ss.str(),
 		                 font,
 		                 30,
-		                 sf::Color::Black);
-		button->setLabel(gui::Button::Middle,
-		                 data.description,
-		                 font,
-		                 BUTTON_SIZE.y * 0.7f,
-		                 sf::Color::Black);
+		                 sf::Color::Green,
+		                 Vector2f(position.x - BUTTON_SIZE.y * 0.4f, 0.f));
+		sf::Text& labelLeft = button->getLabel(gui::Button::Left);
+		sf::FloatRect bounds = labelLeft.getGlobalBounds();
+		labelLeft.move(-bounds.width / 2.f, 0.f);
 		
 		int price = data.basePrice + (improvementValue_[i] - data.baseValue) * data.priceIncrement / data.increment;
 		ss.str("");
@@ -152,7 +158,8 @@ void Market::initImprovement(gui::Menu::SPtr menu, sf::Font& font)
 		                 ss.str(),
 		                 font,
 		                 30,
-		                 sf::Color::Yellow);
+		                 sf::Color::Yellow,
+		                 Vector2f(-10.f,0.f));
 		                 
 		button->setCallback(
 			[this, data, price, i]()

@@ -44,12 +44,17 @@ namespace gui
 		void setTexture(sf::Texture texture);
 		void setDefaultTexture();
 		void setAlpha(sf::Uint8 alpha);
+
+		void setLabel(LabelPosition position,
+		              const sf::Text& text);
 		void setLabel(LabelPosition position,
 		              const std::string& string,
 		              const sf::Font& font,
 		              unsigned int characterSize = 30,
 		              sf::Color color = sf::Color::White,
 		              Vector2f toMove = Vector2f());
+		sf::Text& getLabel(LabelPosition position);
+		
 		void removeLabel(LabelPosition position);
 		void setKey(sf::Keyboard::Key key);
 		

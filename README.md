@@ -75,6 +75,7 @@ and you'll have a game freshly installed from source!
 The function itself is optimized, but it is called to many times...
 **Solution:** Make a quad-tree for collision detection
   * Reduce all the Balls' draw calls, as one should be enough: they are all the same (minus the color)!
+  * For smooth balltrail: adapt duration and frequency of particles w/ ball's velocity
   * ECS: Optimize to be more cache-friendly
   * Use a single draw call for all the balls, as it is done for Particles
 

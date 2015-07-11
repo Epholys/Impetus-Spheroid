@@ -63,37 +63,50 @@ namespace gui
 	}
 
 	void Button::setLabel(LabelPosition position,
+	                      const sf::Text& text)
+	{
+		sf::Text& textRef = labels_[position];
+		textRef = text;
+		Vector2f textureSize = Vector2f(texture_.getSize());
+		sf::FloatRect textRect = textRef.getGlobalBounds();
+		centerOrigin(textRef);
+		switch(position)
+		{
+		case Middle:
+			textRef.move(textureSize / 2.f);
+			break;
+		case Up:
+			textRef.move(textureSize.x / 2.f, +textRect.height / 2.f);
+			break;
+		case Right:
+			textRef.move(textureSize.x - textRect.width / 2.f, textureSize.y / 2.f);
+			break;
+		case Bottom:
+			textRef.move(textureSize.x / 2.f, textureSize.y - textRect.height / 2.f);
+			break;
+		case Left:
+			textRef.move(+textRect.width / 2.f, textureSize.y / 2.f);
+			break;
+		}
+	}
+
+	
+	void Button::setLabel(LabelPosition position,
 	                      const std::string& string,
 	                      const sf::Font& font,
 	                      unsigned int characterSize,
 	                      sf::Color color,
 	                      Vector2f toMove)
 	{
-		sf::Text& text = labels_[position];
-	    text = sf::Text(string, font, characterSize);
+		sf::Text text (string, font, characterSize);
 		text.setColor(color);
-		Vector2f textureSize = Vector2f(texture_.getSize());
-		sf::FloatRect textRect = text.getGlobalBounds();
-		centerOrigin(text);
-		switch(position)
-		{
-		case Middle:
-			text.move(textureSize / 2.f);
-			break;
-		case Up:
-			text.move(textureSize.x / 2.f, +textRect.height / 2.f);
-			break;
-		case Right:
-			text.move(textureSize.x - textRect.width / 2.f, textureSize.y / 2.f);
-			break;
-		case Bottom:
-			text.move(textureSize.x / 2.f, textureSize.y - textRect.height / 2.f);
-			break;
-		case Left:
-			text.move(+textRect.width / 2.f, textureSize.y / 2.f);
-			break;
-		}
 		text.move(toMove);
+		setLabel(position, text);
+	}
+
+	sf::Text& Button::getLabel(LabelPosition position)
+	{
+		return labels_[position];
 	}
 
 	void Button::removeLabel(LabelPosition position)
