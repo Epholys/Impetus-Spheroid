@@ -247,7 +247,9 @@ void World::handleInput(const sf::Event& event)
 	{
 		mousePosition_ = Vector2f(event.mouseMove.x, event.mouseMove.y);
 		cannon_.updateTubeDirection();
-		cannon_.updateArcPreview();
+
+		if(state_ == Waiting)
+			cannon_.updateArcPreview();
 	}
 
 	else if(state_ == Waiting || state_ == GameOver)
