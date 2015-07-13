@@ -81,9 +81,10 @@ and you'll have a game freshly installed from source!
   * Search where are the bottlenecks
   * ecs/EntityManager's entityExists() / componentExists() (called 504,360 times for a small game!).
 The function itself is optimized, but it is called to many times...
-**Solution:** Make a quad-tree for collision detection
+**Solution:** Make a quad-tree for collision detection _WIP (It isn't called unnecessarily now)_
   * Reduce all the Balls' draw calls, as one should be enough: they are all the same (minus the color)!
   * For smooth balltrail: adapt duration and frequency of particles w/ ball's velocity
+  * Particles: adapt particle frequency w/ number of balls on screen
   * ECS: Optimize to be more cache-friendly
   * Use a single draw call for all the balls, as it is done for Particles
 
