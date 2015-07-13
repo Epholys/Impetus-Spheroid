@@ -2,7 +2,9 @@
 #define STATE_OVER_HPP
 
 
+#include <algorithm>
 #include <sstream>
+#include <utility>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -11,6 +13,7 @@
 #include "framework/DataSaver.hpp"
 #include "utility/utility.hpp"
 #include "utility/Vector2.hpp"
+#include "data/RankData.hpp"
 
 
 // The Game Over screen State.
@@ -21,8 +24,12 @@ public:
 	enum Text
 	{
 		HighScore = 0,
+		HighScoreRankText,
+		HighScoreRank,
 		ScoreText,
 		ScoreNum,
+		ScoreRankText,
+		ScoreRank,
 		MoneyWon,
 		Money,
 		GameOver,
@@ -42,10 +49,12 @@ public:
 	virtual void draw(sf::RenderStates states);
 	virtual bool update(Time dt);
 	virtual bool handleInput(const sf::Event& event);
-
+	
 private:
 	void initStaticTexts();
 	void initVariableTexts(Context context);
+	RankData getRank(int score);
+
 	void updateDatas(Context context);
 
 private:

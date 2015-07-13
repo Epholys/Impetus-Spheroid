@@ -52,10 +52,7 @@ Application::Application()
 	stack_.registerState<StatePause>(StateID::Pause);
 	stack_.registerState<StateMarket>(StateID::Market);
 
-////////////////////////////////////////////////////////////////////////////////	
-	// stack_.pushState(StateID::Game);
-	stack_.pushState(StateID::Market);
-////////////////////////////////////////////////////////////////////////////////
+	stack_.pushState(StateID::Game);
 	
 	// gui::TextureGenerator::createMarketButtons(metaData_.inventory.getKeys());
 	
