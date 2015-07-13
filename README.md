@@ -29,14 +29,22 @@ and you'll have a game freshly installed from source!
   * Add some indications (objective, points, money, etc)
   	* More explicit beggining: Cannon sprite w/ aiming visualized (__DONE!__), cross-hair for mouse's cursor (__DONE!__) (, maybe arc trajectory __DONE!__ for the first shot and maybe a glowing target __DONE!__).
 	* Alternate beetween cross-hair and "normal" cursor __DONE!__ | Replace the grey cross-hair by something more visible(?)
-	* More explicit Events: Icons, Particule Effects, other Graphic Effects...
-	* More explicit PowerUps: Icons, _selected_ visualization __DONE!__, Particule Effects, other graphics Effects
+	* More explicit Events: Icons, Particule Effects __WIP__, other Graphic Effects...
+	* More explicit PowerUps: Icons, `selected' visualization __DONE!__, Particule Effects, other graphics Effects
 	* More explicit scoring: Little indication each time a ball touch the target (+1, +10, +100, ...) __DONE!__
   * Make the game more addictive
   	* Permanent Power-Ups __DONE!__
 	* Unlocking Power-Ups __DONE!__
-	* Achievement? Ranking System (Bronze, Silver, Gold, etc)?
+	* Achievement? Ranking System (F,E,D,C,B,A,S) __DONE!__?
 	* Rewarding: animation __DONE!__? sound?
+  * Add some content
+  	* More Events!
+	  * Crazy Cannon?
+	* More Power-Ups!
+	  * Several ball / shot?
+	  * Several Cannons?
+	* More Improvement!
+	  * Improves power-ups?
 
 * Graphics
   * Particle Effects (for Balls, PowerUps, Events, etc...)
@@ -55,8 +63,8 @@ and you'll have a game freshly installed from source!
 * Sound (just little sound effects)
 
 * Bugs
-  * Prevent balls from being created when an other ball is in the generation post. __DONE__
-  * World's wall mess-up __DONE__
+  * Prevent balls from being created when an other ball is in the generation post. __DONE!__
+  * World's wall mess-up __DONE!__
 
 * Clean-up
   * Fusion addWindWorld and reverseGravWorld in EventFunctions.cpp
