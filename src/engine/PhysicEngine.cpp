@@ -99,14 +99,36 @@ namespace eg
 
 	void PhysicEngine::handleAllCollisions(Time dt)
 	{
+		// Dynamic Array of an Entity, its velocity component and its solid component
+		std::unordered_map<
+			ecs::Entity,
+			std::pair<
+				ecs::ComponentBase::SPtr,
+				ecs::ComponentBase::SPtr>,
+			std::hash<unsigned int>> movingSolidEntities;
+		
 		for(auto& contactPair : contacts_)
 		{
 			auto entityPair = contactPair.first;
 
-			auto vel1 = ecs_.getComponent(entityPair.first, ecs::Component::Velocity);
-			auto vel2 = ecs_.getComponent(entityPair.second, ecs::Component::Velocity);
-			auto sol1 = ecs_.getComponent(entityPair.first, ecs::Component::Solid);
-			auto sol2 = ecs_.getComponent(entityPair.second, ecs::Component::Solid);
+			ecs::ComponentBase::SPtr vel1, vel2, sol1, sol2;
+
+			if(!movingSolidEntities.count(entityPair.first))
+			{
+				movingSolidEntities[entityPair.first] =
+					std::make_pair(ecs_.getComponent(entityPair.first, ecs::Component::Velocity),
+					               ecs_.getComponent(entityPair.first, ecs::Component::Solid));
+			}
+			if(!movingSolidEntities.count(entityPair.second))
+			{
+				movingSolidEntities[entityPair.second] =
+					std::make_pair(ecs_.getComponent(entityPair.second, ecs::Component::Velocity),
+					               ecs_.getComponent(entityPair.second, ecs::Component::Solid));
+			}
+			vel1 = movingSolidEntities[entityPair.first].first;
+			vel2 = movingSolidEntities[entityPair.second].first;
+			sol1 = movingSolidEntities[entityPair.first].second;
+			sol2 = movingSolidEntities[entityPair.second].second;
 			
 
 			auto firstSolidComp = dynCast<ecs::Solid>(sol1);

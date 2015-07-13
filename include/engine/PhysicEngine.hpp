@@ -4,6 +4,9 @@
 
 #include <utility>
 #include <map>
+#include <unordered_map>
+#include <functional>
+#include <utility>
 
 #include "utility/Time.hpp"
 #include "utility/Vector2.hpp"
