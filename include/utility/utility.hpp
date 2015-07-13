@@ -51,8 +51,16 @@ void defineText(sf::Text& txt,
                 sf::Color color = sf::Color::White,
                 bool centerOrigin = true);
 
+template<typename... Args>
+void moveGroupOfTexts(Vector2f position, sf::Text& begin, sf::Text& end, Args&... args);
+
 //-----------------------------------------------------------------------------
 
 float round (float toRound);
+
+
+//-----------------------------------------------------------------------------
+
+#include "utility.ipp"
 
 #endif // UT_UTILITY_HPP
