@@ -32,7 +32,8 @@ namespace
 //-----------------------------------------------------------------------------
 
 Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory, int ballsPerSecond)
-	: world_(world)
+	: getShootingOrderPosition()
+	, world_(world)
 	, inventory_(inventory)
 	, position_(position)
 	, untilNextFire_(Time::Zero)
@@ -51,6 +52,8 @@ Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory, int
 	assert(ballsPerSecond);
 	timeBeetweenFire_ = seconds(1 / static_cast<float>(ballsPerSecond));
 	transitionDeque_.setDuration(std::min(MAX_TRANSITION_DURATION, timeBeetweenFire_ * 0.9f));
+
+	setShootingOrderFunction(nullptr);
 	
 	for(int i=0; i<15; ++i)
 	{
@@ -79,6 +82,14 @@ void Cannon::initView()
 	cannonTube_.setFillColor(CANNON_COLOR);
 	cannonTube_.setOutlineColor(CANNON_OUTLINE_COLOR);
 	cannonTube_.setOutlineThickness(OUTLINE_THICKNESS);
+}
+
+void Cannon::setShootingOrderFunction(std::function<Vector2f()> function)
+{
+	if(function)
+		getShootingOrderPosition = function;
+	else
+		getShootingOrderPosition = [this](){return world_.getMousePosition();};
 }
 
 Cannon::~Cannon()
@@ -115,7 +126,7 @@ void Cannon::applyAutoFire(Time dt)
 void Cannon::updateTubeDirection()
 {
 	const float PI = 3.14159;
-	auto mousePosition = world_.getMousePosition();
+	auto mousePosition = getShootingOrderPosition();
 	auto gap = mousePosition - position_;
 	float angle = std::atan(gap.y / gap.x) * 180 / PI;
 	angle = (gap.x < 0) ? angle + 180 : angle;
@@ -132,7 +143,7 @@ std::vector<Vector2f> Cannon::computeBallTrajectory()
 	const Time FLIGHT_DURATION = seconds(5.f);
 	const Time FLIGHT_DT = seconds(1 / 60.f);
 	int pointCount = std::ceil(FLIGHT_DURATION.asSeconds() / FLIGHT_DT.asSeconds());
-	Vector2f ballVelocity = computeBallVelocity(world_.getMousePosition());
+	Vector2f ballVelocity = computeBallVelocity(getShootingOrderPosition());
 	float velocityNorm = std::sqrt(std::pow(ballVelocity.x, 2.f) + std::pow(ballVelocity.y, 2.f));
 	sf::Time timeInsideCannon = seconds(CANNON_TUBE_SIZE.x / velocityNorm);
 	auto gravityVect = world_.getGravityVect();
@@ -238,7 +249,7 @@ ecs::Entity Cannon::createBall()
 		                                        ecs::Component::Velocity));
 	assert(velComp);
 
-	Vector2f velocity = computeBallVelocity(world_.getMousePosition());
+	Vector2f velocity = computeBallVelocity(getShootingOrderPosition());
 	velComp->velocity_ += velocity;
 
 	ecs::Entity label = pBall->getLabel();
@@ -335,8 +346,12 @@ BallData Cannon::randomBallData() const
 }
 
 
+//-----------------------------------------------------------------------------
 
-
-
-
-
+void Cannon::modulateColor(sf::Color color)
+{
+	cannonBody_.setFillColor(CANNON_COLOR * color);
+	cannonTube_.setFillColor(CANNON_COLOR * color);
+	cannonBody_.setOutlineColor(CANNON_OUTLINE_COLOR * color);
+	cannonTube_.setOutlineColor(CANNON_OUTLINE_COLOR * color);
+}

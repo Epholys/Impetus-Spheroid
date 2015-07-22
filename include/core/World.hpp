@@ -40,8 +40,7 @@
 class Inventory;
 class MetaData;
 
-class World : public sf::NonCopyable,
-              public sf::Drawable,
+class World : public sf::Drawable,
               public Modifiable<World>
 {
 public:

@@ -21,7 +21,7 @@ namespace evt
 	{
 		enum Difficulty
 		{
-			None=0, Easy, Medium, Hard
+			Debug = -1, None=0, Easy, Medium, Hard
 		};
 
 		Event();
