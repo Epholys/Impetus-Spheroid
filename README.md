@@ -39,7 +39,7 @@ and you'll have a game freshly installed from source!
 	* Rewarding: animation __DONE!__? sound?
   * Add some content
   	* More Events!
-	  * Crazy Cannon?
+	  * Crazy Cannon? __DONE!__
 	* More Power-Ups!
 	  * Several ball / shot?
 	  * Several Cannons?

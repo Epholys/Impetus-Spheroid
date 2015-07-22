@@ -313,6 +313,44 @@ namespace evt
 			world.forwardModifier<Entity>(modifier);
 		};
 
+//-----------------------------------------------------------------------------
+
+	auto crazyCannonShootingOrder =
+		[](const World* w)
+		{
+			const float RANDOM_DEV = 100.f;
+			return w->getMousePosition() + Vector2f(normalRandFloat(0.f,RANDOM_DEV),
+			                                        normalRandFloat(0.f,RANDOM_DEV));
+		};
+	
+	auto makeCannonCrazy =
+		[](World& world, Time)
+		{
+			Modifier<Cannon> modifier;
+			modifier.duration_ = Time();
+			modifier.postFunction_ =
+				[&](Cannon& c, Time)
+				{
+					c.setShootingOrderFunction(std::bind(crazyCannonShootingOrder, &world));
+					c.modulateColor(sf::Color(200, 255, 0));
+				};
+			world.forwardModifier<Cannon>(modifier);
+		};
+
+	auto makeCannonSane =
+		[](World& world, Time)
+		{
+			Modifier<Cannon> modifier;
+			modifier.duration_ = Time();
+			modifier.postFunction_ =
+				[&](Cannon& c, Time)
+				{
+					c.setShootingOrderFunction(nullptr);
+					c.modulateColor();
+				};
+			world.forwardModifier<Cannon>(modifier);
+		};
+	
 
 //-----------------------------------------------------------------------------
 
@@ -342,6 +380,11 @@ namespace evt
 		addWindWorldMod.preFunction_ = addWindWorld;
 		addWindWorldMod.postFunction_ = removeWindWorld;
 
+		Modifier<World> makeCannonCrazyMod;
+		makeCannonCrazyMod.duration_ = seconds(DEFAULT_EVENT_DURATION * 1.5f);
+		makeCannonCrazyMod.preFunction_ = makeCannonCrazy;
+		makeCannonCrazyMod.postFunction_ = makeCannonSane;
+
 
 		// Create base Events
 		Event stopTimeEvt;
@@ -360,6 +403,10 @@ namespace evt
 		addWindWorldEvt.diff = Event::Easy;
 		addWindWorldEvt.worldModifiers.push_back(addWindWorldMod);
 
+		Event makeCannonCrazyEvt;
+		makeCannonCrazyEvt.diff = Event::Hard;
+		makeCannonCrazyEvt.worldModifiers.push_back(makeCannonCrazyMod);
+
 
 		// Modify Base Modifiers to create more complex Events
 		const float BALL_FALLING = 0.5f;
@@ -374,7 +421,7 @@ namespace evt
 		// Create and return all the Events
 		std::vector<Event> events
 			{reverseGravWorldEvt, stopTimeEvt, createObstacleWorldEvt,
-			addWindWorldEvt, gravAndTimeEvt};
+			 addWindWorldEvt, gravAndTimeEvt, makeCannonCrazyEvt};
 		return events;
 	}
 }

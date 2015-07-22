@@ -62,6 +62,7 @@ namespace evt
 		updateChances(Event::Easy, diff.probaEasy);
 		updateChances(Event::Medium, diff.probaMedium);
 		updateChances(Event::Hard, diff.probaHard);
+		updateChances(Event::Debug, std::max(diff.probaEasy, std::max(diff.probaMedium, diff.probaHard)) * 1000);
 		computeChanceSum();
 
 		timeBeetweenEvents_ = diff.delay;

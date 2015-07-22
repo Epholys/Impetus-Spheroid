@@ -3,6 +3,7 @@
 
 #include <deque>
 #include <vector>
+#include <functional>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Event.hpp>
@@ -43,6 +44,9 @@ public:
 
 	void switchBallType(unsigned int type);
 	void setNTouching(int nTouching);
+	void setShootingOrderFunction(std::function<Vector2f()> function);
+
+	void modulateColor(sf::Color color = sf::Color::White);
 
 	// WARNING: returns -1 if no Ball is created.
 	ecs::Entity createBall();
@@ -60,6 +64,8 @@ private:
 	void computeArcView(const std::vector<Vector2f>& trajectory);
 	
 	void updateBuffer();
+
+	std::function<Vector2f()> getShootingOrderPosition;
 
 private:
 	World& world_;
