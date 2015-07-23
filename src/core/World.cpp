@@ -13,8 +13,14 @@ namespace
 //-----------------------------------------------------------------------------
 // *** constructor: ***
 
+namespace
+{
+	const std::vector<Vector2f> CANNON_POSITION { {40.f, 580.f}, {760.f, 580.f} };
+	const std::vector<Vector2f> CANNON_BALLS_POSITION { {2.5f, 560.f}, {777.5f, 560.f} };
+}
+
 //const Time World::TIME_BEETWEEN_FIRE = milliseconds(333);
-Vector2f World::CANON_POSITION {40.f, 580.f};
+// Vector2f World::CANON_POSITION {40.f, 580.f};
 
 
 World::World(const Vector2u& originalSize,
@@ -25,12 +31,14 @@ World::World(const Vector2u& originalSize,
 	: originalSize_(originalSize)
 	, font_(fonts.get(FontID::ForcedSquare))
 	, textures_(textures)
+	, metaData_(metaData)
 	, ecs_()
 	, physEng_(ecs_, precision)
 	, evtGen_()
 	, difficulty_(DifficultyContext{this, &evtGen_, &metaData, &(metaData.inventory)})
 	, inventory_(metaData.inventory)
-	, cannon_(CANON_POSITION, *this, inventory_, metaData.improvementValue[ImprovementID::BallsPerSecond])
+	, cannons_()
+	, nBonusCannon_(0)
 	, state_(Waiting)
 	, speedCoeff_(1.f)
 	, gravityVect_(0.f, 1000.f)
@@ -42,6 +50,8 @@ World::World(const Vector2u& originalSize,
 	, particleSystems_()
 	, otherDrawings_()
 {
+	addCannon();
+	
 	for(int i=0; i<Particle::TypeCount; ++i)
 	{
 		particleSystems_.push_back(ParticleSystem(Particle::Type(i)));
@@ -63,8 +73,8 @@ void World::generateWorld()
 	                          sf::Color(80,80,80));
 
 	Entity::Ptr rightWall (new Wall(*this,
-	                                Vector2f(originalSize_.x, originalSize_.y / 2.f),
-	                                Vector2f(10.f, originalSize_.y),
+	                                Vector2f(originalSize_.x - 12.5f, originalSize_.y / 2.f),
+	                                Vector2f(25.f, originalSize_.y),
 	                                sf::Color(80,80,80)));
 
 	ceiling_ = ceiling;
@@ -82,7 +92,27 @@ void World::generateWorld()
 	createTarget(Vector2f(3* originalSize_.x / 4.f, originalSize_.y / 2.f));
 }
 
+int World::recordBonusCannon()
+{
+	++nBonusCannon_;
+	return nBonusCannon_ - 1;
+}
 
+void World::addCannon()
+{
+	auto mainCannon = std::make_shared<Cannon>(CANNON_POSITION.at(cannons_.size()),
+	                                           CANNON_BALLS_POSITION.at(cannons_.size()),
+	                                           *this,
+	                                           inventory_,
+	                                           metaData_.improvementValue[ImprovementID::BallsPerSecond]);
+	cannons_.push_back(mainCannon);
+}
+
+void World::removeCannon()
+{
+	--nBonusCannon_;
+	cannons_.pop_back();
+}
 
 //-----------------------------------------------------------------------------
 
@@ -157,7 +187,10 @@ void World::forwardModifier<Entity>(Modifier<Entity> modifier)
 template<>
 void World::forwardModifier<Cannon>(Modifier<Cannon> modifier)
 {		
-	cannon_.addModifier(modifier);
+	for(auto& cannon : cannons_)
+	{
+		cannon->addModifier(modifier);
+	}
 }
 
 void World::addEntity(Entity::Ptr entity)
@@ -204,7 +237,10 @@ void World::cancelEvents(bool comeFromInventory)
 		entity->forceEndingModifiers(*entity);
 	}
 	
-	cannon_.forceEndingModifiers(cannon_);
+	for(auto& cannon : cannons_)
+	{
+		cannon->forceEndingModifiers(*cannon);
+	}
 
 	if(comeFromInventory)
 	{
@@ -246,10 +282,18 @@ void World::handleInput(const sf::Event& event)
 	if(event.type == sf::Event::MouseMoved)
 	{
 		mousePosition_ = Vector2f(event.mouseMove.x, event.mouseMove.y);
-		cannon_.updateTubeDirection();
+		for(auto& cannon : cannons_)
+		{
+			cannon->updateTubeDirection();
+		}
 
 		if(state_ == Waiting)
-			cannon_.updateArcPreview();
+		{
+			for(auto& cannon : cannons_)
+			{
+				cannon->updateArcPreview();
+			}
+		}
 	}
 
 	else if(state_ == Waiting || state_ == GameOver)
@@ -263,7 +307,10 @@ void World::handleInput(const sf::Event& event)
 			return;
 	}
 
-	cannon_.handleInput(event);
+	for(auto& cannon : cannons_)
+	{
+		cannon->handleInput(event);
+	}
 }
 
 void World::update(Time dt)
@@ -286,7 +333,12 @@ void World::update(Time dt)
 	dt *= speedCoeff_;
 
 	if(!(state_ == Waiting || state_ == GameOver))
-		cannon_.update(dt);
+	{
+		for(auto& cannon : cannons_)
+		{
+			cannon->update(dt);
+		}
+	}
 
 	ecs_.update(dt);
 	applyModifiers(*this, dt);
@@ -399,8 +451,12 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		(*it)->draw(target, states);
 	}
 
-	cannon_.draw(target, states);
+	for(const auto& cannon : cannons_)
+	{
 
+		cannon->draw(target, states);
+	}
+		
 	difficulty_.draw(target, states);
 
 	for(const auto& entry : otherDrawings_)

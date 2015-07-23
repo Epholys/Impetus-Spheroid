@@ -33,7 +33,7 @@ class Cannon :
 	public Modifiable<Cannon>
 {
 public:
-	Cannon(const Vector2f& position, World& world, Inventory& inventory, int ballsPerSecond);
+	Cannon(const Vector2f& position, Vector2f ballPosition, World& world, Inventory& inventory, int ballsPerSecond);
 	~Cannon();
 
 	void handleInput(const sf::Event& event);

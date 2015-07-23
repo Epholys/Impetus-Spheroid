@@ -60,7 +60,8 @@ void Inventory::initKeyBinding(bool isAzerty)
 	keyBindings_[sf::Keyboard::S] = AddTime;
 	keyBindings_[sf::Keyboard::D] = AddTarget;
 	keyBindings_[sf::Keyboard::X] = BallTouchDouble;
-
+	keyBindings_[sf::Keyboard::C] = AddCannon;
+	
 	for(auto it = keyBindings_.begin(); it != keyBindings_.end(); ++it) 
 	{
 		powerUpTable_[it->second].key = it->first;

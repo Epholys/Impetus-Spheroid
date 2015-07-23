@@ -58,8 +58,11 @@ public:
 	      TextureHolder& textures,
 	      int precision = 2);
 	~World() {};
-
+	
 	ecs::Entity createTarget(Vector2f mousePosition);
+	int recordBonusCannon();
+	void addCannon();
+	void removeCannon();
 
 	void handleInput(const sf::Event& event);
 	void update(Time dt);
@@ -108,19 +111,18 @@ private:
 	void cleanOtherDrawings();
 
 private:
-	static Vector2f CANON_POSITION;
-
-private:
 	const Vector2f originalSize_;
 	sf::Font& font_;
 	TextureHolder& textures_;
 
+	const MetaData& metaData_;
 	ecs::EntityManager ecs_;
 	eg::PhysicEngine physEng_;
 	evt::EventGenerator evtGen_;
 	DifficultyManager difficulty_;
 	Inventory& inventory_;
-	Cannon cannon_;
+	std::vector<std::shared_ptr<Cannon>> cannons_;
+	int nBonusCannon_;
 
 	GameState state_;
 

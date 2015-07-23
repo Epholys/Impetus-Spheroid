@@ -83,6 +83,33 @@ namespace
 		w.forwardModifier(removeTarget);
 	};
 
+	auto addCannon =
+		[](World& w, Time)
+	{
+		Time DURATION_OF_CANNON = seconds(20);
+
+		Modifier<World> cannonPlus;
+		cannonPlus.postFunction_ =
+		    [DURATION_OF_CANNON](World& w, Time)
+			{
+				w.addCannon();
+
+				Modifier<World> removeCannon;
+				removeCannon.preDelay_ = DURATION_OF_CANNON;
+				removeCannon.postFunction_ =
+					[](World& w, Time)
+					{
+						w.removeCannon();
+					};
+
+				w.forwardModifier<World>(removeCannon);
+			};
+
+		cannonPlus.preDelay_ = seconds((DURATION_OF_CANNON.asSeconds() + 1.f) * w.recordBonusCannon());
+
+		w.forwardModifier<World>(cannonPlus);
+	};
+
 	auto updateColor =
 		[](Entity& ent, Time)
 	{
@@ -238,4 +265,17 @@ void genPowerUps(std::map<PowerUpID::ID, PowerUpEntry>& powerUpTable)
 	entry->powerUp = pPutTouching;
 	entry->stock = 0;
 	entry->texture = txtTouching;
+
+	Modifier<World> modCannon;
+	modCannon.duration_ = Time();
+	modCannon.postFunction_ = addCannon;
+	PowerUpModifier* pumCannon = new PowerUpModifier();
+	pumCannon->addModifier(modCannon);
+	std::shared_ptr<PowerUp> pPumCannon (pumCannon);
+	sf::Texture txtCannon;
+	txtCannon.loadFromFile("./media/sprites/AddTarget.png");
+	entry = &powerUpTable[AddCannon];
+	entry->powerUp = pPumCannon;
+	entry->stock = 12;
+	entry->texture = txtCannon;
 }

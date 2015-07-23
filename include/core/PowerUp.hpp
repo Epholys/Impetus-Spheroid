@@ -27,6 +27,7 @@ namespace PowerUpID
 		AddTarget,
 		PointMultiplier,
 		BallTouchDouble,
+		AddCannon,
 		PowerUpCount,
 	};
 }

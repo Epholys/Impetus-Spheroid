@@ -23,7 +23,6 @@ namespace
 	const float CANNON_BODY_RADIUS = 35.f;
 	const Vector2f CANNON_TUBE_SIZE { 60.f, 24.f };
 
-	const Vector2f BALL_POSITION {2.5f, 570.f};
 	const Vector2f BALL_SPACING  {0.f, -40.f};
 	const Time MAX_TRANSITION_DURATION = milliseconds(125);
 }
@@ -31,8 +30,8 @@ namespace
 
 //-----------------------------------------------------------------------------
 
-Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory, int ballsPerSecond)
-	: getShootingOrderPosition()
+Cannon::Cannon(const Vector2f& position, Vector2f ballPosition, World& world, Inventory& inventory, int ballsPerSecond)
+	: getShootingOrderPosition(nullptr)
 	, world_(world)
 	, inventory_(inventory)
 	, position_(position)
@@ -41,7 +40,7 @@ Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory, int
 	, ballType_(Ball::Normal)
 	, nTouchingBall_(1)
 	, ballBuffer_()
-	, transitionDeque_(gui::TransformData(BALL_POSITION),
+	, transitionDeque_(gui::TransformData(ballPosition),
 	                   gui::TransformData(BALL_SPACING, 0.f, Vector2f()),
 	                   gui::Transition::Linear,
 	                   MAX_TRANSITION_DURATION)
@@ -53,7 +52,7 @@ Cannon::Cannon(const Vector2f& position, World& world, Inventory& inventory, int
 	timeBeetweenFire_ = seconds(1 / static_cast<float>(ballsPerSecond));
 	transitionDeque_.setDuration(std::min(MAX_TRANSITION_DURATION, timeBeetweenFire_ * 0.9f));
 
-	setShootingOrderFunction(nullptr);
+	setShootingOrderFunction(std::function<Vector2f()>(nullptr));
 	
 	for(int i=0; i<15; ++i)
 	{
@@ -87,7 +86,7 @@ void Cannon::initView()
 void Cannon::setShootingOrderFunction(std::function<Vector2f()> function)
 {
 	if(function)
-		getShootingOrderPosition = function;
+		getShootingOrderPosition = std::move(function);
 	else
 		getShootingOrderPosition = [this](){return world_.getMousePosition();};
 }
@@ -233,10 +232,6 @@ void Cannon::setNTouching(int nTouching)
 
 ecs::Entity Cannon::createBall()
 {
-	float cannonAngle =  cannonTube_.getRotation();
-	if (!(cannonAngle < 10.f || cannonAngle > 265.f))
-		return -1;
-
 	Entity::Ptr pBall (new Ball(world_,
 	                            position_,
 	                            world_.getGravityVect(),

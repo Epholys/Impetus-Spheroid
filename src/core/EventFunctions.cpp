@@ -345,7 +345,7 @@ namespace evt
 			modifier.postFunction_ =
 				[&](Cannon& c, Time)
 				{
-					c.setShootingOrderFunction(nullptr);
+					c.setShootingOrderFunction(std::function<Vector2f()>(nullptr));
 					c.modulateColor();
 				};
 			world.forwardModifier<Cannon>(modifier);
