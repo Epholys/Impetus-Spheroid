@@ -120,9 +120,9 @@ void Target::updateObjective()
 	if(!position_) return;
 
 	const int Y_MARGIN = 80;
-	const int X_RIGHT_MARGIN = 20;
+	const int X_MARGIN = 30.f;
 	auto windowSize = world_.getWindowSize();
-	int newXPosition = randInt(windowSize.x / 4, windowSize.x - X_RIGHT_MARGIN);
+	int newXPosition = randInt(X_MARGIN, windowSize.x - X_MARGIN);
 	int newYPosition = randInt(Y_MARGIN, windowSize.y - Y_MARGIN);
 
 	objective_ = Vector2f(newXPosition, newYPosition);
