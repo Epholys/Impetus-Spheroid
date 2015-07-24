@@ -43,7 +43,8 @@ Application::Application()
 
 	if(!DataSaver::retrieveDatas(metaData_))
 	{
-		DataSaver::salvageDatas();
+		MetaData metaData = DataSaver::makeDefaultFile();
+		DataSaver::saveDatas(metaData);
 		DataSaver::retrieveDatas(metaData_);
 	}
 

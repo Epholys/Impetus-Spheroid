@@ -273,7 +273,7 @@ void genPowerUps(std::map<PowerUpID::ID, PowerUpEntry>& powerUpTable)
 	pumCannon->addModifier(modCannon);
 	std::shared_ptr<PowerUp> pPumCannon (pumCannon);
 	sf::Texture txtCannon;
-	txtCannon.loadFromFile("./media/sprites/AddTarget.png");
+	txtCannon.loadFromFile("./media/sprites/AddCannon.png");
 	entry = &powerUpTable[AddCannon];
 	entry->powerUp = pPumCannon;
 	entry->stock = 0;
