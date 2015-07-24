@@ -50,7 +50,7 @@ Market::Market(State::Context context)
 
 void Market::initText(sf::Font& font)
 {
-	const sf::Vector2f TEXT_POSITION (context_.originalWindowSize.x / 2.f, 50);
+	const sf::Vector2f TEXT_POSITION (context_.originalWindowSize.x / 2.f, 15.f);
 	
 	coinsText_.setFont(font);
 	updateCoinsText();
@@ -66,7 +66,7 @@ void Market::initText(sf::Font& font)
 
 void Market::initGUI(sf::Font& font)
 {
-	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x) / 2.f, 100);
+	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x) / 2.f, 45.f);
 	
 	gui::Menu::SPtr puMenu = std::make_shared<gui::Menu>(gui::Menu::Vertical);
 	initPowerUps(puMenu, font);

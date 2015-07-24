@@ -21,6 +21,12 @@ std::vector<MarketData> genMarketData()
 		     "Massless Balls that ignore gravity", 
 		     folderPath + "NoGravBall" + end},
 
+		    {BallTouchDouble, 10, 500,
+			 "Balls that can touch twice",
+			 folderPath + "BallTouchDouble" + end},
+		    
+
+
 		    {CancelEvents, 1, 750,
 		     "Powerful Event Canceler",
 		     folderPath + "CancelEvents" + end},
@@ -37,9 +43,10 @@ std::vector<MarketData> genMarketData()
 		     "Multiply the points by 1.5",
 		     folderPath + "MultiplyPoints" + end},
 		    
-		    {BallTouchDouble, 10, 500,
-		     "Balls that can touch twice",
-		     folderPath + "BallTouchDouble" + end}   };
+		    {AddCannon, 1, 2500,
+			 "Add a Cannon for 20s",
+			 folderPath + "AddCannon" + end}
+		};
 
 	return datas;
 }

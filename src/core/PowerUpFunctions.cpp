@@ -276,6 +276,6 @@ void genPowerUps(std::map<PowerUpID::ID, PowerUpEntry>& powerUpTable)
 	txtCannon.loadFromFile("./media/sprites/AddTarget.png");
 	entry = &powerUpTable[AddCannon];
 	entry->powerUp = pPumCannon;
-	entry->stock = 12;
+	entry->stock = 0;
 	entry->texture = txtCannon;
 }
