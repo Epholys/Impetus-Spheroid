@@ -27,54 +27,28 @@ and you'll have a game freshly installed from source!
 
 * Gameplay
   * Add some indications (objective, points, money, etc)
-  	* More explicit beggining: Cannon sprite w/ aiming visualized (__DONE!__), cross-hair for mouse's cursor (__DONE!__) (, maybe arc trajectory __DONE!__ for the first shot and maybe a glowing target __DONE!__).
-	* Alternate beetween cross-hair and "normal" cursor __DONE!__ | Replace the grey cross-hair by something more visible(?)
-	* More explicit Events: Icons, Particule Effects __WIP__, other Graphic Effects...
-	* More explicit PowerUps: Icons, `selected' visualization __DONE!__, Particule Effects, other graphics Effects
-	* More explicit scoring: Little indication each time a ball touch the target (+1, +10, +100, ...) __DONE!__
+	* Replace the grey cross-hair by something more visible(?)
+	* More explicit Events: Icons, Other Graphic Effects...
+	* More explicit PowerUps: Icons, Particule Effects, other graphics Effects
   * Make the game more addictive
-  	* Permanent Power-Ups __DONE!__
-	* Unlocking Power-Ups __DONE!__
-	* Achievement? Ranking System (F,E,D,C,B,A,S) __DONE!__?
-	* Rewarding: animation __DONE!__? sound?
+	* Rewarding: sound?
   * Add some content
   	* More Events!
-	  * Crazy Cannon? __DONE!__
 	* More Power-Ups!
 	  * Several ball / shot?
-	  * Several Cannons __DONE!__?
 	* More Improvement!
 	  * Improves power-ups?
-
-* Graphics
-  * Particle Effects (for Balls, PowerUps, Events, etc...)
-  	* Base (ParticleSystem, ParticleEmitter, Emitter) __DONE!__
-	* Affector __DONE!__
-	* Apply
-	  * Ball _DONE!_
-	  * Events _DONE!_
-	  * PowerUps _DONE!_
-  * Transition
-  	* Transition __DONE!__
-	* TransitionFunctions __DONE!__
-	* TransitionDeque __DONE!__
-	* Apply Transition Deque to Cannon (with a new class?) and to Difficulty Manager __DONE!__
 
 * Sound (just little sound effects)
 
 * Bugs
-  * Prevent balls from being created when an other ball is in the generation post. __DONE!__
-  * World's wall mess-up __DONE!__
 
 * Clean-up
   * Fusion addWindWorld and reverseGravWorld in EventFunctions.cpp
 
 * (Heavy) Refactoring
-  * FontHolder (or a general ResourceHolder<>) __DONE!__
-  	* Now replace every convenient ```const std::string&``` by the ResourceHolder managment
-  * Transition from simple position movement to complex Transformation __DONE!__
+  * Replace every convenient ```const std::string&``` by the ResourceHolder managment
   * Separate DifficultyManager into two classes
-  * Remove gui::EffectColor<T> if it is only used for Market, you can make a little utility function instead of this behemoth __DONE!__
   * Refactor TransitionDeque to have one an only Transition?
 	
 * Optimization (if necessary)
@@ -82,12 +56,10 @@ and you'll have a game freshly installed from source!
   * ecs/EntityManager's entityExists() / componentExists() (called 504,360 times for a small game!).
 The function itself is optimized, but it is called to many times...
 **Solution:** Make a quad-tree for collision detection _WIP (It isn't called unnecessarily now)_
-  * Reduce all the Balls' draw calls, as one should be enough: they are all the same (minus the color)!
+  * Reduce all the Balls' draw calls, as one should be enough: they are almost all the same (minus the color)!
   * For smooth balltrail: adapt duration and frequency of particles w/ ball's velocity
   * Particles: adapt particle frequency w/ number of balls on screen
   * ECS: Optimize to be more cache-friendly
-  * Use a single draw call for all the balls, as it is done for Particles
-
 
 ### Trivia
 * __What are the naming convention?__ I use the [Java naming convention](https://en.wikipedia.org/wiki/Naming_convention_%28programming%29#Java), as I think it makes sense in OOP
