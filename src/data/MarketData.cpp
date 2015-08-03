@@ -24,8 +24,6 @@ std::vector<MarketData> genMarketData()
 		    {BallTouchDouble, 10, 500,
 			 "Balls that can touch twice",
 			 folderPath + "BallTouchDouble" + end},
-		    
-
 
 		    {CancelEvents, 1, 750,
 		     "Powerful Event Canceler",

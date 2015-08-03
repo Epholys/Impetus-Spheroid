@@ -42,7 +42,7 @@ and you'll have a game freshly installed from source!
 	  * Crazy Cannon? __DONE!__
 	* More Power-Ups!
 	  * Several ball / shot?
-	  * Several Cannons?
+	  * Several Cannons __DONE!__?
 	* More Improvement!
 	  * Improves power-ups?
 

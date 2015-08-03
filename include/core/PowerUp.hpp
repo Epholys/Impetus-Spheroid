@@ -22,11 +22,11 @@ namespace PowerUpID
 		None = -1,
 		GhostBall,
 		NoGravBall,
+		BallTouchDouble,
 		CancelEvents,
 		AddTime,
 		AddTarget,
 		PointMultiplier,
-		BallTouchDouble,
 		AddCannon,
 		PowerUpCount,
 	};
