@@ -105,7 +105,7 @@ namespace
 				w.forwardModifier<World>(removeCannon);
 			};
 
-		cannonPlus.preDelay_ = seconds((DURATION_OF_CANNON.asSeconds() + 1.f) * w.recordBonusCannon());
+		//	cannonPlus.preDelay_ = seconds(DURATION_OF_CANNON.asSeconds() * (w.getNCannon() -1));
 
 		w.forwardModifier<World>(cannonPlus);
 	};

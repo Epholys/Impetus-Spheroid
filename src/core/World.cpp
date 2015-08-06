@@ -38,7 +38,7 @@ World::World(const Vector2u& originalSize,
 	, difficulty_(DifficultyContext{this, &evtGen_, &metaData, &(metaData.inventory)})
 	, inventory_(metaData.inventory)
 	, cannons_()
-	, nBonusCannon_(0)
+	, nCannon_(0)
 	, state_(Waiting)
 	, speedCoeff_(1.f)
 	, gravityVect_(0.f, 1000.f)
@@ -92,26 +92,32 @@ void World::generateWorld()
 	createTarget(Vector2f(3* originalSize_.x / 4.f, originalSize_.y / 2.f));
 }
 
-int World::recordBonusCannon()
+unsigned int World::getNCannon() const
 {
-	++nBonusCannon_;
-	return nBonusCannon_ - 1;
+	return nCannon_;
 }
 
 void World::addCannon()
 {
-	auto mainCannon = std::make_shared<Cannon>(CANNON_POSITION.at(cannons_.size()),
-	                                           CANNON_BALLS_POSITION.at(cannons_.size()),
-	                                           *this,
-	                                           inventory_,
-	                                           metaData_.improvementValue[ImprovementID::BallsPerSecond]);
-	cannons_.push_back(mainCannon);
+	if(nCannon_ < CANNON_POSITION.size())
+	{
+		auto newCannon = std::make_shared<Cannon>(CANNON_POSITION.at(nCannon_),
+		                                          CANNON_BALLS_POSITION.at(nCannon_),
+		                                          *this,
+		                                          inventory_,
+		                                          metaData_.improvementValue[ImprovementID::BallsPerSecond]);
+		cannons_.push_back(newCannon);
+	}
+	++nCannon_;
 }
 
 void World::removeCannon()
 {
-	--nBonusCannon_;
-	cannons_.pop_back();
+	--nCannon_;
+	if(nCannon_ < CANNON_POSITION.size())
+	{
+		cannons_.pop_back();
+	}
 }
 
 //-----------------------------------------------------------------------------
