@@ -103,7 +103,7 @@ void Application::update(sf::Time dt)
 
 void Application::render()
 {
-	const sf::Color BACKGROUND_COLOR (230, 230, 230);
+	const sf::Color BACKGROUND_COLOR (255, 255, 255);
 
 	window_.clear(BACKGROUND_COLOR);
 
