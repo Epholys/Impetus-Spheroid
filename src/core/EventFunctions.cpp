@@ -51,7 +51,7 @@ namespace evt
 			}
 			Ball* pBall = dynamic_cast<Ball*>(&ball);
 			if(pBall)
-				pBall->setOutlineColor(sf::Color::White);
+				pBall->setOutlineColor(sf::Color(230,230,255));
 		}
 	};
 
