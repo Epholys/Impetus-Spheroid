@@ -151,7 +151,7 @@ namespace ecs
 			{
 				if(!componentPair.second->isPaused() || force)
 				{
-					table.insert(componentPair);
+					table.emplace(componentPair.first, componentPair.second);
 				}
 			}
 		}
@@ -168,7 +168,7 @@ namespace ecs
 			{
 				if(!componentPair.second->isPaused() || force)
 				{
-					table.insert(componentPair);
+					table.emplace(componentPair.first, componentPair.second);
 				}
 			}
 		}

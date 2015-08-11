@@ -60,7 +60,7 @@ public:
 	~World() {};
 	
 	ecs::Entity createTarget(Vector2f mousePosition);
-	int recordBonusCannon();
+	unsigned int getNCannon() const;
 	void addCannon();
 	void removeCannon();
 
@@ -122,7 +122,7 @@ private:
 	DifficultyManager difficulty_;
 	Inventory& inventory_;
 	std::vector<std::shared_ptr<Cannon>> cannons_;
-	int nBonusCannon_;
+	unsigned int nCannon_;
 
 	GameState state_;
 

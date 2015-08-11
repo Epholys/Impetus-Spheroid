@@ -24,7 +24,7 @@ Inventory::Inventory(Vector2u originalSize,
 	coinsText_.setFont(font_);
 	coinsText_.setPosition(COINS_POSITION);
 	coinsText_.setString(toString(coins_));
-	coinsText_.setColor(sf::Color::Yellow);
+	coinsText_.setColor(sf::Color(255,230,0));
 }
 
 Inventory::~Inventory()

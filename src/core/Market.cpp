@@ -207,6 +207,7 @@ void Market::buyPowerUp(PowerUpID::ID id, int number, int price)
 	else if(!isUnlocked_[id] && price * UNLOCKING_COEFF <= inventory_.getCoins())
 	{
 		inventory_.removeCoins(price * UNLOCKING_COEFF);
+		inventory_.increment(id, number);
 		isUnlocked_[id] = true;
 		sf::Texture texture;
 		assert(texture.loadFromFile(marketDatas[id].texturePath));
