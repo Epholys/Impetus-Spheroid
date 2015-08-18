@@ -1,7 +1,9 @@
+
 ![Logo](../master/media/images/logo.png)
 
 ## A rapid-paced game about spheroid with high momentum and a target
 
+## GET IT [HERE](http://epholys.itch.io/impetus-spheroid)
 
 ## Hacking
 
@@ -26,6 +28,11 @@ and you'll have a game freshly installed from source!
 ### TODO
 
 * Gameplay
+  * Tutorial
+  	* Make a full-fledged tutorial for begginers at the first game
+  * Balancing
+  	* Cheaper bonuses
+	* Faster auto-fire
   * Add some indications (objective, points, money, etc)
 	* Replace the grey cross-hair by something more visible(?)
 	* More explicit Events: Icons, Other Graphic Effects...
@@ -39,9 +46,13 @@ and you'll have a game freshly installed from source!
 	* More Improvement!
 	  * Improves power-ups?
 
+* Other
+  * Make a credit page
+
 * Sound (just little sound effects)
 
 * Bugs
+  * Double insertion of CancelEvent
 
 * Clean-up
   * Fusion addWindWorld and reverseGravWorld in EventFunctions.cpp
