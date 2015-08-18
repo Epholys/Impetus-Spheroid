@@ -29,7 +29,7 @@ and you'll have a game freshly installed from source!
 
 * Gameplay
   * Tutorial
-  	* Make a full-fledged tutorial for begginers at the first game
+  	* Full-fledged tutorial for begginers at the first game
   * Balancing
   	* Cheaper bonuses
 	* Faster auto-fire
@@ -46,12 +46,17 @@ and you'll have a game freshly installed from source!
 	* More Improvement!
 	  * Improves power-ups?
 
-* Other
-  * Make a credit page
-
+* Graphics
+  * TargetSun's Highlight more visible __DONE!__
+  * Balls' Trail particles duration longer __DONE!__
+  
 * Sound (just little sound effects)
 
 * Bugs
+  * Crash when CancelEvent is called twice in a execution __DONE!__
+
+* Other
+  * Make a credit page
 
 * Clean-up
   * Fusion addWindWorld and reverseGravWorld in EventFunctions.cpp

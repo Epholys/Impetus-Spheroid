@@ -10,7 +10,7 @@ namespace
 	const float ANGULAR_VELOCITY = PI / 8.f;
 	const int N_SUBDIVISION = 48;
 
-	const sf::Color COLOR = sf::Color(255, 230, 0, 15);
+	const sf::Color COLOR = sf::Color(255, 230, 0, 50);
 }
 
 
