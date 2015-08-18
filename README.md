@@ -31,8 +31,8 @@ and you'll have a game freshly installed from source!
   * Tutorial
   	* Full-fledged tutorial for begginers at the first game
   * Balancing
-  	* Cheaper bonuses
-	* Faster auto-fire
+  	* Cheaper bonuses _NEEDS TESTING_
+	* Faster base auto-fire _DONE!_
   * Add some indications (objective, points, money, etc)
 	* Replace the grey cross-hair by something more visible(?)
 	* More explicit Events: Icons, Other Graphic Effects...

@@ -13,35 +13,35 @@ std::vector<MarketData> genMarketData()
 	// std::string end = ".png";
 	
 	std::vector<MarketData> datas
-		{   {GhostBall, 10, 250,
+		{   {GhostBall, 10, 100,
 		     "Ghost Balls which pass through",
 		     folderPath + "GhostBall" + end},
 		    
-		    {NoGravBall, 10, 200,
+		    {NoGravBall, 10, 150,
 		     "Massless Balls that ignore gravity", 
 		     folderPath + "NoGravBall" + end},
 
-		    {BallTouchDouble, 10, 500,
+		    {BallTouchDouble, 10, 200,
 			 "Balls that can touch twice",
 			 folderPath + "BallTouchDouble" + end},
 
-		    {CancelEvents, 1, 750,
+		    {CancelEvents, 1, 300,
 		     "Powerful Event Canceler",
 		     folderPath + "CancelEvents" + end},
 
-		    {AddTime, 1, 1000,
+		    {AddTime, 1, 500,
 		     "Add 5 seconds to the timer",
 		     folderPath + "AddTime" + end},
 
-		    {AddTarget, 1, 2000,
+		    {AddTarget, 1, 750,
 		     "Add a Target for 20s",
 		     folderPath + "AddTarget" + end},
 		    
-		    {PointMultiplier, 1, 2000,
+		    {PointMultiplier, 1, 750,
 		     "Multiply the points by 1.5",
 		     folderPath + "MultiplyPoints" + end},
 		    
-		    {AddCannon, 1, 2500,
+		    {AddCannon, 1, 1000,
 			 "Add a Cannon for 20s",
 			 folderPath + "AddCannon" + end}
 		};

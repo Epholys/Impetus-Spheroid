@@ -57,13 +57,13 @@ namespace gui
 			ss.str("");
 			ss << price;
 			sf::Text priceText(ss.str(), font);
-			priceText.setColor(sf::Color::Yellow);
+			priceText.setColor(sf::Color(255,230,0));
 			chSize = height * 0.7f;
 			priceText.setCharacterSize(chSize);
 			centerOrigin(priceText);
 			priceText.setPosition(width * 0.9f, (height) / 2.f);
 
-			rTexture.clear(sf::Color(230,230,230));
+			rTexture.clear(sf::Color::White);
 			rTexture.draw(iconSprite);
 			rTexture.draw(numberItems);
 			rTexture.draw(legendText);

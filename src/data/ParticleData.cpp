@@ -28,7 +28,3 @@ std::vector<ParticleData> genParticleData ()
 	
 	return datas;
 }
-
-
-
-
