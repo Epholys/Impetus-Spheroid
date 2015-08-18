@@ -52,7 +52,6 @@ and you'll have a game freshly installed from source!
 * Sound (just little sound effects)
 
 * Bugs
-  * Double insertion of CancelEvent
 
 * Clean-up
   * Fusion addWindWorld and reverseGravWorld in EventFunctions.cpp

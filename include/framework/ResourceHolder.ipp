@@ -11,6 +11,9 @@ ResourceHolder<Resource, Identifier>::ResourceHolder()
 template<typename Resource, typename Identifier>
 void ResourceHolder<Resource, Identifier>::load(Identifier id, const std::string& path)
 {
+	if(resourceMap_.find(id) != resourceMap_.end())
+		return;
+	
 	std::unique_ptr<Resource> resource (new Resource());
 	assert(resource->loadFromFile(path));
 
@@ -22,6 +25,9 @@ template<typename Resource, typename Identifier>
 template<typename... Args>
 void ResourceHolder<Resource, Identifier>::load(Identifier id, const std::string& path, Args... args)
 {
+	if(resourceMap_.find(id) != resourceMap_.end())
+		return;
+	
 	std::unique_ptr<Resource> resource (new Resource());
 	assert(resource->loadFromFile(path, args...));
 
