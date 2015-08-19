@@ -14,6 +14,7 @@
 
 struct MetaData
 {
+	bool firstTimeExecuted;
 	int highScore;
 	Inventory inventory;
 	std::vector<bool> isPowerUpUnlocked;

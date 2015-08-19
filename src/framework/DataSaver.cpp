@@ -50,8 +50,13 @@ namespace DataSaver
 		
 		if(!ist)
 			return false;
-
+		
 		int value;
+		
+		if(!readInt(ist, value))
+			return false;
+		metaData.firstTimeExecuted = toBool(endecode(value));
+		
 		if(!readInt(ist, value))
 			return false;
 		metaData.highScore = endecode(value);
@@ -90,6 +95,7 @@ namespace DataSaver
 		if(!ost)
 			return false;
 
+		ost << endecode(toInt(metaData.firstTimeExecuted)) << separator;
 		ost << endecode(metaData.highScore) << separator;
 		ost << endecode(metaData.inventory.getCoins()) << separator;
 		
@@ -126,7 +132,8 @@ namespace DataSaver
 		using namespace PowerUpID;
 		using namespace ImprovementID;
 		MetaData metaData;
-		
+
+		metaData.firstTimeExecuted = true;
 		metaData.highScore = 0;
 		
 		metaData.isPowerUpUnlocked = std::vector<bool>(PowerUpCount, true);

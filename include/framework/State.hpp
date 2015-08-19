@@ -30,6 +30,7 @@ namespace StateID
 		GameOver,
 		Pause,
 		Market,
+		Tutorial,
 	};
 }
 

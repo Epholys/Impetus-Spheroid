@@ -52,8 +52,14 @@ Application::Application()
 	stack_.registerState<StateOver>(StateID::GameOver);
 	stack_.registerState<StatePause>(StateID::Pause);
 	stack_.registerState<StateMarket>(StateID::Market);
+	stack_.registerState<StateTutorial>(StateID::Tutorial);
 
 	stack_.pushState(StateID::Game);
+	if(metaData_.firstTimeExecuted)
+	{
+		stack_.pushState(StateID::Tutorial);
+		metaData_.firstTimeExecuted = false;
+	}
 	
 	// gui::TextureGenerator::createMarketButtons(metaData_.inventory.getKeys());
 	
