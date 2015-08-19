@@ -5,7 +5,7 @@
 
 namespace
 {
-
+	auto instructionDatas = genTutorialData();
 }
 
 
@@ -13,23 +13,42 @@ namespace
 
 StateTutorial::StateTutorial(StateStack& stack, Context context)
 	: State(stack, context)
+	, index_(0)
+	, instruction_()
+	, arrow_()
 {
+	instruction_.setFont(context.fonts->get(FontID::ForcedSquare));
+	instruction_.setColor(sf::Color::Black);
+
+	context.textures->load(TextureID::Arrow, "./media/sprites/Arrow.png");
+	arrow_.setTexture(context.textures->get(TextureID::Arrow));
+
+	updateInstruction();
 }
 
 StateTutorial::~StateTutorial()
 {
 }
 
+void StateTutorial::updateInstruction()
+{
+	instruction_.setString(instructionDatas.at(index_).instruction);
+	instruction_.setPosition(instructionDatas.at(index_).position);
+
+	arrow_.setPosition(instruction_.findCharacterPos(100) +
+	                   Vector2f(instruction_.getCharacterSize() / 2.f,
+	                            instruction_.getCharacterSize() / 2.f));	
+}
 
 //-----------------------------------------------------------------------------
 
-void StateTutorial::draw(sf::RenderStates)
+void StateTutorial::draw(sf::RenderStates states)
 {
 	sf::RenderWindow* window = context_.window;
 
-	sf::RectangleShape rect (Vector2f(window->getSize()));
-	rect.setFillColor(sf::Color(0,0,0,200));
-	window->draw(rect);
+	window->draw(instruction_, states);
+	if(instructionDatas.at(index_).hasArrow)
+		window->draw(arrow_, states);
 }
 
 bool StateTutorial::update(Time)
@@ -39,12 +58,19 @@ bool StateTutorial::update(Time)
 
 bool StateTutorial::handleInput(const sf::Event& event)
 {
-	if(event.type == sf::Event::MouseButtonReleased &&
-	   event.mouseButton.button == sf::Mouse::Left)
+	if(event.type == sf::Event::MouseButtonPressed)
 	{
-		requestStackPop();
+		++index_;
+
+		if(index_ < instructionDatas.size())
+			updateInstruction();
+
+		else
+			requestStackPop();
+
+		return false;
 	}
 
-	return false;
+	return true;
 }
 

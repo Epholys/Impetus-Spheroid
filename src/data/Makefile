@@ -8,7 +8,7 @@ BUGFLAGS :=
 
 TARGETDIR = ../
 OBJECTS =	DifficultyData.o BallData.o MarketData.o ParticleData.o \
-			ImprovementData.o RankData.o
+			ImprovementData.o RankData.o TutorialData.o
 
 empty :=
 space := $(empty) $(empty)

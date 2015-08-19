@@ -2,6 +2,7 @@
 #define STATE_TUTORIAL_HPP
 
 
+#include "data/TutorialData.hpp"
 #include "framework/State.hpp"
 
 
@@ -18,7 +19,12 @@ public:
 	virtual bool handleInput(const sf::Event& event);
 
 private:
-
+	void updateInstruction();
+	
+private:
+	std::size_t index_;
+	sf::Text instruction_;
+	sf::Sprite arrow_;
 };
 
 
