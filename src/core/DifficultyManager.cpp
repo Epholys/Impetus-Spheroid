@@ -68,7 +68,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 
 	timer_.setFont(font_);
 	timer_.setPosition(TIMER_POSITION);
-	timer_.setString("0:00");
+	timer_.setString("20.00");
 	timer_.setColor(sf::Color::Black);
 
 	scoreText_.setFont(font_);
@@ -127,7 +127,7 @@ void DifficultyManager::update(Time dt)
 	ssSeconds << int(timerRemaining.asSeconds());
 	std::stringstream ssCentiSecs;
 	ssCentiSecs << (timerRemaining.asMilliseconds() / 10) % 100;
-	timer_.setString(ssSeconds.str() + ":" + ssCentiSecs.str());
+	timer_.setString(ssSeconds.str() + "." + ssCentiSecs.str());
 }
 
 // Used to forward instruction to the GUI 
