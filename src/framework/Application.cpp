@@ -58,7 +58,7 @@ Application::Application()
 	if(metaData_.firstTimeExecuted)
 	{
 		stack_.pushState(StateID::Tutorial);
-		// metaData_.firstTimeExecuted = false;
+		metaData_.firstTimeExecuted = false;
 	}
 	
 	// gui::TextureGenerator::createMarketButtons(metaData_.inventory.getKeys());
