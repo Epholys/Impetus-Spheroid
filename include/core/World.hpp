@@ -46,6 +46,7 @@ class World : public sf::Drawable,
 public:
 	enum GameState
 	{
+		WaitingTutorial,
 		Waiting,
 		Playing,
 		GameOver

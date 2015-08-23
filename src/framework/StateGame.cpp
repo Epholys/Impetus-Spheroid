@@ -1,4 +1,6 @@
 #include "framework/StateGame.hpp"
+#include "framework/StateTutorial.hpp"
+#include "framework/StateStack.hpp"
 
 
 //-----------------------------------------------------------------------------
@@ -26,7 +28,10 @@ void StateGame::draw(sf::RenderStates states)
 }
 
 bool StateGame::update(Time dt)
-{	
+{
+	if(typeid(*stack_->upperState()) == typeid(StateTutorial))
+		world_.setState(World::WaitingTutorial);
+	
 	world_.update(dt);
 	if(world_.isGameOver() && !overScreenUp_)
 	{

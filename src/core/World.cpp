@@ -226,7 +226,7 @@ bool World::isGameOver() const
 
 bool World::hasStarted() const
 {
-	return state_ !=Waiting;
+	return state_ != Waiting && state_ != WaitingTutorial;
 }
 
 void World::setState(GameState state)
@@ -293,7 +293,7 @@ void World::handleInput(const sf::Event& event)
 			cannon->updateTubeDirection();
 		}
 
-		if(state_ == Waiting)
+		if(state_ == Waiting || state_ == WaitingTutorial)
 		{
 			for(auto& cannon : cannons_)
 			{
@@ -302,7 +302,7 @@ void World::handleInput(const sf::Event& event)
 		}
 	}
 
-	else if(state_ == Waiting || state_ == GameOver)
+	else if(state_ == Waiting || state_ == WaitingTutorial)
 	{
 		if(event.type == sf::Event::MouseButtonPressed)
 		{
@@ -321,6 +321,9 @@ void World::handleInput(const sf::Event& event)
 
 void World::update(Time dt)
  {
+	 if(state_ == WaitingTutorial)
+	    return;
+	    
 	if(state_ == Waiting)
 	{
 		targetHighlight_.update(dt);
@@ -442,7 +445,7 @@ void World::cleanOtherDrawings()
 
 void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	if(state_ == Waiting)
+	if(state_ == Waiting || state_ == WaitingTutorial)
 	{
 		target.draw(targetHighlight_, states);
 	}
