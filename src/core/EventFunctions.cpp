@@ -192,6 +192,36 @@ namespace evt
 
 //-----------------------------------------------------------------------------
 
+	auto addArrows =
+		[](World& world, unsigned int number, float angle, Vector2f direction, sf::Color color, float sizeCoeff)
+	{
+		const Time ARROW_DURATION = seconds(1.f);
+		
+		Vector2u windowSize = world.getWindowSize();
+		sf::FloatRect spanSize (windowSize.x / 10,
+		                        windowSize.y / 10,
+		                        windowSize.x - 2 * windowSize.x / 10,
+		                        windowSize.y - 2 * windowSize.y / 10);
+		for(unsigned int i=0; i<number; ++i)
+		{
+			int x = randInt(0, spanSize.width);
+			int y = randInt(0, spanSize.height);
+
+			gui::TransformData begin (Vector2f(spanSize.left + x, spanSize.top + y),
+			                          angle,
+			                          Vector2f(sizeCoeff, sizeCoeff));
+
+			gui::TransformData end (Vector2f(spanSize.left + x, spanSize.top + y) + direction,
+			                        angle,
+			                        Vector2f(sizeCoeff, sizeCoeff));
+
+			gui::Transition transition (nullptr, gui::Transition::Linear, begin, end, ARROW_DURATION);
+
+			bool fadeOut = true, isInFront = false;
+			world.addSprite(TextureID::Arrow, "./media/sprites/Arrow.png", color, transition, fadeOut, isInFront);
+		}
+	};
+	
 	auto addParticleWall =
 		[](Wall* wall, Vector2f distance, sf::Color color, float MEAN_RATE)
 		{
@@ -216,11 +246,11 @@ namespace evt
 
 			wall->setOutlineColor(color);
 		};
-	
+
 	/* Reverse the gravity of world for all existing Entities and for new Balls.
 	 * */
 	auto reverseGravWorld =
-		[](World& world, Time)
+		[](World& world, Time, bool isOver)
 		{
 			auto entm = world.getEntityManager();
 			auto vComp = entm.getAllComponents(ecs::Component::Mass, true);
@@ -237,21 +267,22 @@ namespace evt
 			gravVect.y *= -1;
 			world.setGravityVect(gravVect);
 
-			addParticleWall(world.getCeiling(), Vector2f(0.f, 40.f), sf::Color::Blue, 0.75f);
+			if(!isOver)
+			{
+				addParticleWall(world.getCeiling(), Vector2f(0.f, 40.f), sf::Color::Blue, 0.75f);
+				addArrows(world, 10, -90.f, Vector2f(0.f, -150.f), sf::Color::Blue, 0.75f);
 
-
-			// Yeah, it's called twice : one correctly, the other one
-			// DEFAULT_EVENT_DURATION *after* the Event is already over.
-			Modifier<Entity> modifier;
-			modifier.duration_ = seconds(DEFAULT_EVENT_DURATION);
-			modifier.postFunction_ =
-				[&](Entity& ent, Time)
-				{
-					if(&ent != world.getCeiling()) return;
-					world.getCeiling()->removeAllParticleEmitters();
-					world.getCeiling()->resetOutlineColor();
-				};
-			world.forwardModifier<Entity>(modifier);
+				Modifier<Entity> modifier;
+				modifier.duration_ = seconds(DEFAULT_EVENT_DURATION);
+				modifier.postFunction_ =
+					[&](Entity& ent, Time)
+					{
+						if(&ent != world.getCeiling()) return;
+						world.getCeiling()->removeAllParticleEmitters();
+						world.getCeiling()->resetOutlineColor();
+					};
+				world.forwardModifier<Entity>(modifier);
+			}
 		};
 
 
@@ -278,6 +309,7 @@ namespace evt
 			world.setGravityVect(gravVec);
 
 			addParticleWall(world.getLeftWall(), Vector2f(60.f, 0.f), sf::Color(0,150,255), 0.25f);
+			addArrows(world, 10, 180.f, Vector2f(-50.f, 0.f), sf::Color(0,150,255), 0.5f);
 		};
 
 	/* Remove the wind.
@@ -368,8 +400,15 @@ namespace evt
 
 		Modifier<World> reverseGravWorldMod;
 		reverseGravWorldMod.duration_ = seconds(DEFAULT_EVENT_DURATION);
-		reverseGravWorldMod.preFunction_ = reverseGravWorld;
-		reverseGravWorldMod.postFunction_ = reverseGravWorld;
+		reverseGravWorldMod.preFunction_ = std::bind(reverseGravWorld,
+		                                             std::placeholders::_1,
+		                                             std::placeholders::_2,
+		                                             false);
+		reverseGravWorldMod.postFunction_ = std::bind(reverseGravWorld,
+		                                              std::placeholders::_1,
+		                                              std::placeholders::_2,
+		                                              true);
+		                                              
 
 		Modifier<World> generateObstaclesMod;
 		generateObstaclesMod.duration_ = seconds(DEFAULT_EVENT_DURATION);
@@ -425,3 +464,12 @@ namespace evt
 		return events;
 	}
 }
+
+
+
+
+
+
+
+
+

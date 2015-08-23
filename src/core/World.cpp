@@ -364,8 +364,8 @@ void World::update(Time dt)
 
 	for(auto& entry : otherDrawings_)
 	{
-		entry.second.transition.update(dt);
-		entry.second.fadeOut.update(dt);
+		entry.transition.update(dt);
+		entry.fadeOut.update(dt);
 	}
 	
 	cleanEntities();
@@ -430,17 +430,15 @@ void World::cleanEntities()
 
 void World::cleanOtherDrawings()
 {
-	for(auto it=otherDrawings_.begin(); it!=otherDrawings_.end();)
-	{
-		if(it->second.transition.isOver())
-		{
-			it = otherDrawings_.erase(it);
-		}
-		else
-		{
-			++it;
-		}
-	}
+	auto itEnd =
+		std::remove_if(otherDrawings_.begin(),
+		               otherDrawings_.end(),
+		               [](const DrawingEntry& entry)
+		               {
+			               return entry.transition.isOver();
+		               });
+
+	otherDrawings_.erase(itEnd, otherDrawings_.end());
 }
 
 void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -450,6 +448,14 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		target.draw(targetHighlight_, states);
 	}
 
+	std::for_each(otherDrawings_.cbegin(),
+	              otherDrawings_.cend(),
+	              [&target, states](const DrawingEntry& entry)
+	              {
+		              if(!entry.isInFront)
+			              target.draw(entry.sprite, states);
+	              });
+	
 	for(const auto& system : particleSystems_)
 	{
 		target.draw(system, states);
@@ -468,16 +474,19 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		
 	difficulty_.draw(target, states);
 
-	for(const auto& entry : otherDrawings_)
-	{
-		target.draw(entry.second.sprite, states);
-	}
+	std::for_each(otherDrawings_.cbegin(),
+	              otherDrawings_.cend(),
+	              [&target, states](const DrawingEntry& entry)
+	              {
+		              if(entry.isInFront)
+			              target.draw(entry.sprite, states);
+	              });
 }
 
 
 //-----------------------------------------------------------------------------
 
-void World::addSprite(TextureID::ID id, const std::string& path, sf::Color color, gui::Transition transition, bool fadeOut)
+void World::addSprite(TextureID::ID id, const std::string& path, sf::Color color, gui::Transition transition, bool fadeOut, bool isInFront)
 {
 	textures_.load(id, path);
 
@@ -485,13 +494,20 @@ void World::addSprite(TextureID::ID id, const std::string& path, sf::Color color
 	centerOrigin(sprite);
 	sprite.setColor(color);
 
-	otherDrawings_[id] = {sprite, transition, {nullptr, Time(), Time()}};
-	otherDrawings_[id].transition.setTransformable(&otherDrawings_[id].sprite);
+	otherDrawings_.push_back({sprite, transition, {nullptr, Time(), Time()}, isInFront});
+	otherDrawings_.back().transition.setTransformable(&otherDrawings_.back().sprite);
 	
 	if(fadeOut)
 	{
-		otherDrawings_[id].fadeOut = {&otherDrawings_[id].sprite,
-		                              otherDrawings_[id].transition.getDuration(),
-		                              Time()};
+		otherDrawings_.back().fadeOut = {&otherDrawings_.back().sprite,
+		                                 otherDrawings_.back().transition.getDuration(),
+		                                 Time()};
+	}
+
+	// Necessary, as std::vector may change its element's address in memory
+	for(auto& entry : otherDrawings_)
+	{
+		entry.transition.setTransformable(&entry.sprite);
+		entry.fadeOut.pT_ = &entry.sprite;
 	}
 }

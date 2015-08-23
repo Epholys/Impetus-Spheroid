@@ -23,6 +23,7 @@ StateTutorial::StateTutorial(StateStack& stack, Context context)
 
 	context.textures->load(TextureID::Arrow, "./media/sprites/Arrow.png");
 	arrow_.setTexture(context.textures->get(TextureID::Arrow));
+	arrow_.setColor(sf::Color::Black);
 
 	updateInstruction();
 }

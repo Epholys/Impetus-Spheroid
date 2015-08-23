@@ -42,7 +42,10 @@ namespace
 	auto cancelEvents =
 		[](World& w)
 	{
-		w.cancelEvents(true);
+		bool fromPowerUp = true;
+		w.cancelEvents(fromPowerUp);
+
+		bool hasFadeOut = true, isInFront = true;
 		w.addSprite(TextureID::CancelEventFlash,
 		            "./media/sprites/CancelEventFlash.png",
 		            sf::Color(255, 255, 255, 150),
@@ -53,7 +56,8 @@ namespace
 		                                               180.f,
 		                                               Vector2f(0.25f, 0.25f)),
 		                            seconds(.5f)),
-		            true);
+		            hasFadeOut,
+		            isInFront);
 	};
 	
 	auto addTime = 

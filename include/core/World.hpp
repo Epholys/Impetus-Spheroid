@@ -92,7 +92,7 @@ public:
 	template<typename T>
 	void forwardModifier(Modifier<T> modifier);
 
-	void addSprite(TextureID::ID id, const std::string& path, sf::Color color, gui::Transition transition, bool fadeOut);
+	void addSprite(TextureID::ID id, const std::string& path, sf::Color color, gui::Transition transition, bool fadeOut, bool isInFront);
 	
 	bool hasStarted() const;
 	bool isGameOver() const;
@@ -144,8 +144,9 @@ private:
 		sf::Sprite sprite;
 		gui::Transition transition;
 		gui::FadeOut<sf::Sprite> fadeOut;
+		bool isInFront;
 	};
-	std::map<TextureID::ID, DrawingEntry> otherDrawings_;
+	std::vector<DrawingEntry> otherDrawings_;
 };
 
 #include "World.ipp"

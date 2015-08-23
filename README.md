@@ -29,13 +29,13 @@ and you'll have a game freshly installed from source!
 
 * Gameplay
   * Tutorial
-  	* Full-fledged tutorial for begginers at the first game
+  	* Full-fledged tutorial for begginers at the first game __NEEDS TESTING__
   * Balancing
   	* Cheaper bonuses _NEEDS TESTING_
-	* Faster base auto-fire _DONE!_
+	* Faster base auto-fire __DONE!__
   * Add some indications (objective, points, money, etc)
 	* Replace the grey cross-hair by something more visible(?)
-	* More explicit Events: Icons, Other Graphic Effects...
+	* More explicit Events: Icons, Other Graphic Effects... 
 	* More explicit PowerUps: Icons, Particule Effects, other graphics Effects
   * Make the game more addictive
 	* Rewarding: sound?

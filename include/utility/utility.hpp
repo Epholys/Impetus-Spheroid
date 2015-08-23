@@ -13,6 +13,9 @@
 #include "utility/Vector2.hpp"
 #include "ecs/ComponentBase.hpp"
 
+
+//-----------------------------------------------------------------------------
+
 /* Just to have a shorter name that
  * std::dynamic_pointer_cast<...>(ecs::ComponentBase)   
  * */
