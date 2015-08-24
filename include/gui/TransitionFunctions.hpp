@@ -17,7 +17,7 @@ namespace gui
 		return (finish - start) / duration.asSeconds();
 	}
 
-	std::function<TransformData(Time)>
+	std::function<TransformData(Time, Time)>
 	generateTransitionFunction(Transition::Type type,
 	                           const TransformData& start,
 	                           const TransformData& finish,

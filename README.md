@@ -53,6 +53,7 @@ and you'll have a game freshly installed from source!
 * Sound (just little sound effects)
 
 * Bugs
+  * Auto-adjust the speed of the next balls left bar
   * Crash when CancelEvent is called twice in a execution __DONE!__
 
 * Other

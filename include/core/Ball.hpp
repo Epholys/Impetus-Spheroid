@@ -44,10 +44,10 @@ public:
 	void reverseOutlineColor();
 
 private:
-	/* This function is a dirty, messy hacks: it creates ParticleEmitters via
-	 * Emitter with just the correct rate to create a single particle during the
+	/* This function is a dirty hack: it creates ParticleEmitters via Emitter
+	 * with just the correct rate to create a single particle during the
 	 * Emitter::update() call inside this function. The ParticleEmitters are
-	 * then destroyed.
+	 * then destroyed. 
 	 * */
 	void makeMicroParticles(Time dt, std::shared_ptr<ecs::Projectile> projectileComponent);
 	

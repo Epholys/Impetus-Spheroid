@@ -215,7 +215,7 @@ namespace evt
 			                        angle,
 			                        Vector2f(sizeCoeff, sizeCoeff));
 
-			gui::Transition transition (nullptr, gui::Transition::Linear, begin, end, ARROW_DURATION);
+			gui::Transition transition (nullptr, gui::Transition::Quadratic, begin, end, ARROW_DURATION);
 
 			bool fadeOut = true, isInFront = false;
 			world.addSprite(TextureID::Arrow, "./media/sprites/Arrow.png", color, transition, fadeOut, isInFront);
@@ -464,6 +464,12 @@ namespace evt
 		return events;
 	}
 }
+
+
+
+
+
+
 
 
 

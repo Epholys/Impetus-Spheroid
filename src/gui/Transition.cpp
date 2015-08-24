@@ -57,7 +57,7 @@ namespace gui
 		}
 		else
 		{
-			applyTransformation(transitionFunction_(accumulatedTime_), dt);
+			applyTransformation(transitionFunction_(accumulatedTime_, dt));
 		}
 	}
 
@@ -117,15 +117,13 @@ namespace gui
 		toMove_->setScale(data.scale);
 	}
 
-	void Transition::applyTransformation(const TransformData& data, Time dt)
+	void Transition::applyTransformation(const TransformData& data)
 	{
 		if(!toMove_)
 			return;
-
-		float seconds = dt.asSeconds();
-		toMove_->move(data.position * seconds);
-		toMove_->rotate(data.angle * seconds);
-		toMove_->setScale(toMove_->getScale() + data.scale * seconds);
+		toMove_->move(data.position);
+		toMove_->rotate(data.angle);
+		toMove_->setScale(toMove_->getScale() + data.scale);
 	}	  
 }
 

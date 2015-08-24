@@ -6,6 +6,7 @@
 
 #include <SFML/Graphics/Transformable.hpp>
 
+#include "framework/Assertion.hpp"
 #include "utility/Vector2.hpp"
 #include "utility/Time.hpp"
 
@@ -33,7 +34,8 @@ namespace gui
 		enum Type
 		{
 			None,
-			Linear
+			Linear,
+			Quadratic
 		};
 		
 	public:
@@ -56,7 +58,7 @@ namespace gui
 
 	private:
 		void setTransformation(const TransformData& data);
-		void applyTransformation(const TransformData& data, Time dt);
+		void applyTransformation(const TransformData& data);
 		
 	private:
 		sf::Transformable* toMove_;
@@ -65,7 +67,7 @@ namespace gui
 		TransformData finish_;
 		Time duration_;
 		Time accumulatedTime_;
-		std::function<TransformData(Time)> transitionFunction_;
+		std::function<TransformData(Time, Time)> transitionFunction_;
 	};
 }
 
