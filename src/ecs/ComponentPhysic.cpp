@@ -3,7 +3,19 @@
 
 namespace ecs
 {
+	// *** TimeArrow: ***
 
+	TimeArrow::TimeArrow(float coefficient)
+		: timeCoefficient_(coefficient)
+	{
+	}
+
+	Component::Category TimeArrow::getCategory() const
+	{
+		return Component::TimeArrow;
+	}
+
+//-----------------------------------------------------------------------------
 	// *** Mass: ***
 
 	Mass::Mass(float mass, Vector2f gravity)
@@ -17,6 +29,7 @@ namespace ecs
 		return Component::Mass;
 	}
 
+	
 //-----------------------------------------------------------------------------
 	// *** Solid: ***
 

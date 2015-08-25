@@ -68,23 +68,6 @@ Ball::~Ball()
 
 
 //-----------------------------------------------------------------------------
-
-sf::Color Ball::getColor() const
-{
-	return ball_.getOutlineColor();
-}
-
-void Ball::setOutlineColor(sf::Color color)
-{
-	ball_.setOutlineColor(color);
-}
-void Ball::reverseOutlineColor()
-{
-	ball_.setOutlineColor(ball_.getFillColor());
-}
-
-
-//-----------------------------------------------------------------------------
 // *** Virtual functions: ***
 
 

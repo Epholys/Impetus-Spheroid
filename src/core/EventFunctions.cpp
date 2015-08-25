@@ -27,32 +27,56 @@ namespace evt
 
 		auto components = ball.getComponents();
 		
-		auto velocityComponent = dynCast<ecs::Velocity>
-			(components[ecs::Component::Velocity]);
 		auto positionComponent = dynCast<ecs::Position>
 			(components[ecs::Component::Position]);
+		auto velocityComponent = dynCast<ecs::Velocity>
+			(components[ecs::Component::Velocity]);
 		auto projectileComponent = dynCast<ecs::Projectile>
 			(components[ecs::Component::Projectile]);
+		auto timeComponent = dynCast<ecs::TimeArrow>
+			(components[ecs::Component::TimeArrow]);
+		
 
-		if(!velocityComponent || !positionComponent) return;
+		if(!positionComponent | !timeComponent) return;
 
 		
 		auto ballPosition = positionComponent->position_;
 		
-		if(ballPosition.x > position.x &&
-		   ballPosition.x < position.x + size.x &&
-		   ballPosition.y > position.y &&
-		   ballPosition.y < position.y + size.y)
+		if(!(ballPosition.x > position.x &&
+		     ballPosition.x < position.x + size.x &&
+		     ballPosition.y > position.y &&
+		     ballPosition.y < position.y + size.y)
+			)
+			return;
+
+		Time SLOWMO_DURATION = seconds(DEFAULT_EVENT_DURATION / 20.f);
+		float timeCoeff = timeComponent->timeCoefficient_;
+		float lowerTimeCoeff = (- timeCoeff) / SLOWMO_DURATION.asSeconds();
+
+		Modifier<Entity> stopEnt;
+		stopEnt.duration_ = SLOWMO_DURATION;
+
+		stopEnt.mainFunction_ =
+		[lowerTimeCoeff, timeComponent](Entity&, Time dt)
+		{ timeComponent->timeCoefficient_ += lowerTimeCoeff * dt.asSeconds(); };
+
+		stopEnt.postFunction_ =
+		[timeComponent, projectileComponent, velocityComponent, pause, SLOWMO_DURATION, timeCoeff](Entity&, Time)
 		{
-			velocityComponent->pause(pause);
 			if(projectileComponent)
 			{
-				projectileComponent->pause(pause);
+				// Add some margin, as it will be manually unpaused
+				projectileComponent->pause(pause + SLOWMO_DURATION*2.f + seconds(1.f));
 			}
-			Ball* pBall = dynamic_cast<Ball*>(&ball);
-			if(pBall)
-				pBall->setOutlineColor(sf::Color(230,230,255));
-		}
+			if(velocityComponent)
+			{
+				velocityComponent->pause(pause + SLOWMO_DURATION*2.f + seconds(1.f));
+			}
+				
+			timeComponent->timeCoefficient_ = 0.f;
+		};
+
+		ball.addModifier(stopEnt);
 	};
 
 	/* Resume time for a Ball that are stopped mid-air.
@@ -63,19 +87,41 @@ namespace evt
 
 		auto components = ball.getComponents(true);
 		
-		auto velocityComponent = dynCast<ecs::Velocity>
-			(components[ecs::Component::Velocity]);
 		auto projectileComponent = dynCast<ecs::Projectile>
 			(components[ecs::Component::Projectile]);
+		auto timeComponent = dynCast<ecs::TimeArrow>
+			(components[ecs::Component::TimeArrow]);
+		auto velocityComponent = dynCast<ecs::Velocity>
+			(components[ecs::Component::Velocity]);
+		
+		if(!timeComponent ||
+		   std::abs(timeComponent->timeCoefficient_) > 0.0001f)
+			return;
 
-		if(!velocityComponent || !projectileComponent) return;
+		Time SLOWMO_DURATION = seconds(DEFAULT_EVENT_DURATION / 20.f);
+		float higherTimeCoeff = (1.f) / SLOWMO_DURATION.asSeconds();
 		
-		velocityComponent->unpause();
-		projectileComponent->unpause();
+		Modifier<Entity> resumeEnt;
+		resumeEnt.duration_ = SLOWMO_DURATION;
+
+		resumeEnt.preFunction_ =
+		[timeComponent, projectileComponent, velocityComponent](Entity&, Time)
+		{
+			if(projectileComponent)
+				projectileComponent->unpause();
+			if(velocityComponent)
+				velocityComponent->unpause();
+		};
 		
-		Ball* pBall = dynamic_cast<Ball*>(&ball);
-		if(pBall)
-			pBall->reverseOutlineColor();
+		resumeEnt.mainFunction_ =
+		[timeComponent, higherTimeCoeff](Entity&, Time dt)
+		{ timeComponent->timeCoefficient_ += higherTimeCoeff * dt.asSeconds(); };
+		  
+		resumeEnt.postFunction_ =
+		[timeComponent](Entity&, Time)
+		{ timeComponent->timeCoefficient_ = 1.f; };
+
+		ball.addModifier(resumeEnt);
 	};
 
 	
@@ -86,10 +132,8 @@ namespace evt
 	{
 		auto windowSize = world.getWindowSize();
 
-		const float LEFT_MARGIN = windowSize.x * 0.25f;
-		
-		Vector2f zoneUpperLeftCorner (LEFT_MARGIN, 0.f);
-		Vector2f zoneSize (windowSize.x - LEFT_MARGIN, windowSize.y);
+		Vector2f zoneUpperLeftCorner (0.f, 0.f);
+		Vector2f zoneSize (windowSize.x, windowSize.y);
 
 		Modifier<Entity> stopTimeMod;
 		stopTimeMod.postFunction_ = std::bind(stopTimeBall,
@@ -452,7 +496,7 @@ namespace evt
 		const float PRE_DELAY = DEFAULT_EVENT_DURATION + BALL_FALLING;
 		stopTimeMod.preDelay_ = seconds(PRE_DELAY);
 		Event gravAndTimeEvt;
-		gravAndTimeEvt.diff = Event::Hard;
+		gravAndTimeEvt.diff = Event::Easy;
 		gravAndTimeEvt.worldModifiers.push_back(reverseGravWorldMod);
 		gravAndTimeEvt.worldModifiers.push_back(stopTimeMod);
 
@@ -464,18 +508,3 @@ namespace evt
 		return events;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

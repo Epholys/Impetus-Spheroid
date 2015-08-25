@@ -27,6 +27,7 @@ namespace ecs
 		ecs.addComponent<Mass>(ball, mass, gravVect);
 		ecs.addComponent<Solid>(ball, 1.f / mass, 2.f);
 		ecs.addComponent<Projectile>(ball, points, nTouching);
+		ecs.addComponent<TimeArrow>(ball, 1.f);
 
 		Collidable* pCollSphere = new Collidable(Collidable::Sphere);
 		pCollSphere->radius = radius;

@@ -47,10 +47,6 @@ Contact::Contact(Vector2f position1,
 }
 
 
-
-
-
-
 //-----------------------------------------------------------------------------
 // *** Contact generation: ***
 void Contact::defineForSpheres(Vector2f position1,

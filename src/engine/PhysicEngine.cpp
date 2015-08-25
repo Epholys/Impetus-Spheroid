@@ -64,6 +64,15 @@ namespace eg
 
 		for (auto& moveablePair : moveableObjects)
 		{
+			Time deltaTime = dt;
+			
+			auto timeComp = dynCast<ecs::TimeArrow>
+				(ecs_.getComponent(moveablePair.first, ecs::Component::TimeArrow));
+			if(timeComp)
+			{
+				deltaTime *= timeComp->timeCoefficient_;
+			}
+			
 			auto posComp = dynCast<ecs::Position>
 				(moveablePair.second[ecs::Component::Position]);
 
@@ -71,7 +80,7 @@ namespace eg
 				(moveablePair.second[ecs::Component::Velocity]);
 
 			if(posComp && velComp)
-				posComp->position_ += velComp->velocity_ * dt.asSeconds();
+				posComp->position_ += velComp->velocity_ * deltaTime.asSeconds();
 		}
 	}
 
@@ -81,6 +90,15 @@ namespace eg
 
 		for(auto& massicPair : massicObjects)
 		{
+			Time deltaTime = dt;
+			
+			auto timeComp = dynCast<ecs::TimeArrow>
+				(ecs_.getComponent(massicPair.first, ecs::Component::TimeArrow));
+			if(timeComp)
+			{
+				deltaTime *= timeComp->timeCoefficient_;
+			}
+
 			auto velComp = dynCast<ecs::Velocity>
 				(massicPair.second[ecs::Component::Velocity]);
 			assert(velComp);
@@ -89,7 +107,7 @@ namespace eg
 				(massicPair.second[ecs::Component::Mass]);
 			assert(massComp);
 
-			velComp->velocity_ += massComp->gravityVect_ * dt.asSeconds();
+			velComp->velocity_ += massComp->gravityVect_ * std::abs(deltaTime.asSeconds());
 		}
 	}
 
@@ -168,9 +186,21 @@ namespace eg
 			auto contactDistance = contactPair.second.distance_;
 				
 			auto firstVel = firstVelComp->velocity_;
+			auto firstTimeComp = dynCast<ecs::TimeArrow>
+				(ecs_.getComponent(entityPair.first, ecs::Component::TimeArrow));
+			if(firstTimeComp)
+			{
+				firstVel *= firstTimeComp->timeCoefficient_;
+			}
 			auto firstInvMass = firstSolidComp->invMass_;
 
 			auto secondVel = secondVelComp->velocity_;
+			auto secondTimeComp = dynCast<ecs::TimeArrow>
+				(ecs_.getComponent(entityPair.second, ecs::Component::TimeArrow));
+			if(secondTimeComp)
+			{
+				secondVel *= secondTimeComp->timeCoefficient_;
+			}
 			auto secondInvMass = secondSolidComp->invMass_;
 
 			auto impulse = computeImpulse(dt,

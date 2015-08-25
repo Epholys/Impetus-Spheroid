@@ -9,6 +9,7 @@ namespace ecs
 {
 
 	/* Here are all the Components about physics. That includes:
+	 * - time flow control with TimeArrow
 	 * - gravity with Mass
 	 * - bounce with Solid
 	 * - collision with Collidable class
@@ -17,6 +18,20 @@ namespace ecs
 	 * http://entity-systems.wikidot.com/
 	 * */
 
+
+//-----------------------------------------------------------------------------
+
+	class TimeArrow : public ComponentBase
+	{
+	public:
+		TimeArrow(float coefficient);
+
+		virtual Component::Category getCategory() const;
+
+		float timeCoefficient_;
+	};
+
+	
 //-----------------------------------------------------------------------------
 
 	class Mass : public ComponentBase

@@ -18,7 +18,8 @@ namespace ecs
 			Collidable = 1 << 4,
 			Target = 1 << 5,
 			Projectile = 1 << 6,
-			CategoryCount = 1 << 7,
+			TimeArrow = 1 << 8,
+			CategoryCount = 1 << 9,
 
 			Massic = Velocity | Mass,
 			Moveable = Position | Velocity,
