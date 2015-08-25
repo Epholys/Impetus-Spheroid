@@ -107,7 +107,7 @@ namespace eg
 				(massicPair.second[ecs::Component::Mass]);
 			assert(massComp);
 
-			velComp->velocity_ += massComp->gravityVect_ * std::abs(deltaTime.asSeconds());
+			velComp->velocity_ += massComp->gravityVect_ * deltaTime.asSeconds();
 		}
 	}
 
@@ -215,8 +215,19 @@ namespace eg
 
 			if(sol1 && sol2)
 			{
-				firstVelComp->velocity_ += impulse * contactNormal * firstInvMass * firstSolidComp->restitution_;
-				secondVelComp->velocity_ -= impulse * contactNormal * secondInvMass * secondSolidComp->restitution_;
+				auto firstVelAddition = impulse * contactNormal * firstInvMass * firstSolidComp->restitution_;
+				if(firstTimeComp)
+				{
+					firstVelAddition *= firstTimeComp->timeCoefficient_;
+				}
+				firstVelComp->velocity_ += firstVelAddition;
+
+				auto secondVelAddition = impulse * contactNormal * secondInvMass * secondSolidComp->restitution_;
+				if(secondTimeComp)
+				{
+					secondVelAddition *= secondTimeComp->timeCoefficient_;
+				}
+				secondVelComp->velocity_ -= secondVelAddition;
 			}
 		}
 	}
