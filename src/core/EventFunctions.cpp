@@ -145,6 +145,23 @@ namespace evt
 		stopTimeMod.duration_ = Time();
 
 		world.forwardModifier<Entity>(stopTimeMod);
+
+		bool fadeOut = true, isInFront = true;
+		world.addSprite(TextureID::Hourglass,
+		                "./media/sprites/Hourglass.png",
+		                sf::Color(255,255,255,150),
+		                gui::Transition(nullptr,
+		                                gui::Transition::Linear,
+		                                gui::TransformData(Vector2f(world.getWindowSize() / 2u),
+		                                                   0.f,
+		                                                   Vector2f(0.75f, 0.75f)),
+		                                gui::TransformData(Vector2f(world.getWindowSize() / 2u),
+		                                                   0.f,
+		                                                   Vector2f(0.25f, 0.25f)),
+		                                seconds(0.5f)),
+		                fadeOut,
+		                !isInFront);
+				                                
 	};
 
 	/* Resume times for all World's Balls entities.  

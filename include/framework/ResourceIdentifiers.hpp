@@ -41,7 +41,8 @@ namespace TextureID
 		CrossHair,
 		MultiplyPoints,
 		PixelParticle,
-		Arrow
+		Arrow,
+		Hourglass
 	};
 }
 

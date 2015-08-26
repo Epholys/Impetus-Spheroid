@@ -35,16 +35,30 @@ and you'll have a game freshly installed from source!
 	* Faster base auto-fire __DONE!__
   * Add some indications (objective, points, money, etc)
 	* Replace the grey cross-hair by something more visible(?)
-	* More explicit Events: Icons, Other Graphic Effects... 
+	* More explicit Events: Icons, Other Graphic Effects...
+	  * Gravity Changes
+	  	* Arrows __DONE!__
+	  * Stop Time
+	  	* Slowing balls __DONE!__
+		* Hourglass Icons
+		* Awesome effect like radial blur(?)
+	  * Crazy Cannon
 	* More explicit PowerUps: Icons, Particule Effects, other graphics Effects
   * Make the game more addictive
 	* Rewarding: sound?
   * Add some content
   	* More Events!
+	  * Spinning Target
+	  * Morphing Target
+	  * Crazy/Teleporting(?) Target
 	* More Power-Ups!
 	  * Several ball / shot?
+	  * Heavy Balls
 	* More Improvement!
 	  * Improves power-ups?
+
+* User Experience
+  * Close Menus, restart game with buttons
 
 * Graphics
   * TargetSun's Highlight more visible __DONE!__
