@@ -14,6 +14,7 @@ namespace
 StateOver::StateOver(StateStack& stack, Context context)
 	: State(stack, context)
 	, texts_(TextCount)
+	, buttons_(2, gui::Button())
 {
 	const sf::Font& font = context.fonts->get(FontID::ForcedSquare);
 	for(int i=0; i<TextCount; i++)
@@ -23,6 +24,7 @@ StateOver::StateOver(StateStack& stack, Context context)
 
 	initStaticTexts();
 	initVariableTexts(context);
+	initButtons(context.originalWindowSize, font);
 	updateDatas(context);
 }
 
@@ -57,25 +59,8 @@ void StateOver::initStaticTexts()
 {
 	Vector2u winSize = context_.originalWindowSize;
 	const Vector2f GAME_OVER_POS (winSize.x / 2, winSize.y / 2);
-	const Vector2f MARKET_POS (winSize.x / 2, 2 * winSize.y / 3);
-	const Vector2f RETRY_POS (winSize.x / 2, 4 * winSize.y / 5);
-	const sf::Color DEFAULT (255,255,255);
-	const sf::Color HIGHLIGHT (0, 200, 255);
-	bool centerOrigin = true;
 	
 	defineText(texts_[GameOver], "G A M E  O V E R", GAME_OVER_POS);
-
-	
-	defineText(texts_[MarketPre], "Press ", Vector2f(), DEFAULT, !centerOrigin);
-	defineText(texts_[MarketKey], "CTRL ", Vector2f(texts_[MarketPre].findCharacterPos(100)), HIGHLIGHT, !centerOrigin);
-	defineText(texts_[MarketPost], "to go to the Market", Vector2f(texts_[MarketKey].findCharacterPos(100)), DEFAULT, !centerOrigin);
-	moveGroupOfTexts(MARKET_POS, texts_[MarketPre], texts_[MarketPost], texts_[MarketKey]);
-
-   
-	defineText(texts_[RetryPre], "Press ", Vector2f(), DEFAULT, !centerOrigin);
-	defineText(texts_[RetryKey], "SPACE ", Vector2f(texts_[RetryPre].findCharacterPos(100)), HIGHLIGHT, !centerOrigin);
-	defineText(texts_[RetryPost], "to retry", Vector2f(texts_[RetryKey].findCharacterPos(100)), DEFAULT, !centerOrigin);
-	moveGroupOfTexts(RETRY_POS, texts_[RetryPre], texts_[RetryPost], texts_[RetryKey]);
 }
 
 void StateOver::initVariableTexts(Context context)
@@ -132,6 +117,40 @@ void StateOver::initVariableTexts(Context context)
 	defineText(texts_[Money], ss.str(), MONEY_POS, sf::Color::Yellow, !centerOrigin);
 }
 
+void StateOver::initButtons(Vector2u winSize, const sf::Font& font)
+{
+	const Vector2f TEXTURE_SIZE {650.f, 50.f};
+	const Vector2f MARKET_POS ((winSize.x - TEXTURE_SIZE.x) / 2, 2 * winSize.y / 3);
+	const Vector2f RETRY_POS ((winSize.x - TEXTURE_SIZE.x) / 2, 4 * winSize.y / 5);
+
+	buttons_[0].setCallback(
+		[this]()
+		{ requestStackPop();
+		  requestStackPush(StateID::Market); });
+	buttons_[0].setDefaultTexture();
+	buttons_[0].setLabel(gui::Button::Middle,
+	                     "Market",
+	                     font,
+	                     30,
+	                     sf::Color::Black);
+	buttons_[0].setKey(sf::Keyboard::LControl);
+	buttons_[0].move(MARKET_POS);
+
+	
+	buttons_[1].setCallback(
+		[this]()
+		{ requestStackClear();
+		  requestStackPush(StateID::Game); });
+	buttons_[1].setDefaultTexture();
+	buttons_[1].setLabel(gui::Button::Middle,
+	                     "RETRY",
+	                     font,
+	                     30,
+	                     sf::Color::Black);
+	buttons_[1].setKey(sf::Keyboard::Space);
+	buttons_[1].move(RETRY_POS);		
+}
+
 //-----------------------------------------------------------------------------
 
 void StateOver::updateDatas(Context context)
@@ -171,6 +190,11 @@ void StateOver::draw(sf::RenderStates states)
 	{
 		window->draw(texts_[i], states);
 	}
+
+	for(const auto& button : buttons_)
+	{
+		window->draw(button, states);
+	}
 }
 
 bool StateOver::update(Time)
@@ -180,21 +204,26 @@ bool StateOver::update(Time)
 
 bool StateOver::handleInput(const sf::Event& event)
 {
-	if(event.type == sf::Event::KeyReleased &&
-	   event.key.code == sf::Keyboard::Space)
+	// if(event.type == sf::Event::KeyReleased &&
+	//    event.key.code == sf::Keyboard::Space)
+	// {
+	// 	requestStackClear();
+	// 	requestStackPush(StateID::Game);
+	// }
+
+	// if(event.type == sf::Event::KeyReleased &&
+	//    (event.key.code == sf::Keyboard::LControl ||
+	// 	event.key.code == sf::Keyboard::RControl))
+	// { 
+	// 	requestStackPop();
+	// 	requestStackPush(StateID::Market);
+	// }
+
+	for(auto& button : buttons_)
 	{
-		requestStackClear();
-		requestStackPush(StateID::Game);
+		button.handleEvent(event);
 	}
-
-	if(event.type == sf::Event::KeyReleased &&
-	   (event.key.code == sf::Keyboard::LControl ||
-		event.key.code == sf::Keyboard::RControl))
-	{ 
-		requestStackPop();
-		requestStackPush(StateID::Market);
-	}
-
+	
 	return false;
 }
 

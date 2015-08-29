@@ -2,6 +2,7 @@
 #define STATE_OVER_HPP
 
 
+#include <array>
 #include <algorithm>
 #include <sstream>
 #include <utility>
@@ -14,6 +15,7 @@
 #include "utility/utility.hpp"
 #include "utility/Vector2.hpp"
 #include "data/RankData.hpp"
+#include "gui/Button.hpp"
 
 
 // The Game Over screen State.
@@ -33,12 +35,6 @@ public:
 		MoneyWon,
 		Money,
 		GameOver,
-		RetryPre,
-		RetryKey,
-		RetryPost,
-		MarketPre,
-		MarketKey,
-		MarketPost,
 		TextCount
 	};
 
@@ -54,11 +50,13 @@ private:
 	void initStaticTexts();
 	void initVariableTexts(Context context);
 	RankData getRank(int score);
+	void initButtons(Vector2u winSize, const sf::Font& font);
 
 	void updateDatas(Context context);
 
 private:
 	std::vector<sf::Text> texts_;
+	std::vector<gui::Button> buttons_;
 };
 
 
