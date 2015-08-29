@@ -113,9 +113,12 @@ void Ball::makeMicroParticles(Time dt, std::shared_ptr<ecs::Projectile> projecti
 	{
 		Vector2f speed (normalRandFloat(velocity.x / 3.f, velocity.x / 3.f),
 		                normalRandFloat(velocity.y / 3.f , velocity.y / 3.f));
+
+		const float juicynessCoeff = 1.8f;
+		speed *= juicynessCoeff;
 		
 		microParticleEmitterID.push_back(
-			addParticleEmitter(Particle::Shard, *position_, rate, ball_.getFillColor(), speed));
+			addParticleEmitter(Particle::Shard, *position_, rate, ball_.getFillColor(), speed, 0.f, 4.f/17.f));
 	}
 	Emitter::update(dt);
 	for(int i : microParticleEmitterID)

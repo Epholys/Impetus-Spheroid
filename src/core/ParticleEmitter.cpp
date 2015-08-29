@@ -3,12 +3,14 @@
 
 //-----------------------------------------------------------------------------
 
-ParticleEmitter::ParticleEmitter(ParticleSystem* system, Vector2f position, Vector2f velocity, float emissionRate, sf::Color color)
+ParticleEmitter::ParticleEmitter(ParticleSystem* system, Vector2f position, Vector2f velocity, float emissionRate, sf::Color color, float angle, float scale)
 	: system_(system)
 	, accumulatedTime_()
 	, position_(position)
 	, previousPosition_(position)
 	, velocity_(velocity)
+	, angle_(angle)
+	, scale_(scale)
 	, frequency_(seconds(1.f))
 	, color_(color)
 {
@@ -43,7 +45,7 @@ void ParticleEmitter::update(Time dt)
 	for(int i=0; i<nParticuleToEmit; ++i)
 	{
 		accumulatedTime_ -= frequency_;
-		system_->addParticle(particulePosition, velocity_, color_);
+		system_->addParticle(particulePosition, velocity_, color_, angle_, scale_);
 		particulePosition += fillingDistance;
 	}
 	

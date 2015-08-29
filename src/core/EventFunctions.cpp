@@ -513,7 +513,7 @@ namespace evt
 		const float PRE_DELAY = DEFAULT_EVENT_DURATION + BALL_FALLING;
 		stopTimeMod.preDelay_ = seconds(PRE_DELAY);
 		Event gravAndTimeEvt;
-		gravAndTimeEvt.diff = Event::Easy;
+		gravAndTimeEvt.diff = Event::Hard;
 		gravAndTimeEvt.worldModifiers.push_back(reverseGravWorldMod);
 		gravAndTimeEvt.worldModifiers.push_back(stopTimeMod);
 

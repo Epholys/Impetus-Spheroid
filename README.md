@@ -56,6 +56,7 @@ and you'll have a game freshly installed from source!
 	  * Heavy Balls
 	* More Improvement!
 	  * Improves power-ups?
+	* "Variety of environments and targets with different behaviors. Different weapons. In some levels an ability to move."
 
 * User Experience
   * Close Menus, restart game with buttons
@@ -63,11 +64,13 @@ and you'll have a game freshly installed from source!
 * Graphics
   * TargetSun's Highlight more visible __DONE!__
   * Balls' Trail particles duration longer __DONE!__
+  * Round particles for "Shards" __DONE!__
   
 * Sound (just little sound effects)
 
 * Bugs
   * Auto-adjust the speed of the next balls left bar
+  * Ball lost when LostFocus Event
   * Crash when CancelEvent is called twice in a execution __DONE!__
 
 * Other

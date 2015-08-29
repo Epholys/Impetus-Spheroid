@@ -23,6 +23,8 @@ struct Particle
 	
 	Vector2f position;
 	Vector2f velocity;
+	float angle;
+	float scale;
 	sf::Color color;
 	Time lifetime;
 };

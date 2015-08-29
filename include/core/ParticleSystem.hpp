@@ -15,6 +15,7 @@ public:
 
 	void addParticle (Vector2f position, Vector2f velocity);
 	void addParticle (Vector2f position, Vector2f velocity, sf::Color color);
+	void addParticle (Vector2f position, Vector2f velocity, sf::Color color, float angle, float scale);
 
 	void update (Time dt);
 	void draw (sf::RenderTarget& target, sf::RenderStates states) const;

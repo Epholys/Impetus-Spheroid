@@ -13,7 +13,7 @@ class Emitter
 public:
 	Emitter(World& world);
 
-	int addParticleEmitter(Particle::Type type, Vector2f position, float emissionRate, sf::Color color, Vector2f velocity = Vector2f(0.f, 0.f));
+	int addParticleEmitter(Particle::Type type, Vector2f position, float emissionRate, sf::Color color, Vector2f velocity = Vector2f(0.f, 0.f), float angle = 0.f, float scale = 1.f);
 
 	bool removeParticleEmitter(int index);
 	void removeAllParticleEmitters();

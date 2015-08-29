@@ -14,14 +14,14 @@ Emitter::Emitter(World& world)
 
 //-----------------------------------------------------------------------------
 
-int Emitter::addParticleEmitter(Particle::Type type, Vector2f position, float emissionRate, sf::Color color, Vector2f velocity)
+int Emitter::addParticleEmitter(Particle::Type type, Vector2f position, float emissionRate, sf::Color color, Vector2f velocity, float angle, float scale)
 {
 	if(type == Particle::TypeCount)
 		return -1;
 
 	/* else */
 	auto& system = world_.getParticleSystem(type);
-	ParticleEmitter emitter (&system, position, velocity, emissionRate, color);
+	ParticleEmitter emitter (&system, position, velocity, emissionRate, color, angle, scale);
 	emitters_.emplace(emitterCount_, emitter);
 	++emitterCount_;
 

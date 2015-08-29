@@ -16,7 +16,9 @@ namespace AffectorType
 	enum Type
 	{
 		FadeOut,
+		QuadraticFadeOut,
 		FadeIn,
+		Rotation,
 //		CustomBallLifetime,
 		TypeCount
 	};

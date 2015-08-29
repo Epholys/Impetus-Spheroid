@@ -17,9 +17,10 @@ std::vector<ParticleData> genParticleData ()
 	// datas[Particle::BallTrail].affectors.push_back(AffectorType::CustomBallLifetime);
 
 	datas[Particle::Shard].color = sf::Color::White;
-	datas[Particle::Shard].lifetime = seconds(1.f);
-	datas[Particle::Shard].texturePath = "media/sprites/PixelParticle.png";
-	datas[Particle::Shard].affectors.push_back(AffectorType::FadeOut);
+	datas[Particle::Shard].lifetime = seconds(1.75f);
+	datas[Particle::Shard].texturePath = "media/sprites/Particle.png";
+	datas[Particle::Shard].affectors.push_back(AffectorType::QuadraticFadeOut);
+	// datas[Particle::Shard].affectors.push_back(AffectorType::Rotation);
 
 	datas[Particle::Bubble].color = sf::Color::White;
 	datas[Particle::Bubble].lifetime = seconds(1.75f);
@@ -28,3 +29,9 @@ std::vector<ParticleData> genParticleData ()
 	
 	return datas;
 }
+
+
+
+
+
+
