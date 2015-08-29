@@ -31,7 +31,7 @@ Market::Market(State::Context context)
 	, isUnlocked_(context.metaData->isPowerUpUnlocked)
 	, improvementValue_(context.metaData->improvementValue)
 	, needUpdate_(false)
-	, menu_()
+	, menu_(nullptr)
 	, powerUpButtons_()
 	, improvementButtons_()
 	, coinsText_()
@@ -69,15 +69,22 @@ void Market::initGUI(sf::Font& font)
 {
 	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x) / 2.f, 45.f);
 	
-	gui::Menu::SPtr puMenu = std::make_shared<gui::Menu>(gui::Menu::Vertical);
-	initPowerUps(puMenu, font);
+	std::vector<gui::Menu::SPtr> puMenus;
+	initPowerUps(puMenus, font);
    	
 	gui::Menu::SPtr improvMenu = std::make_shared<gui::Menu>(gui::Menu::Vertical);
 	initImprovement(improvMenu, font);
 
 	gui::MenuMeta::SPtr metaMenu = std::make_shared<gui::MenuMeta>(gui::Menu::Horizontal);
 	metaMenu->move(Vector2f(BEGIN_MIDDLE));
-	metaMenu->pack(puMenu, "PowerUp");
+
+	for(std::size_t i=0; i<puMenus.size(); ++i)
+	{
+		std::stringstream ss;
+		ss << "PowerUp " << i+1;
+		metaMenu->pack(puMenus[i], ss.str());
+	}
+	
 	metaMenu->pack(improvMenu, "Improvements");
 	
 	metaMenu->select();
@@ -85,14 +92,25 @@ void Market::initGUI(sf::Font& font)
 	menu_ = metaMenu;
 }
 
-void Market::initPowerUps(gui::Menu::SPtr menu, sf::Font& font)
+void Market::initPowerUps(std::vector<gui::Menu::SPtr>& menus, sf::Font& font)
 {
+	const int MAX_POWER_UP = 6;
+
 	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x) / 2.f, 100);
 	const int SPACE_SIZE = 10;
 	const auto KEYS = inventory_.getKeys();
+	
+	gui::Menu::SPtr menu = std::make_shared<gui::Menu>(gui::Menu::Vertical);
 	int buttonPosition = 1;
 	for(auto it=marketDatas.begin(); it!=marketDatas.end(); ++it)
 	{
+		if(buttonPosition > MAX_POWER_UP)
+		{
+			menus.push_back(menu);
+			menu = std::make_shared<gui::Menu>(gui::Menu::Vertical);
+			buttonPosition = 1;
+		}
+		
 		gui::Button::SPtr button = std::make_shared<gui::Button>();
 		button->setKey(KEYS.at(it->id));
 		button->move(0.f, buttonPosition * (BUTTON_SIZE.y + SPACE_SIZE));
@@ -118,6 +136,8 @@ void Market::initPowerUps(gui::Menu::SPtr menu, sf::Font& font)
 		
 		++buttonPosition;
 	}
+
+	menus.push_back(menu);
 }
 
 void Market::initImprovement(gui::Menu::SPtr menu, sf::Font& font)

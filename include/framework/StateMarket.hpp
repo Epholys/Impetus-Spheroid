@@ -23,6 +23,8 @@ public:
 
 private:
 	Market market_;
+
+	gui::Button retryButton_;
 };
 
 

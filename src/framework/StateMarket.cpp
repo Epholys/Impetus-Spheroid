@@ -6,7 +6,26 @@
 StateMarket::StateMarket(StateStack& stack, Context context)
 	: State(stack, context)
 	, market_(context)
+	, retryButton_()
 {
+	const Vector2f TEXTURE_SIZE {600.f, 50.f};
+	const Vector2f RETRY_POS ((context.originalWindowSize.x - TEXTURE_SIZE.x) / 2, 4 * context.originalWindowSize.y / 5);
+	retryButton_.setCallback(
+		[this]()
+		{
+			requestStackClear();
+			requestStackPush(StateID::Game);
+			DataSaver::saveDatas(*context_.metaData);
+		});
+
+	retryButton_.setDefaultTexture();
+	retryButton_.setLabel(gui::Button::Middle,
+	                     "RETRY",
+						 context.fonts->get(FontID::ForcedSquare),
+	                     30,
+	                     sf::Color::Black);
+	retryButton_.setKey(sf::Keyboard::Space);
+	retryButton_.move(RETRY_POS);
 }
 
 StateMarket::~StateMarket()
@@ -24,6 +43,7 @@ void StateMarket::draw(sf::RenderStates states)
 	rect.setFillColor(sf::Color(0,0,0,200));
 	window->draw(rect);
 
+	window->draw(retryButton_, states);
 	window->draw(market_, states);
 }
 
@@ -35,22 +55,7 @@ bool StateMarket::update(Time dt)
 
 bool StateMarket::handleInput(const sf::Event& event)
 {
-	if(event.type == sf::Event::KeyReleased)
-	{
-		switch(event.key.code)		
-		{
-		case sf::Keyboard::Space:
-		case sf::Keyboard::Escape:
-			requestStackClear();
-			requestStackPush(StateID::Game);
-			DataSaver::saveDatas(*context_.metaData);
-			break;
-
-		default:
-			break;
-		}
-	}
-	
+	retryButton_.handleEvent(event);
 	market_.handleEvent(event);
 
 	return false;

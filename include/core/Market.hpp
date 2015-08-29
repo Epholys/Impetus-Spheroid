@@ -34,7 +34,7 @@ public:
 private:
 	void initText(sf::Font& font);
 	void initGUI(sf::Font& font);
-	void initPowerUps(gui::Menu::SPtr menu, sf::Font& font);
+	void initPowerUps(std::vector<gui::Menu::SPtr>& menu, sf::Font& font);
 	void initImprovement(gui::Menu::SPtr menu, sf::Font& font);
 
 	void buyPowerUp(PowerUpID::ID id, int number, int price);
