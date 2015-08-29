@@ -45,9 +45,10 @@ bool StateGame::update(Time dt)
 
 bool StateGame::handleInput(const sf::Event& event)
 {
-	if(event.type == sf::Event::LostFocus)
+	if(event.type == sf::Event::MouseLeft)
 	{
 		requestStackPush(StateID::Pause);
+		return true;
 	}
 	context_.metaData->inventory.handleInput(event);
 	world_.handleInput(event);
