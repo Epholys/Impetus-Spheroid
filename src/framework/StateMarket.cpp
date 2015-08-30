@@ -8,7 +8,7 @@ StateMarket::StateMarket(StateStack& stack, Context context)
 	, market_(context)
 	, retryButton_()
 {
-	const Vector2f TEXTURE_SIZE {600.f, 50.f};
+	const Vector2f TEXTURE_SIZE {650.f, 50.f};
 	const Vector2f RETRY_POS ((context.originalWindowSize.x - TEXTURE_SIZE.x) / 2, 4 * context.originalWindowSize.y / 5);
 	retryButton_.setCallback(
 		[this]()
@@ -20,7 +20,7 @@ StateMarket::StateMarket(StateStack& stack, Context context)
 
 	retryButton_.setDefaultTexture();
 	retryButton_.setLabel(gui::Button::Middle,
-	                     "RETRY",
+	                     "Retry",
 						 context.fonts->get(FontID::ForcedSquare),
 	                     30,
 	                     sf::Color::Black);

@@ -67,7 +67,7 @@ void Market::initText(sf::Font& font)
 
 void Market::initGUI(sf::Font& font)
 {
-	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x) / 2.f, 45.f);
+	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x - 50.f) / 2.f, 45.f);
 	
 	std::vector<gui::Menu::SPtr> puMenus;
 	initPowerUps(puMenus, font);
@@ -96,7 +96,7 @@ void Market::initPowerUps(std::vector<gui::Menu::SPtr>& menus, sf::Font& font)
 {
 	const int MAX_POWER_UP = 6;
 
-	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x) / 2.f, 100);
+	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x - 50.f) / 2.f, 100);
 	const int SPACE_SIZE = 10;
 	const auto KEYS = inventory_.getKeys();
 	
@@ -142,7 +142,7 @@ void Market::initPowerUps(std::vector<gui::Menu::SPtr>& menus, sf::Font& font)
 
 void Market::initImprovement(gui::Menu::SPtr menu, sf::Font& font)
 {
-	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x) / 2.f, 100);
+	const sf::Vector2u BEGIN_MIDDLE ((800.f - BUTTON_SIZE.x - 50.f) / 2.f, 100);
 	const int SPACE_SIZE = 10;
 	int buttonPosition = 1;
 	for(unsigned int i=0; i<improvementValue_.size(); ++i)
