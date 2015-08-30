@@ -34,6 +34,7 @@
 #include "core/SunHighlight.hpp"
 #include "data/DifficultyData.hpp"
 #include "data/BallData.hpp"
+#include "gui/MultiTransition.hpp"
 #include "gui/utility.hpp"
 
 
@@ -57,7 +58,7 @@ public:
 	      MetaData& metaData,
 	      FontHolder& fonts,
 	      TextureHolder& textures,
-	      int precision = 2);
+	      int precision = 1);
 	~World() {};
 	
 	ecs::Entity createTarget(Vector2f mousePosition);
@@ -92,7 +93,7 @@ public:
 	template<typename T>
 	void forwardModifier(Modifier<T> modifier);
 
-	void addSprite(TextureID::ID id, const std::string& path, sf::Color color, gui::Transition transition, bool fadeOut, bool isInFront);
+	void addSprite(TextureID::ID id, const std::string& path, sf::Color color, gui::MultiTransition transitions, bool fadeOut, bool isInFront);
 	
 	bool hasStarted() const;
 	bool isGameOver() const;
@@ -142,7 +143,7 @@ private:
 	struct DrawingEntry
 	{
 		sf::Sprite sprite;
-		gui::Transition transition;
+		gui::MultiTransition transitions;
 		gui::FadeOut<sf::Sprite> fadeOut;
 		bool isInFront;
 	};

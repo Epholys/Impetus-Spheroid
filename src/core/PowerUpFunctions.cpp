@@ -45,17 +45,20 @@ namespace
 		bool fromPowerUp = true;
 		w.cancelEvents(fromPowerUp);
 
-		bool hasFadeOut = true, isInFront = true;
-		w.addSprite(TextureID::CancelEventFlash,
-		            "./media/sprites/CancelEventFlash.png",
-		            sf::Color(255, 255, 255, 150),
-		            gui::Transition(nullptr,
+		gui::Transition transition (nullptr,
 		                            gui::Transition::Linear,
 		                            gui::TransformData(Vector2f(w.getWindowSize()) / 2.f),
 		                            gui::TransformData(Vector2f(w.getWindowSize()) / 2.f,
 		                                               180.f,
 		                                               Vector2f(0.25f, 0.25f)),
-		                            seconds(.5f)),
+		                            seconds(.5f));
+		gui::MultiTransition transitions;
+		transitions.addTransition(transition);
+		bool hasFadeOut = true, isInFront = true;
+		w.addSprite(TextureID::CancelEventFlash,
+		            "./media/sprites/CancelEventFlash.png",
+		            sf::Color(255, 255, 255, 150),
+		            transitions,
 		            hasFadeOut,
 		            isInFront);
 	};

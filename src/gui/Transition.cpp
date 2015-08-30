@@ -82,6 +82,11 @@ namespace gui
 		accumulatedTime_ = Time();
 	}
 
+	sf::Transformable* Transition::getTransformable()
+	{
+		return toMove_;
+	}
+
 	bool Transition::isOver() const
 	{
 		return accumulatedTime_ >= duration_;

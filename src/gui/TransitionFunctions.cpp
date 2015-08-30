@@ -42,7 +42,7 @@ namespace gui
 					float acctimePowered = pow(acctime, power-1);
 					
 					Vector2f dPos = power * varFactor * posDiff * acctimePowered     * dtime;
-					float dAngle = power *varFactor * angleDiff * acctimePowered     * dtime;
+					float dAngle = power * varFactor * angleDiff * acctimePowered     * dtime;
 					Vector2f dScale = power * varFactor * scaleDiff * acctimePowered * dtime;
 
 					return TransformData(dPos, dAngle, dScale);

@@ -364,7 +364,7 @@ void World::update(Time dt)
 
 	for(auto& entry : otherDrawings_)
 	{
-		entry.transition.update(dt);
+		entry.transitions.update(dt);
 		entry.fadeOut.update(dt);
 	}
 	
@@ -435,7 +435,7 @@ void World::cleanOtherDrawings()
 		               otherDrawings_.end(),
 		               [](const DrawingEntry& entry)
 		               {
-			               return entry.transition.isOver();
+			               return entry.transitions.isOver();
 		               });
 
 	otherDrawings_.erase(itEnd, otherDrawings_.end());
@@ -486,7 +486,7 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 //-----------------------------------------------------------------------------
 
-void World::addSprite(TextureID::ID id, const std::string& path, sf::Color color, gui::Transition transition, bool fadeOut, bool isInFront)
+void World::addSprite(TextureID::ID id, const std::string& path, sf::Color color, gui::MultiTransition transitions, bool fadeOut, bool isInFront)
 {
 	textures_.load(id, path);
 
@@ -494,20 +494,21 @@ void World::addSprite(TextureID::ID id, const std::string& path, sf::Color color
 	centerOrigin(sprite);
 	sprite.setColor(color);
 
-	otherDrawings_.push_back({sprite, transition, {nullptr, Time(), Time()}, isInFront});
-	otherDrawings_.back().transition.setTransformable(&otherDrawings_.back().sprite);
+	otherDrawings_.push_back({sprite, transitions, {nullptr, Time(), Time()}, isInFront});
+	otherDrawings_.back().transitions.setTransformable(&otherDrawings_.back().sprite);
 	
 	if(fadeOut)
 	{
 		otherDrawings_.back().fadeOut = {&otherDrawings_.back().sprite,
-		                                 otherDrawings_.back().transition.getDuration(),
+		                                 otherDrawings_.back().transitions.getDuration(),
 		                                 Time()};
 	}
 
 	// Necessary, as std::vector may change its element's address in memory
 	for(auto& entry : otherDrawings_)
 	{
-		entry.transition.setTransformable(&entry.sprite);
-		entry.fadeOut.pT_ = &entry.sprite;
+		entry.transitions.setTransformable(&entry.sprite);
+		if(fadeOut)
+			entry.fadeOut.pT_ = &entry.sprite;
 	}
 }

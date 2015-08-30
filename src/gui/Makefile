@@ -9,7 +9,7 @@ BUGFLAGS :=
 TARGETDIR = ../
 OBJECTS = 	Component.o Menu.o MenuMeta.o Slider.o Button.o \
 		  	TextureGenerator.o \
-			TransitionFunctions.o Transition.o TransitionDeque.o \
+			TransitionFunctions.o Transition.o TransitionDeque.o MultiTransition.o\
 
 empty :=
 space := $(empty) $(empty)

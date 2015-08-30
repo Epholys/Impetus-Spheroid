@@ -42,7 +42,8 @@ namespace TextureID
 		MultiplyPoints,
 		PixelParticle,
 		Arrow,
-		Hourglass
+		Hourglass,
+		BlackHole
 	};
 }
 

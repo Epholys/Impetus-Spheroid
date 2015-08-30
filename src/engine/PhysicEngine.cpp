@@ -11,7 +11,7 @@ namespace eg
 // *** default construction value: ***
 	namespace
 	{
-		const int DEFAULT_PRECISION = 2;
+		const int DEFAULT_PRECISION = 1;
 	}
 
 //-----------------------------------------------------------------------------

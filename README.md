@@ -27,6 +27,10 @@ and you'll have a game freshly installed from source!
 
 ### TODO
 
+* URGENT OPTIMISATION: ecs::EntityManager::getObjectTable()/getComponent()/etc called too many times!
+  * Create operations on objectTable(?)
+  * Cache common table as vectors
+
 * Gameplay
   * Tutorial
   	* Full-fledged tutorial for begginers at the first game __NEEDS TESTING__
@@ -40,9 +44,9 @@ and you'll have a game freshly installed from source!
 	  	* Arrows __DONE!__
 	  * Stop Time
 	  	* Slowing balls __DONE!__
-		* Hourglass Icons
+		* Hourglass Icons __DONE!__
 		* Awesome effect like radial blur(?)
-	  * Crazy Cannon
+	  * Crazy Cannon __DONE!__
 	* More explicit PowerUps: Icons, Particule Effects, other graphics Effects
   * Make the game more addictive
 	* Rewarding: sound?
@@ -70,7 +74,7 @@ and you'll have a game freshly installed from source!
 
 * Bugs
   * Auto-adjust the speed of the next balls left bar
-  * Ball lost when LostFocus Event
+  * Ball lost when LostFocus Event __DONE!__
   * Crash when CancelEvent is called twice in a execution __DONE!__
 
 * Other

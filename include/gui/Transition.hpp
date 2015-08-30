@@ -50,6 +50,7 @@ namespace gui
 		void updateFinish(const TransformData& newFinish, Time toAdd = Time());
 
 		void setTransformable(sf::Transformable* toMove);
+		sf::Transformable* getTransformable();
 		bool isOver() const;
 		TransformData getStart() const;
 		TransformData getFinish() const;
