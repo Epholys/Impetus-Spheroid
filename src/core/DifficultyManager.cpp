@@ -179,7 +179,7 @@ void DifficultyManager::updateDifficulty()
 void DifficultyManager::updateScore()
 {
 	auto collisions = context_.world->getTrackedCollisions();
-	auto ecs = context_.world->getEntityManager();
+	auto& ecs = context_.world->getEntityManager();
 	float points = 0;
 	for(const auto& pair : collisions)
 	{

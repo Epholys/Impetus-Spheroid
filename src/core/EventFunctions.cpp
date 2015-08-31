@@ -318,7 +318,7 @@ namespace evt
 	auto reverseGravWorld =
 		[](World& world, Time, bool isOver)
 		{
-			auto entm = world.getEntityManager();
+			auto& entm = world.getEntityManager();
 			auto vComp = entm.getAllComponents(ecs::Component::Mass, true);
 			for(auto& comp : vComp)
 			{
@@ -359,7 +359,7 @@ namespace evt
 	auto addWindWorld = 
 		[](World& world, Time)
 		{
-			auto entm = world.getEntityManager();
+			auto& entm = world.getEntityManager();
 			auto vComp = entm.getAllComponents(ecs::Component::Mass, true);
 			for(auto& comp : vComp)
 			{
@@ -383,7 +383,7 @@ namespace evt
 	auto removeWindWorld = 
 		[](World& world, Time)
 		{
-			auto entm = world.getEntityManager();
+			auto& entm = world.getEntityManager();
 			auto vComp = entm.getAllComponents(ecs::Component::Mass, true);
 			for(auto& comp : vComp)
 			{
@@ -457,11 +457,9 @@ namespace evt
 		{
 			const float COEFF = 2.f;
 
-			ecs::EntityManager ecs = w.getEntityManager();
+			ecs::EntityManager& ecs = w.getEntityManager();
 
 			auto massicObjects = ecs.getObjectTable(ecs::Component::Massic | ecs::Component::Position);
-
-			
 
 			for(auto& massicPair : massicObjects)
 			{
