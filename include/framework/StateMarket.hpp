@@ -25,6 +25,7 @@ private:
 	Market market_;
 
 	gui::Button retryButton_;
+	gui::Button menuButton_;
 };
 
 

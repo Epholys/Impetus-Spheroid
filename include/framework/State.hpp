@@ -31,6 +31,7 @@ namespace StateID
 		Pause,
 		Market,
 		Tutorial,
+		Menu,
 	};
 }
 

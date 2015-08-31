@@ -43,7 +43,8 @@ namespace TextureID
 		PixelParticle,
 		Arrow,
 		Hourglass,
-		BlackHole
+		BlackHole,
+		Logo
 	};
 }
 

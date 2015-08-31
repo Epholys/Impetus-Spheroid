@@ -9,7 +9,7 @@ BUGFLAGS :=
 TARGETDIR = ../
 OBJECTS = 	main.o Application.o State.o StateStack.o \
 		  	StateGame.o StateOver.o StatePause.o StateMarket.o \
-			StateTutorial.o DataSaver.o 
+			StateTutorial.o StateMenu.o DataSaver.o 
 
 empty :=
 space := $(empty) $(empty)

@@ -53,6 +53,7 @@ Application::Application()
 	stack_.registerState<StatePause>(StateID::Pause);
 	stack_.registerState<StateMarket>(StateID::Market);
 	stack_.registerState<StateTutorial>(StateID::Tutorial);
+	stack_.registerState<StateMenu>(StateID::Menu);
 
 	stack_.pushState(StateID::Game);
 	if(metaData_.firstTimeExecuted)
@@ -157,6 +158,12 @@ void Application::handleInput()
 			correctMouseCoordinate(mousePosition);
 			event.mouseButton.x = mousePosition.x;
 			event.mouseButton.y = mousePosition.y;
+		}
+		else if(event.type == sf::Event::KeyReleased &&
+		        event.key.code == sf::Keyboard::Escape &&
+		        typeid(*stack_.upperState()) != typeid(StateMenu))
+		{
+			stack_.pushState(StateID::Menu);
 		}
 
 		stack_.handleEvent(event);

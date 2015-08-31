@@ -14,7 +14,7 @@ namespace
 StateOver::StateOver(StateStack& stack, Context context)
 	: State(stack, context)
 	, texts_(TextCount)
-	, buttons_(2, gui::Button())
+	, buttons_(3, gui::Button())
 {
 	const sf::Font& font = context.fonts->get(FontID::ForcedSquare);
 	for(int i=0; i<TextCount; i++)
@@ -121,7 +121,8 @@ void StateOver::initButtons(Vector2u winSize, const sf::Font& font)
 {
 	const Vector2f TEXTURE_SIZE {650.f, 50.f};
 	const Vector2f MARKET_POS ((winSize.x - TEXTURE_SIZE.x) / 2, 2 * winSize.y / 3);
-	const Vector2f RETRY_POS ((winSize.x - TEXTURE_SIZE.x) / 2, 4 * winSize.y / 5);
+	const Vector2f RETRY_POS ((winSize.x - TEXTURE_SIZE.x) / 2, 2 * winSize.y / 3 + 60);
+	const Vector2f MENU_POS ((winSize.x - TEXTURE_SIZE.x) / 2, 2 * winSize.y / 3 + 120);
 
 	buttons_[0].setCallback(
 		[this]()
@@ -142,7 +143,15 @@ void StateOver::initButtons(Vector2u winSize, const sf::Font& font)
 	buttons_[1].setAlpha(50);
 	buttons_[1].setLabel(gui::Button::Middle, "Retry", font);
 	buttons_[1].setKey(sf::Keyboard::Space);
-	buttons_[1].move(RETRY_POS);		
+	buttons_[1].move(RETRY_POS);
+
+	buttons_[2].setCallback(
+		[this]()
+		{ requestStackPush(StateID::Menu); });
+	buttons_[2].setDefaultTexture();
+	buttons_[2].setAlpha(50);
+	buttons_[2].setLabel(gui::Button::Middle, "Menu", font);
+	buttons_[2].move(MENU_POS);
 }
 
 //-----------------------------------------------------------------------------

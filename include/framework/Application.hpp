@@ -17,6 +17,7 @@
 #include "framework/StatePause.hpp"
 #include "framework/StateMarket.hpp"
 #include "framework/StateTutorial.hpp"
+#include "framework/StateMenu.hpp"
 #include "framework/ResourceIdentifiers.hpp"
 #include "core/MetaData.hpp"
 
