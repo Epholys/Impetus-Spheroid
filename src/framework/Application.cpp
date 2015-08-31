@@ -82,6 +82,7 @@ void Application::run()
 		handleInput();
 
 		sf::Time elapsedTime = clock.restart();
+//		std::cout << 1 / elapsedTime.asSeconds() << std::endl;
 		update(elapsedTime);
 
 		render();

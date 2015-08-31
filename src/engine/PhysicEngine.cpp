@@ -48,9 +48,10 @@ namespace eg
 
 		generateAllContacts(ecs_.getObjectTable(ecs::Component::Position | ecs::Component::Collidable));
 
+		auto bounceable = ecs_.getLooseObjectTable(ecs::Component::Velocity | ecs::Component::Solid | ecs::Component::TimeArrow);
 		for(unsigned int i=0; i<precision_; ++i)
 		{
-			handleAllCollisions(dt);
+			handleAllCollisions(bounceable, dt);
 		}
 
 		updateGravity(dt);
@@ -115,40 +116,19 @@ namespace eg
 //-----------------------------------------------------------------------------
 // *** Collisions functions: ***
 
-	void PhysicEngine::handleAllCollisions(Time dt)
+	void PhysicEngine::handleAllCollisions(const ecs::EntityManager::objectTable& bounceable, Time dt)
 	{
-		// Dynamic Array of an Entity, its velocity component and its solid component
-		std::unordered_map<
-			ecs::Entity,
-			std::pair<
-				ecs::ComponentBase::SPtr,
-				ecs::ComponentBase::SPtr>,
-			std::hash<unsigned int>> movingSolidEntities;
-		
 		for(auto& contactPair : contacts_)
 		{
 			auto entityPair = contactPair.first;
 
 			ecs::ComponentBase::SPtr vel1, vel2, sol1, sol2;
 
-			if(!movingSolidEntities.count(entityPair.first))
-			{
-				movingSolidEntities[entityPair.first] =
-					std::make_pair(ecs_.getComponent(entityPair.first, ecs::Component::Velocity),
-					               ecs_.getComponent(entityPair.first, ecs::Component::Solid));
-			}
-			if(!movingSolidEntities.count(entityPair.second))
-			{
-				movingSolidEntities[entityPair.second] =
-					std::make_pair(ecs_.getComponent(entityPair.second, ecs::Component::Velocity),
-					               ecs_.getComponent(entityPair.second, ecs::Component::Solid));
-			}
-			vel1 = movingSolidEntities[entityPair.first].first;
-			vel2 = movingSolidEntities[entityPair.second].first;
-			sol1 = movingSolidEntities[entityPair.first].second;
-			sol2 = movingSolidEntities[entityPair.second].second;
+			vel1 = bounceable.at(entityPair.first).at(ecs::Component::Velocity);
+			vel2 = bounceable.at(entityPair.second).at(ecs::Component::Velocity);
+			sol1 = bounceable.at(entityPair.first).at(ecs::Component::Solid);
+			sol2 = bounceable.at(entityPair.second).at(ecs::Component::Solid);
 			
-
 			auto firstSolidComp = dynCast<ecs::Solid>(sol1);
 			auto secondSolidComp = dynCast<ecs::Solid>(sol2);
 
@@ -187,7 +167,7 @@ namespace eg
 				
 			auto firstVel = firstVelComp->velocity_;
 			auto firstTimeComp = dynCast<ecs::TimeArrow>
-				(ecs_.getComponent(entityPair.first, ecs::Component::TimeArrow));
+				(bounceable.at(entityPair.first).at(ecs::Component::TimeArrow));
 			if(firstTimeComp)
 			{
 				firstVel *= firstTimeComp->timeCoefficient_;
@@ -196,7 +176,7 @@ namespace eg
 
 			auto secondVel = secondVelComp->velocity_;
 			auto secondTimeComp = dynCast<ecs::TimeArrow>
-				(ecs_.getComponent(entityPair.second, ecs::Component::TimeArrow));
+				(bounceable.at(entityPair.second).at(ecs::Component::TimeArrow));
 			if(secondTimeComp)
 			{
 				secondVel *= secondTimeComp->timeCoefficient_;

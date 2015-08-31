@@ -63,7 +63,7 @@ namespace eg
 		void updateMovement(Time dt);
 
 		/* Resolves all collisions */
-		void handleAllCollisions(Time dt);
+		void handleAllCollisions(const ecs::EntityManager::objectTable& bounceable, Time dt);
 
 		/* Generate all the Contacts of Collidable Entities of ecs_. */
 		void generateAllContacts(const ecs::EntityManager::objectTable& collidables);

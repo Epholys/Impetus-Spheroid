@@ -174,8 +174,6 @@ namespace ecs
 		 * Components, which have a Position and a Velocity. 
 		 *
 		 * Only the desired Components are in the table.
-		 * If a Component asked is paused, the Entity associated is given if
-		 * flag is true.
 		 *
 		 * If there isn't any entities with all Components of mask, return a
 		 * empty objectTable.
@@ -183,6 +181,20 @@ namespace ecs
 		objectTable getObjectTable(Component::CategoryMask mask);
 
 
+		/* Gets a table of all Entities and Component with all the Component
+		 * choosen by mask, EVEN IS THIS ENTITY DOESN'T HAVE THIS COMPONENT.
+		 *
+		 * Only the desired Components are in the table.
+		 * If a Component asked is paused or doesn't exists, the Entity
+		 * associated is given anyway
+		 *
+		 * If there isn't any entities with all Components of mask, return a
+		 * empty objectTable.
+		 * */
+
+		objectTable getLooseObjectTable(Component::CategoryMask mask);
+
+		
 //-----------------------------------------------------------------------------
 // *** Pause Mechanics: ***
 		void update(Time dt);

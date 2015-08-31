@@ -311,6 +311,39 @@ namespace ecs
 		return objects;
 	}
 
+
+	EntityManager::objectTable
+	EntityManager::getLooseObjectTable(Component::CategoryMask mask)
+	{
+		EntityManager::objectTable objects;
+
+		for(auto& epair : objectTable_)
+		{
+			EntityManager::componentTable comps;
+
+			for(Component::CategoryMask cat = 1;
+			    cat != Component::CategoryCount;
+			    cat = cat << 1)
+			{
+				if(cat & mask)
+				{
+					Component::Category strictCat = Component::Category(cat);
+
+					comps[strictCat];
+					if(entityMasks_[epair.first] & cat)
+					{
+						comps[strictCat]=epair.second[strictCat];
+					}
+				}
+			}
+				
+			objects[epair.first] = comps;
+		}
+
+		return objects;
+	}
+
+
 //-----------------------------------------------------------------------------
 // *** Pause Mechanics: ***
 	void EntityManager::update(Time dt)
