@@ -456,7 +456,9 @@ namespace evt
 		[](World& w, Time dt, Vector2f position)
 		{
 			const float COEFF = 2.f;
-
+			const float HORIZON_RADIUS = 40.f;
+			std::vector<ecs::Entity> toRemove;
+			
 			ecs::EntityManager& ecs = w.getEntityManager();
 
 			auto massicObjects = ecs.getObjectTable(ecs::Component::Massic | ecs::Component::Position);
@@ -481,9 +483,19 @@ namespace evt
 				assert(posComp);
 				
 				Vector2f blackHoleDir = position - posComp->position_;
+				float distance = std::sqrt(std::pow(blackHoleDir.x, 2) + std::pow(blackHoleDir.y, 2));
+				if(distance < HORIZON_RADIUS)
+				{
+					toRemove.push_back(massicPair.first);
+				}
 				blackHoleDir.normalize();
 				blackHoleDir *= std::abs(w.getGravityVect().y) * COEFF;
 				velComp->velocity_ += blackHoleDir * dt.asSeconds();
+			}
+
+			for(const auto& ent : toRemove)
+			{
+				w.removeEntity(ent);
 			}
 		};
 		
@@ -539,7 +551,7 @@ namespace evt
 			transitions.addTransition(stayStill);
 			transitions.addTransition(extinction);
 			bool fadeOut = true, isInFront = true;
-			world.addSprite(TextureID::BlackHole, "./media/sprites/BlackHole.png", sf::Color::White, transitions, !fadeOut, !isInFront);
+			world.addSprite(TextureID::BlackHole, "./media/sprites/BlackHole.png", sf::Color::White, transitions, !fadeOut, isInFront);
 		};
 
 			
