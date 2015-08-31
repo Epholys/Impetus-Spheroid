@@ -2,6 +2,7 @@
 #include <vector>
 
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 #include "framework/Assertion.hpp"
 #include "ecs/Archetype.hpp"
@@ -22,7 +23,7 @@ namespace evt
 	 * upper left corner at position and its size.
 	 * */
 	auto stopTimeBall =
-		[](Vector2f position, Vector2f size, Time pause, Entity& ball, Time)
+		[](sf::FloatRect noBallZone, Time pause, Entity& ball, Time)
 	{
 		if(ball.getType() != EntityType::Ball) return;
 
@@ -30,10 +31,6 @@ namespace evt
 		
 		auto positionComponent = dynCast<ecs::Position>
 			(components[ecs::Component::Position]);
-		auto velocityComponent = dynCast<ecs::Velocity>
-			(components[ecs::Component::Velocity]);
-		auto projectileComponent = dynCast<ecs::Projectile>
-			(components[ecs::Component::Projectile]);
 		auto timeComponent = dynCast<ecs::TimeArrow>
 			(components[ecs::Component::TimeArrow]);
 		
@@ -43,13 +40,15 @@ namespace evt
 		
 		auto ballPosition = positionComponent->position_;
 		
-		if(!(ballPosition.x > position.x &&
-		     ballPosition.x < position.x + size.x &&
-		     ballPosition.y > position.y &&
-		     ballPosition.y < position.y + size.y)
-			)
+		if(noBallZone.contains(ballPosition))
 			return;
 
+		
+		auto velocityComponent = dynCast<ecs::Velocity>
+			(components[ecs::Component::Velocity]);
+		auto projectileComponent = dynCast<ecs::Projectile>
+			(components[ecs::Component::Projectile]);
+		
 		Time SLOWMO_DURATION = seconds(DEFAULT_EVENT_DURATION / 20.f);
 		float timeCoeff = timeComponent->timeCoefficient_;
 		float lowerTimeCoeff = (- timeCoeff) / SLOWMO_DURATION.asSeconds();
@@ -133,13 +132,11 @@ namespace evt
 	{
 		auto windowSize = world.getWindowSize();
 
-		Vector2f zoneUpperLeftCorner (0.f, 0.f);
-		Vector2f zoneSize (windowSize.x, windowSize.y);
-
+		sf::FloatRect noBallZone (0.f, windowSize.y - 100.f, 100.f, 100.f);
+		
 		Modifier<Entity> stopTimeMod;
 		stopTimeMod.postFunction_ = std::bind(stopTimeBall,
-		                                      zoneUpperLeftCorner,
-		                                      zoneSize,
+		                                      noBallZone,
 		                                      pause,
 		                                      std::placeholders::_1,
 		                                      std::placeholders::_2);
@@ -453,7 +450,7 @@ namespace evt
 //-----------------------------------------------------------------------------
 
 	auto blackHoleInfluence =
-		[](World& w, Time dt, Vector2f position)
+		[](std::vector<Vector2f> positions, World& w, Time dt)
 		{
 			const float COEFF = 2.f;
 			const float HORIZON_RADIUS = 40.f;
@@ -481,16 +478,19 @@ namespace evt
 				auto posComp = dynCast<ecs::Position>
 					(massicPair.second[ecs::Component::Position]);
 				assert(posComp);
-				
-				Vector2f blackHoleDir = position - posComp->position_;
-				float distance = std::sqrt(std::pow(blackHoleDir.x, 2) + std::pow(blackHoleDir.y, 2));
-				if(distance < HORIZON_RADIUS)
+
+				for(const auto& position : positions)
 				{
-					toRemove.push_back(massicPair.first);
+					Vector2f blackHoleDir = position - posComp->position_;
+					float distance = std::sqrt(std::pow(blackHoleDir.x, 2) + std::pow(blackHoleDir.y, 2));
+					if(distance < HORIZON_RADIUS)
+					{
+						toRemove.push_back(massicPair.first);
+					}
+					blackHoleDir.normalize();
+					blackHoleDir *= std::abs(w.getGravityVect().y) * COEFF;
+					velComp->velocity_ += blackHoleDir * dt.asSeconds();
 				}
-				blackHoleDir.normalize();
-				blackHoleDir *= std::abs(w.getGravityVect().y) * COEFF;
-				velComp->velocity_ += blackHoleDir * dt.asSeconds();
 			}
 
 			for(const auto& ent : toRemove)
@@ -498,60 +498,74 @@ namespace evt
 				w.removeEntity(ent);
 			}
 		};
-		
-	auto makeBlackHole =
-		[](World& world, Time)
+
+	auto blackHoleVisual =
+		[](std::vector<Vector2f> positions, World& world, Time)
 		{
 			const float TRANSITION_DURATION = 0.25f;
 
+			for(auto position : positions)
+			{
+				gui::Transition arrival (nullptr,
+				                         gui::Transition::Quadratic,
+				                         gui::TransformData(position,
+				                                            0.f,
+				                                            Vector2f(0.f, 0.f)),
+				                         gui::TransformData(position,
+				                                            0.f,
+				                                            Vector2f(1.f, 1.f)),
+				                         seconds(TRANSITION_DURATION));
+				gui::Transition stayStill (nullptr,
+				                           gui::Transition::Linear,
+				                           gui::TransformData(position),
+				                           gui::TransformData(position),
+				                           seconds(DEFAULT_EVENT_DURATION * 1.5f - 2*TRANSITION_DURATION));
+				gui::Transition extinction (nullptr,
+				                            gui::Transition::Quadratic,
+				                            gui::TransformData(position,
+				                                               0.f,
+				                                               Vector2f(1.f, 1.f)),
+				                            gui::TransformData(position,
+				                                               0.f,
+				                                               Vector2f(0.f, 0.f)),
+				                            seconds(TRANSITION_DURATION));
+				gui::MultiTransition transitions;
+				transitions.addTransition(arrival);
+				transitions.addTransition(stayStill);
+				transitions.addTransition(extinction);
+				bool fadeOut = true, isInFront = true;
+				world.addSprite(TextureID::BlackHole, "./media/sprites/BlackHole.png", sf::Color::White, transitions, !fadeOut, isInFront);
+			}
+		};
+	
+	auto makeBlackHole =
+		[](int nBlackHole, World& world, Time)
+		{
 			const Vector2f middle (world.getWindowSize() / 2u);
-		
-			float x;
-			do {
-				x = normalRandFloat(middle.x, middle.x / 2.f);
-			} while(x < 0 || x > middle.x * 2);
-		
-			float y;
-			do {
-				y = normalRandFloat(middle.y, middle.y / 2.f);
-			} while(y < 0 || y > middle.y * 2);
 
-			Vector2f position (x, y);
+			std::vector<Vector2f> positions;
+			for(int i=0; i<nBlackHole; ++i)
+			{
+				float x;
+				do {
+					x = normalRandFloat(middle.x, middle.x / 2.f);
+				} while(x < 0 || x > middle.x * 2);
+		
+				float y;
+				do {
+					y = normalRandFloat(middle.y, middle.y / 2.f);
+				} while(y < 0 || y > middle.y * 2);
+
+				Vector2f position (x, y);
+				positions.push_back(position);
+			}
 			
 			Modifier<World> worldMod;
-			worldMod.duration_ = seconds(DEFAULT_EVENT_DURATION * 1.5f);
-			worldMod.mainFunction_ = std::bind(blackHoleInfluence, std::placeholders::_1, std::placeholders::_2, position);
+			worldMod.duration_ = seconds(DEFAULT_EVENT_DURATION*1.5f);
+			worldMod.preFunction_ = std::bind(blackHoleVisual, positions, std::placeholders::_1, std::placeholders::_2);
+			worldMod.mainFunction_ = std::bind(blackHoleInfluence, positions, std::placeholders::_1, std::placeholders::_2);
 			world.forwardModifier<World>(worldMod);
-			
-			gui::Transition arrival (nullptr,
-			                         gui::Transition::Quadratic,
-			                         gui::TransformData(position,
-			                                            0.f,
-			                                            Vector2f(0.f, 0.f)),
-			                         gui::TransformData(position,
-			                                            0.f,
-			                                            Vector2f(1.f, 1.f)),
-			                         seconds(TRANSITION_DURATION));
-			gui::Transition stayStill (nullptr,
-			                           gui::Transition::Linear,
-			                           gui::TransformData(position),
-			                           gui::TransformData(position),
-			                           seconds(DEFAULT_EVENT_DURATION * 1.5f - 2*TRANSITION_DURATION));
-			gui::Transition extinction (nullptr,
-			                            gui::Transition::Quadratic,
-			                            gui::TransformData(position,
-			                                               0.f,
-			                                               Vector2f(1.f, 1.f)),
-			                            gui::TransformData(position,
-			                                               0.f,
-			                                               Vector2f(0.f, 0.f)),
-			                            seconds(TRANSITION_DURATION));
-			gui::MultiTransition transitions;
-			transitions.addTransition(arrival);
-			transitions.addTransition(stayStill);
-			transitions.addTransition(extinction);
-			bool fadeOut = true, isInFront = true;
-			world.addSprite(TextureID::BlackHole, "./media/sprites/BlackHole.png", sf::Color::White, transitions, !fadeOut, isInFront);
+
 		};
 
 			
@@ -598,8 +612,17 @@ namespace evt
 
 		Modifier<World> makeBlackHoleMod;
 		makeBlackHoleMod.duration_ = seconds(DEFAULT_EVENT_DURATION * 1.5f);
-		makeBlackHoleMod.preFunction_ = makeBlackHole;
+		makeBlackHoleMod.preFunction_ = std::bind(makeBlackHole,
+		                                          1,
+		                                          std::placeholders::_1,
+		                                          std::placeholders::_2);
 
+		// Modifier<World> makeThreeBlackHolesMod;
+		// makeThreeBlackHolesMod.duration_ = seconds(DEFAULT_EVENT_DURATION * 1.5f + 2.f);
+		// makeThreeBlackHolesMod.preFunction_ = std::bind(makeBlackHole,
+		//                                           3,
+		//                                           std::placeholders::_1,
+		//                                           std::placeholders::_2);
 
 		// Create base Events
 		Event stopTimeEvt;
@@ -623,9 +646,13 @@ namespace evt
 		makeCannonCrazyEvt.worldModifiers.push_back(makeCannonCrazyMod);
 
 		Event makeBlackHoleEvt;
-		makeBlackHoleEvt.diff = Event::Debug;
+		makeBlackHoleEvt.diff = Event::Hard;
 		makeBlackHoleEvt.worldModifiers.push_back(makeBlackHoleMod);		
-		
+
+		// Event makeThreeBlackHolesEvt;
+		// makeThreeBlackHolesEvt.diff = Event::Debug;
+		// makeThreeBlackHolesEvt.worldModifiers.push_back(makeThreeBlackHolesMod);
+
 
 		// Modify Base Modifiers to create more complex Events
 		const float BALL_FALLING = 0.5f;
@@ -637,11 +664,12 @@ namespace evt
 		gravAndTimeEvt.worldModifiers.push_back(stopTimeMod);
 
 		
+		
 		// Create and return all the Events
 		std::vector<Event> events
 			{reverseGravWorldEvt, stopTimeEvt, createObstacleWorldEvt,
 					addWindWorldEvt, gravAndTimeEvt, makeCannonCrazyEvt,
-					makeBlackHoleEvt};
+					makeBlackHoleEvt, makeThreeBlackHolesEvt};
 		return events;
 	}
 }
