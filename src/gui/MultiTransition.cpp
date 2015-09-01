@@ -6,6 +6,7 @@ namespace gui
 {
 	MultiTransition::MultiTransition()
 		: transitions_()
+		, toMove_(nullptr)
 	{
 	}
 
@@ -15,8 +16,18 @@ namespace gui
 	void MultiTransition::addTransition(const Transition& transition)
 	{
 		transitions_.push_back(transition);
+		
 		if(transitions_.size() == 1)
-			toMove_ = transitions_.front().getTransformable();
+		{
+			if(!toMove_)
+			{
+				toMove_ = transitions_.back().getTransformable();
+			}
+			else
+			{
+				transitions_.back().setTransformable(toMove_);
+			}
+		}
 	}
 
 
@@ -46,6 +57,7 @@ namespace gui
 		
 		if(transitions_.size() == 0)
 			return;
+		
 		transitions_.front().setTransformable(toMove);
 	}
 

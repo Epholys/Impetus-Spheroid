@@ -40,10 +40,10 @@ StateMenu::StateMenu(StateStack& stack, Context context)
 	marketButton->move(0.f, SPACE_SIZE * i); ++i;
 	menu_.pack(marketButton);
 
-	gui::Button::SPtr creditButton = genStandardButton("Credit");
-	creditButton->setCallback([this](){});
-	creditButton->move(0.f, SPACE_SIZE * i); ++i;
-	menu_.pack(creditButton);
+	// gui::Button::SPtr creditButton = genStandardButton("Credit");
+	// creditButton->setCallback([this](){});
+	// creditButton->move(0.f, SPACE_SIZE * i); ++i;
+	// menu_.pack(creditButton);
 
 	gui::Button::SPtr exitButton = std::make_shared<gui::Button>();
 	exitButton->setDefaultTexture();

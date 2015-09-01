@@ -4,6 +4,7 @@
 
 Entity::Entity(World& world, ecs::EntityManager& entm, EntityType::Type type)
 	: Emitter(world)
+	, Transitionnable(this)
 	, world_(world)
 	, ecs_(entm)
 	, label_(0)
@@ -38,6 +39,8 @@ void Entity::update(Time dt)
 	cleanModifiers();
 
 	Emitter::update(dt);
+
+	Transitionnable::update(dt);
 }
 
 void Entity::draw(sf::RenderTarget&, sf::RenderStates) const

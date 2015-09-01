@@ -12,6 +12,13 @@
 class Target : public Entity
 {
 public:
+	enum Shape
+	{
+		Rect,
+		Circle
+	};
+
+public:
 	Target(World& world,
 	       Vector2f position);
 	virtual ~Target();
@@ -21,7 +28,9 @@ public:
 	                  sf::RenderStates states) const;
 
 	void updateColor();
-
+	void changeSize(Vector2f newSize);
+	void setShape(Shape shape);
+	
 private:
 	void updateObjective();
 	void moveToObjective();

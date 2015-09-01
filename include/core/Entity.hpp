@@ -17,6 +17,7 @@
 #include "core/Modifier.hpp"
 #include "core/Modifiable.hpp"
 #include "core/Emitter.hpp"
+#include "core/Transitionnable.hpp"
 
 
 class World;
@@ -45,7 +46,8 @@ namespace EntityType
  * */ 
 class Entity : public sf::Drawable, public sf::Transformable,
                public Modifiable<Entity>,
-               public Emitter
+               public Emitter,
+               public Transitionnable
 {
 public:
 	typedef std::unique_ptr<Entity> Ptr;

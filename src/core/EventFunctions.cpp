@@ -568,6 +568,29 @@ namespace evt
 
 		};
 
+
+//-----------------------------------------------------------------------------
+
+	// auto test =
+	// 	[](World& w, Time)
+	// 	{
+	// 		Modifier<Entity> m;
+	// 		m.duration_ = Time();
+	// 		m.postFunction_ = [](Entity& ent, Time)
+	// 		{
+	// 			if(ent.getType() != EntityType::Target) return;
+	// 			gui::Transition extinction (nullptr,
+	// 			                            gui::Transition::Quadratic,
+	// 			                            gui::TransformData(Vector2f(ent.getPosition()),
+	// 			                                               0.f),
+	// 			                            gui::TransformData(Vector2f(ent.getPosition()),
+	// 			                                               1440.f),
+	// 			                            seconds(2.f));
+
+	// 			ent.addTransition(extinction);
+	// 		};
+	// 		w.forwardModifier(m);
+	// 	};
 			
 
 //-----------------------------------------------------------------------------
@@ -624,6 +647,11 @@ namespace evt
 		//                                           std::placeholders::_1,
 		//                                           std::placeholders::_2);
 
+		// Modifier<World> testMod;
+		// testMod.duration_ = seconds(2.f);
+		// testMod.postFunction_ = test;
+
+		
 		// Create base Events
 		Event stopTimeEvt;
 		stopTimeEvt.diff = Event::Medium;
@@ -653,6 +681,10 @@ namespace evt
 		// makeThreeBlackHolesEvt.diff = Event::Debug;
 		// makeThreeBlackHolesEvt.worldModifiers.push_back(makeThreeBlackHolesMod);
 
+		// Event testEvt;
+		// testEvt.diff = Event::Debug;
+		// testEvt.worldModifiers.push_back(testMod);
+		
 
 		// Modify Base Modifiers to create more complex Events
 		const float BALL_FALLING = 0.5f;
@@ -669,7 +701,7 @@ namespace evt
 		std::vector<Event> events
 			{reverseGravWorldEvt, stopTimeEvt, createObstacleWorldEvt,
 					addWindWorldEvt, gravAndTimeEvt, makeCannonCrazyEvt,
-					makeBlackHoleEvt, makeThreeBlackHolesEvt};
+					makeBlackHoleEvt/*, makeThreeBlackHolesEvt*//*, testEvt*/};
 		return events;
 	}
 }
