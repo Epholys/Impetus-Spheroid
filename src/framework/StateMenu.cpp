@@ -18,7 +18,7 @@ StateMenu::StateMenu(StateStack& stack, Context context)
 	resumeButton->move(0.f, SPACE_SIZE * i); ++i;
 	menu_.pack(resumeButton);
 
-	gui::Button::SPtr newGameButton = genStandardButton("New Game");
+	gui::Button::SPtr newGameButton = genStandardButton("Restart Shooting!");
 	newGameButton->setCallback(
 		[this]()
 		{
@@ -29,7 +29,7 @@ StateMenu::StateMenu(StateStack& stack, Context context)
 	newGameButton->move(0.f, SPACE_SIZE * i); ++i;
 	menu_.pack(newGameButton);
 
-	gui::Button::SPtr marketButton = genStandardButton("Market");
+	gui::Button::SPtr marketButton = genStandardButton("Upgrades");
 	marketButton->setCallback(
 		[this]()
 		{

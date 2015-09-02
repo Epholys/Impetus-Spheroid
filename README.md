@@ -29,7 +29,9 @@ and you'll have a game freshly installed from source!
 
 * URGENT OPTIMISATION: ecs::EntityManager::getObjectTable()/getComponent()/etc called too many times!
   * Create operations on objectTable(?)
-  * Cache common table as vectors
+  * OR Cache common table as vectors
+  * OR Reduce ecs::EntityManager::getComponent() calls __DONE!__
+  
 
 * Gameplay
   * Tutorial
@@ -38,7 +40,9 @@ and you'll have a game freshly installed from source!
   	* Cheaper bonuses _NEEDS TESTING_
 	* Faster base auto-fire __DONE!__
   * Add some indications (objective, points, money, etc)
-	* Replace the grey cross-hair by something more visible(?)
+  	* Time indication: Big flashy "jauge"
+	* Point indication: above the target
+  	* Replace the grey cross-hair by something more visible(?)
 	* More explicit Events: Icons, Other Graphic Effects...
 	  * Gravity Changes
 	  	* Arrows __DONE!__
@@ -56,7 +60,7 @@ and you'll have a game freshly installed from source!
 	  * Morphing Target
 	  * Crazy/Teleporting(?) Target
 	* More Power-Ups!
-	  * Several ball / shot?
+	  * Several ball / shot? OR Fragmentation Balls
 	  * Heavy Balls
 	* More Improvement!
 	  * Improves power-ups?

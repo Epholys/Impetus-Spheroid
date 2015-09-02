@@ -6,6 +6,7 @@
 
 #include "framework/Assertion.hpp"
 #include "ecs/Archetype.hpp"
+#include "ecs/ComponentPhysic.hpp"
 #include "core/Obstacle.hpp"
 #include "core/EventFunctions.hpp"
 #include "core/World.hpp"
@@ -571,30 +572,148 @@ namespace evt
 
 //-----------------------------------------------------------------------------
 
-	// auto test =
-	// 	[](World& w, Time)
-	// 	{
-	// 		Modifier<Entity> m;
-	// 		m.duration_ = Time();
-	// 		m.postFunction_ = [](Entity& ent, Time)
-	// 		{
-	// 			if(ent.getType() != EntityType::Target) return;
-	// 			gui::Transition extinction (nullptr,
-	// 			                            gui::Transition::Quadratic,
-	// 			                            gui::TransformData(Vector2f(ent.getPosition()),
-	// 			                                               0.f),
-	// 			                            gui::TransformData(Vector2f(ent.getPosition()),
-	// 			                                               1440.f),
-	// 			                            seconds(2.f));
+	auto changeSmoothTargetSize =
+		[] (Vector2f oldSize, Vector2f newSize, Time transitionDuration, Entity& ent, Time dt)
+	{
+		Target* target = dynamic_cast<Target*>(&ent);
+		assert(target);
+		Vector2f linearCoeff = (newSize - oldSize) / transitionDuration.asSeconds();;
 
-	// 			ent.addTransition(extinction);
-	// 		};
-	// 		w.forwardModifier(m);
-	// 	};
+		target->changeSize(target->getSize() + linearCoeff * dt.asSeconds());
+	};
+
+	auto changeSizeDecider =
+		[] (Vector2f oldSize, Vector2f newSize, Time duration, Entity& ent, Time)
+	{
+		if(ent.getType() != EntityType::Target) return;
+		Modifier<Entity> changeSize;
+		changeSize.duration_ = duration;
+		changeSize.mainFunction_ = std::bind(changeSmoothTargetSize,
+		                                     oldSize,
+		                                     newSize,
+		                                     duration,
+		                                     std::placeholders::_1,
+		                                     std::placeholders::_2);
+		ent.addModifier(changeSize);		                                     
+	};
+		
+	auto changeTargetsSize =
+		[](World& w, Time)
+		{
+			float TRANSITION_DURATION = 0.5f;
+
+			int x = randInt(15, 50);
+			int y = randInt(15, 50);
+			Vector2f newSize(x, y);
+			Vector2f oldSize = TargetDefault::SIZE;
+
+			Modifier<Entity> changeSize;
+			changeSize.duration_ = seconds(DEFAULT_EVENT_DURATION * 1.5f);
+			changeSize.preFunction_ = std::bind(changeSizeDecider,
+			                                    oldSize,
+			                                    newSize,
+			                                    seconds(TRANSITION_DURATION),
+			                                    std::placeholders::_1,
+			                                    std::placeholders::_2);
+			changeSize.postFunction_ = std::bind(changeSizeDecider,
+			                                     newSize,
+			                                     oldSize,
+			                                     seconds(TRANSITION_DURATION),
+			                                     std::placeholders::_1,
+			                                     std::placeholders::_2);
+			w.forwardModifier(changeSize);
+		};
+
+
+	auto changeShapeManager =
+		[] (Vector2f oldSize, Vector2f newSize, Time duration, ecs::Collidable::Type shape, bool transfFirst, Entity& ent, Time dt)
+	{
+		if(ent.getType() != EntityType::Target) return;
+
+		auto components = ent.getComponents();
+		auto positionComponent = dynCast<ecs::Position>
+			(components[ecs::Component::Position]);
+		Vector2f position = positionComponent->position_;
+		
+		Modifier<Entity> changeShape;
+		changeShape.duration_ = duration;
+
+		if(transfFirst)
+		{
+			changeSizeDecider(oldSize, newSize, duration, ent, dt);
+
+			changeShape.preDelay_ = duration;
+			changeShape.duration_ -= duration / 5.f;
+
+			changeShape.preFunction_ =
+				[position, duration](Entity& ent, Time)
+				{
+					ent.addTransition(gui::Transition(nullptr,
+					                                  gui::Transition::Quadratic,
+					                                  gui::TransformData(position),
+					                                  gui::TransformData(position,
+					                                                     540.f),
+					                                  duration));
+				};
 			
+			changeShape.postFunction_ =
+			[shape](Entity& ent, Time)
+			{
+				Target* target = dynamic_cast<Target*>(&ent);
+				assert(target);
+				target->setShape(shape);
+			};
+		}
+		else
+		{
+			Target* target = dynamic_cast<Target*>(&ent);
+			assert(target);
+			target->setShape(shape);
 
+			ent.addTransition(gui::Transition(nullptr,
+			                                  gui::Transition::Linear,
+			                                  gui::TransformData(position),
+			                                  gui::TransformData(position,
+			                                                     -540.f),
+			                                  duration));
+
+			changeShape.postFunction_ =  std::bind(changeSizeDecider, oldSize, newSize, duration, std::placeholders::_1, std::placeholders::_2);
+		}
+		ent.addModifier(changeShape);
+	};
+	
+	auto changeShape =
+		[](World& w, Time)
+		{
+			const float TRANSITION_DURATION = 0.25f;
+			const Vector2f OLD_SIZE = TargetDefault::SIZE;
+			const Vector2f NEW_SIZE (30.f, 30.f);
+
+			Modifier<Entity> changeShape;
+			changeShape.duration_ = seconds(DEFAULT_EVENT_DURATION * 2.f);
+
+			bool transfFirst = true;
+			changeShape.preFunction_ = std::bind(changeShapeManager,
+			                                     OLD_SIZE,
+			                                     NEW_SIZE,
+			                                     seconds(TRANSITION_DURATION),
+			                                     ecs::Collidable::Sphere,
+			                                     transfFirst,
+			                                     std::placeholders::_1,
+			                                     std::placeholders::_2);
+
+			changeShape.postFunction_ = std::bind(changeShapeManager,
+			                                      NEW_SIZE,
+			                                      OLD_SIZE,
+			                                      seconds(TRANSITION_DURATION),
+			                                      ecs::Collidable::Rectangle,
+			                                      !transfFirst,
+			                                      std::placeholders::_1,
+			                                      std::placeholders::_2);
+
+			w.forwardModifier(changeShape);
+		};
 //-----------------------------------------------------------------------------
-
 
 	std::vector<Event> generateEvents()
 	{
@@ -647,9 +766,13 @@ namespace evt
 		//                                           std::placeholders::_1,
 		//                                           std::placeholders::_2);
 
-		// Modifier<World> testMod;
-		// testMod.duration_ = seconds(2.f);
-		// testMod.postFunction_ = test;
+		Modifier<World> changeSizeMod;
+		changeSizeMod.duration_ = seconds(DEFAULT_EVENT_DURATION * 1.5f);
+		changeSizeMod.preFunction_ = changeTargetsSize;
+
+		Modifier<World> changeShapeMod;
+		changeShapeMod.duration_ = seconds(DEFAULT_EVENT_DURATION * 2.f);
+		changeShapeMod.preFunction_ = changeShape;
 
 		
 		// Create base Events
@@ -681,9 +804,13 @@ namespace evt
 		// makeThreeBlackHolesEvt.diff = Event::Debug;
 		// makeThreeBlackHolesEvt.worldModifiers.push_back(makeThreeBlackHolesMod);
 
-		// Event testEvt;
-		// testEvt.diff = Event::Debug;
-		// testEvt.worldModifiers.push_back(testMod);
+		Event changeSizeEvt;
+		changeSizeEvt.diff = Event::Medium;
+		changeSizeEvt.worldModifiers.push_back(changeSizeMod);
+
+		Event changeShapeEvt;
+		changeShapeEvt.diff = Event::Hard;
+		changeShapeEvt.worldModifiers.push_back(changeShapeMod);
 		
 
 		// Modify Base Modifiers to create more complex Events
@@ -701,7 +828,8 @@ namespace evt
 		std::vector<Event> events
 			{reverseGravWorldEvt, stopTimeEvt, createObstacleWorldEvt,
 					addWindWorldEvt, gravAndTimeEvt, makeCannonCrazyEvt,
-					makeBlackHoleEvt/*, makeThreeBlackHolesEvt*//*, testEvt*/};
+					makeBlackHoleEvt/*, makeThreeBlackHolesEvt*/, changeSizeEvt,
+					changeShapeEvt};
 		return events;
 	}
 }

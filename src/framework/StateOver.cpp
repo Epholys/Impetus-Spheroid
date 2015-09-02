@@ -130,7 +130,7 @@ void StateOver::initButtons(Vector2u winSize, const sf::Font& font)
 		  requestStackPush(StateID::Market); });
 	buttons_[0].setDefaultTexture();
 	buttons_[0].setAlpha(50);
-	buttons_[0].setLabel(gui::Button::Middle, "Market", font);
+	buttons_[0].setLabel(gui::Button::Middle, "Upgrades", font);
 	buttons_[0].setKey(sf::Keyboard::LControl);
 	buttons_[0].move(MARKET_POS);
 
@@ -141,7 +141,7 @@ void StateOver::initButtons(Vector2u winSize, const sf::Font& font)
 		  requestStackPush(StateID::Game); });
 	buttons_[1].setDefaultTexture();
 	buttons_[1].setAlpha(50);
-	buttons_[1].setLabel(gui::Button::Middle, "Retry", font);
+	buttons_[1].setLabel(gui::Button::Middle, "Shoot Again!", font);
 	buttons_[1].setKey(sf::Keyboard::Space);
 	buttons_[1].move(RETRY_POS);
 

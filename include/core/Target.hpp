@@ -9,15 +9,15 @@
 #include "utility/utility.hpp"
 #include "core/Entity.hpp"
 
+namespace TargetDefault
+{
+	const Vector2f SIZE {15.f, 75.f};
+	const float RADIUS = 15.f;
+	const sf::Color COLOR (255, 230, 0);
+}
+
 class Target : public Entity
 {
-public:
-	enum Shape
-	{
-		Rect,
-		Circle
-	};
-
 public:
 	Target(World& world,
 	       Vector2f position);
@@ -27,16 +27,20 @@ public:
 	virtual void draw(sf::RenderTarget& target,
 	                  sf::RenderStates states) const;
 
+	Vector2f getSize() const;
+	
 	void updateColor();
 	void changeSize(Vector2f newSize);
-	void setShape(Shape shape);
+	void setShape(ecs::Collidable::Type shape);
 	
 private:
 	void updateObjective();
 	void moveToObjective();
 
 protected:
+	ecs::Collidable::Type shape_;
 	sf::RectangleShape rect_;
+	sf::CircleShape circ_;
 	Vector2f* position_;
 
 	// In this class, objective_ is the position where the Target have to go

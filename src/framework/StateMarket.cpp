@@ -21,7 +21,7 @@ StateMarket::StateMarket(StateStack& stack, Context context)
 
 	retryButton_.setDefaultTexture();
 	retryButton_.setLabel(gui::Button::Middle,
-	                     "New Game",
+	                     "Shoot Again!",
 						 context.fonts->get(FontID::ForcedSquare),
 	                     30,
 	                     sf::Color::Black);

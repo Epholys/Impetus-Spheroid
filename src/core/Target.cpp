@@ -3,31 +3,25 @@
 #include "core/PowerUpFunctions.hpp"
 
 //-----------------------------------------------------------------------------
-
-namespace
-{
-	const Vector2f SIZE {15.f, 75.f};
-	const sf::Color COLOR (255, 230, 0);
-}
-
-
-//-----------------------------------------------------------------------------
 // *** constructor and destructor: ***
 
 Target::Target(World& world,
                Vector2f position)
 	: Entity(world, world.getEntityManager(), EntityType::Target)
-	, rect_(SIZE)
+	, shape_(ecs::Collidable::Rectangle)
+	, rect_(TargetDefault::SIZE)
+	, circ_(TargetDefault::RADIUS)
 	, position_(nullptr)
 	, objective_()
 {
-	label_ = ecs::createTarget(ecs_, position, SIZE);
+	label_ = ecs::createTarget(ecs_, position, TargetDefault::SIZE);
 
 	centerOrigin(rect_);
-	rect_.setFillColor(COLOR);
+	rect_.setFillColor(TargetDefault::COLOR);
 
-	
-	
+	centerOrigin(circ_);
+	circ_.setFillColor(TargetDefault::COLOR);
+
 	auto pointPos = dynCast<ecs::Position>
 		(ecs_.getComponent(label_, ecs::Component::Position));
 	if(pointPos)
@@ -42,6 +36,17 @@ Target::Target(World& world,
 Target::~Target()
 {
 }
+
+//-----------------------------------------------------------------------------
+
+Vector2f Target::getSize() const
+{
+	return
+		(shape_ == ecs::Collidable::Rectangle) ?
+			Vector2f(rect_.getSize()) :
+			Vector2f(circ_.getRadius(), circ_.getRadius());
+}
+
 
 //-----------------------------------------------------------------------------
 // *** virtual functions: ***
@@ -69,7 +74,10 @@ void Target::draw(sf::RenderTarget& target,
 
 	states.transform *= getTransform();
 
-	target.draw(rect_, states);
+	if(shape_ == ecs::Collidable::Rectangle)
+		target.draw(rect_, states);
+	else
+		target.draw(circ_, states);
 }
 
 
@@ -80,7 +88,7 @@ void Target::updateColor()
 	const float EPSILON = 0.01f;
 	const float MULTIPLIER = PowerUpDatas::TARGET_POINT_MULTIPLIER;	
 	const std::vector<sf::Color> COLORS
-			{COLOR,
+			{TargetDefault::COLOR,
 			sf::Color::Green,
 			sf::Color(0,255,255),
 			sf::Color::Blue,
@@ -100,6 +108,7 @@ void Target::updateColor()
 			if(std::abs(mult - std::pow(MULTIPLIER, i)) < EPSILON)
 			{
 				rect_.setFillColor(COLORS[((i)%(COLORS.size()))]);
+				circ_.setFillColor(COLORS[((i)%(COLORS.size()))]);
 				break;
 			}
 		}
@@ -120,7 +129,8 @@ void Target::updateObjective()
 	if(!position_) return;
 
 	const int Y_MARGIN = 80;
-	const int X_MARGIN = 30.f;
+	int xSize = (shape_ == ecs::Collidable::Rectangle) ? rect_.getSize().x : circ_.getRadius();
+	const int X_MARGIN = 30.f + xSize;
 	auto windowSize = world_.getWindowSize();
 	int newXPosition = randInt(X_MARGIN, windowSize.x - X_MARGIN);
 	int newYPosition = randInt(Y_MARGIN, windowSize.y - Y_MARGIN);
@@ -133,6 +143,8 @@ void Target::moveToObjective()
 	// Note : I could simplify a little this function by removing averything
 	// about OLD_VEL_COEFF, but then I'll have to find again the sweet spot of
 	// NEW_VEL_COEFF, and I like the speed as it is now.
+
+	// Second Note: I could change this by using MultiTransition
 	const float EPSILON = 0.1f;
 	const float OLD_VEL_COEFF = 0.25f;
 	const float NEW_VEL_COEFF = 2.5f;
@@ -155,4 +167,49 @@ void Target::moveToObjective()
 			velocityComponent->velocity_ * OLD_VEL_COEFF +
 			vectToObjective * NEW_VEL_COEFF;
 	}
+}
+
+
+//-----------------------------------------------------------------------------
+
+void Target::changeSize(Vector2f newSize)
+{
+	bool force = true;
+	auto collidableComponent = dynCast<ecs::Collidable>(ecs_.getComponent(label_, ecs::Component::Collidable, force));
+	assert(collidableComponent);
+
+	rect_.setSize(newSize);
+	centerOrigin(rect_);
+
+	float radius = std::sqrt(newSize.x * newSize.x + newSize.y * newSize.y) / 2.f;
+	circ_.setRadius(radius);
+	centerOrigin(circ_);
+
+	if(shape_ == ecs::Collidable::Rectangle)
+	{
+		collidableComponent->size = Vector2f(rect_.getSize());
+	}
+	else
+	{
+		collidableComponent->radius = circ_.getRadius();
+	}
+}
+
+void Target::setShape(ecs::Collidable::Type shape)
+{
+	shape_ = shape;
+
+	bool force = true;
+	auto collidableComponent = dynCast<ecs::Collidable>(ecs_.getComponent(label_, ecs::Component::Collidable, force));
+	assert(collidableComponent);
+	collidableComponent->type = shape;
+
+	if(shape_ == ecs::Collidable::Rectangle)
+	{
+		collidableComponent->size = Vector2f(rect_.getSize());
+	}
+	else
+	{
+		collidableComponent->radius = circ_.getRadius();
+	}	
 }
