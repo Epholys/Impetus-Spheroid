@@ -32,6 +32,7 @@ namespace
 
 Cannon::Cannon(const Vector2f& position, Vector2f ballPosition, World& world, Inventory& inventory, int ballsPerSecond)
 	: getShootingOrderPosition(nullptr)
+	, createBallExpansion(nullptr)
 	, world_(world)
 	, inventory_(inventory)
 	, position_(position)
@@ -53,6 +54,7 @@ Cannon::Cannon(const Vector2f& position, Vector2f ballPosition, World& world, In
 	transitionDeque_.setDuration(std::min(MAX_TRANSITION_DURATION, timeBeetweenFire_ * 0.9f));
 
 	setShootingOrderFunction(std::function<Vector2f()>(nullptr));
+	setCreateBallExpansion(std::function<PowerUpID::ID(Entity*, BallData)>(nullptr));
 	
 	for(int i=0; i<15; ++i)
 	{
@@ -89,6 +91,14 @@ void Cannon::setShootingOrderFunction(std::function<Vector2f()> function)
 		getShootingOrderPosition = std::move(function);
 	else
 		getShootingOrderPosition = [this](){return world_.getMousePosition();};
+}
+
+void Cannon::setCreateBallExpansion(std::function<PowerUpID::ID(Entity*, BallData)> function)
+{
+	if(function)
+		createBallExpansion = std::move(function);
+	else
+		createBallExpansion = std::function<PowerUpID::ID(Entity*, BallData)>(nullptr);
 }
 
 Cannon::~Cannon()
@@ -255,13 +265,18 @@ ecs::Entity Cannon::createBall()
 	world_.getEntityManager().pauseComponent(label, ecs::Component::Mass, timeInsideCannon);
 	world_.getEntityManager().pauseComponent(label, ecs::Component::Solid, timeInsideCannon);
 
+	if(createBallExpansion)
+	{
+		createBallExpansion(pBall.get(), ballBuffer_.front().data);
+	}
+	
 	world_.addEntity(std::move(pBall));
 
 	updateBuffer();
 	
 	applyBallType();
 	updateInventory();
-
+	
 	return label;
 }
 
@@ -298,6 +313,8 @@ void Cannon::updateInventory()
 		inventory_.decrement(PowerUpID::NoGravBall);
 	if(nTouchingBall_ != 1)
 		inventory_.decrement(PowerUpID::BallTouchDouble);
+	if(createBallExpansion)
+		inventory_.decrement(createBallExpansion(nullptr, BallData()));
 }
 
 void Cannon::applyBallType()

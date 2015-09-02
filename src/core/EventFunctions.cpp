@@ -713,6 +713,8 @@ namespace evt
 
 			w.forwardModifier(changeShape);
 		};
+
+
 //-----------------------------------------------------------------------------
 
 	std::vector<Event> generateEvents()

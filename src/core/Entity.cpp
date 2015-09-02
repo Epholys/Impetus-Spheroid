@@ -27,6 +27,11 @@ EntityType::Type Entity::getType() const
 	return type_;
 }
 
+World& Entity::getWorld()
+{
+	return world_;
+}
+
 ecs::EntityManager::componentTable
 Entity::getComponents(bool force)
 {

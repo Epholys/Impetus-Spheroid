@@ -27,6 +27,7 @@ Ball::Ball(World& world,
            int nCollisionTarget,
            unsigned int type)
 	: Entity(world, world.getEntityManager(), EntityType::Ball)
+	, type_(type)
 	, ball_(RADIUS)
 	, position_(nullptr)
 	, trailEmitter_(-1)
@@ -64,6 +65,14 @@ Ball::Ball(World& world,
 
 Ball::~Ball()
 {
+}
+
+
+//-----------------------------------------------------------------------------
+
+unsigned int Ball::getBallType() const
+{
+	return type_;
 }
 
 

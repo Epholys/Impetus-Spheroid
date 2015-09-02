@@ -173,6 +173,120 @@ namespace
 			};
 		w.forwardModifier<Cannon>(multipleTouch);
 	};
+
+	
+	auto ballDuplication =
+		[](int nDuplicate, BallData ballData, Entity& ent, Time)
+		{
+			if(ent.getType() != EntityType::Ball)
+				return;
+			Ball* pBall = dynamic_cast<Ball*>(&ent);
+			assert(pBall);
+
+			World& w = pBall->getWorld();
+			bool force = true;
+			auto components = pBall->getComponents(force);
+			auto positionComponent = dynCast<ecs::Position>
+				(components[ecs::Component::Position]);
+			auto velocityComponent = dynCast<ecs::Velocity>
+				(components[ecs::Component::Velocity]);
+			auto massComponent = dynCast<ecs::Mass>
+				(components[ecs::Component::Mass]);
+			auto projComponent = dynCast<ecs::Projectile>
+				(components[ecs::Component::Projectile]);
+
+
+			if(!(positionComponent && velocityComponent))
+				return;
+
+			Vector2f position = positionComponent->position_;
+
+			const float PI = 3.1415926535;
+
+			Vector2f velocity = velocityComponent->velocity_;
+			float velocityNorm = std::sqrt(velocity.x*velocity.x + velocity.y*velocity.y);
+			float currentAngle = std::atan2(velocity.y, velocity.x);
+			currentAngle = 180.f * currentAngle / PI;
+			Vector2f velocityOrth = velocityComponent->velocity_;
+			velocityOrth.normalize();
+			velocityOrth = Vector2f(-velocityOrth.y, velocityOrth.x);
+
+
+			Vector2f gravVect = massComponent ? massComponent->gravityVect_ : Vector2f(0.f, 0.f);
+			int nTouching = projComponent ? projComponent->getNTouching() : 0;
+
+			const float MAX_ANGLE = 45.f;
+			float angleIncrement = MAX_ANGLE / nDuplicate;
+			int angleFactor = - (nDuplicate / 2);
+			for(int i=0; i<nDuplicate; ++i, ++angleFactor)
+			{
+				if(angleFactor != 0)
+				{
+					Entity* newBall (new Ball(w,
+					                          position + (Ball::RADIUS_*1.5f) * velocityOrth * static_cast<float>(angleFactor),
+					                          gravVect,
+					                          ballData,
+					                          nTouching,
+					                          pBall->getBallType()));
+				
+					auto newVelocityComp = dynCast<ecs::Velocity>
+						(w.getEntityManager().getComponent(newBall->getLabel(),
+						                                   ecs::Component::Velocity));
+
+					float newAngle = PI * (currentAngle + (angleIncrement * angleFactor)) / 180.f;
+					Vector2f newVel (velocityNorm * std::cos(newAngle),
+					                 velocityNorm * std::sin(newAngle));
+
+					newVelocityComp->velocity_ = newVel;
+
+					Modifier<World> addBall;
+					addBall.duration_ = Time();
+					addBall.postFunction_ =
+						[newBall](World& w, Time){w.addEntity(std::move(Entity::Ptr(newBall)));};
+					w.forwardModifier<World>(addBall);
+				}
+			}
+		};
+
+	auto duplicateBallExpansion =
+		[](Entity* pBall, BallData data)
+		{
+			PowerUpID::ID id = PowerUpID::BallDuplication;
+			if(!pBall)
+				return id;
+
+			const float FUSE = 0.25f;
+			const int DUPLICATE = 3;
+			
+			Modifier<Entity> ballMod;
+			ballMod.duration_ = seconds(FUSE);
+			ballMod.postFunction_ = std::bind(ballDuplication,
+			                                  DUPLICATE,
+			                                  data,
+			                                  std::placeholders::_1,
+			                                  std::placeholders::_2);
+			pBall->addModifier(ballMod);
+
+			return id;
+		};
+
+	auto activateDuplication =
+		[](World& w)
+		{
+			Modifier<Cannon> modCannon;
+			modCannon.duration_ = Time();
+			modCannon.postFunction_ = [](Cannon& c, Time){c.setCreateBallExpansion(duplicateBallExpansion);};
+			w.forwardModifier<Cannon>(modCannon);
+		};
+
+	auto deactivateDuplication =
+		[](World& w)
+		{
+			Modifier<Cannon> modCannon;
+			modCannon.duration_ = Time();
+			modCannon.postFunction_ = [](Cannon& c, Time){c.setCreateBallExpansion(nullptr);};
+			w.forwardModifier<Cannon>(modCannon);
+		};
 }
 
 
@@ -285,4 +399,15 @@ void genPowerUps(std::map<PowerUpID::ID, PowerUpEntry>& powerUpTable)
 	entry->powerUp = pPumCannon;
 	entry->stock = 0;
 	entry->texture = txtCannon;
+
+	PowerUpToogle* putDuplicateBalls = new PowerUpToogle();
+	putDuplicateBalls->addActivateFunc(activateDuplication);
+	putDuplicateBalls->addDeactivateFunc(deactivateDuplication);
+	std::shared_ptr<PowerUp> pPutDuplicateBalls (putDuplicateBalls);
+	sf::Texture txtDuplicateBalls;
+	txtDuplicateBalls.loadFromFile("./media/sprites/BallDuplication.png");
+	entry = &powerUpTable[BallDuplication];
+	entry->powerUp = pPutDuplicateBalls;
+	entry->stock = 0;
+	entry->texture = txtDuplicateBalls;
 }

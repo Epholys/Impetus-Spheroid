@@ -68,6 +68,11 @@ namespace ecs
 		return points_;
 	}
 
+	int Projectile::getNTouching() const
+	{
+		return nTouching_;
+	}
+
 	Component::Category Projectile::getCategory() const
 	{
 		return Component::Projectile;

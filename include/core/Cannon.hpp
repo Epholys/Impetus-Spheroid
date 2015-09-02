@@ -15,6 +15,7 @@
 #include "ecs/ComponentPhysic.hpp"
 #include "core/Modifiable.hpp"
 #include "core/Ball.hpp"
+#include "core/PowerUp.hpp"
 #include "data/BallData.hpp"
 #include "gui/TransitionDeque.hpp"
 
@@ -45,6 +46,7 @@ public:
 	void switchBallType(unsigned int type);
 	void setNTouching(int nTouching);
 	void setShootingOrderFunction(std::function<Vector2f()> function);
+	void setCreateBallExpansion(std::function<PowerUpID::ID(Entity*, BallData)> function);
 
 	void modulateColor(sf::Color color = sf::Color::White);
 
@@ -66,6 +68,7 @@ private:
 	void updateBuffer();
 
 	std::function<Vector2f()> getShootingOrderPosition;
+	std::function<PowerUpID::ID(Entity*, BallData data)> createBallExpansion;
 
 private:
 	World& world_;

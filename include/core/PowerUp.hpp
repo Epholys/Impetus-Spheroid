@@ -23,6 +23,7 @@ namespace PowerUpID
 		GhostBall,
 		NoGravBall,
 		BallTouchDouble,
+		BallDuplication,
 		CancelEvents,
 		AddTime,
 		AddTarget,

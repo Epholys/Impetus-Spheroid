@@ -58,6 +58,7 @@ public:
 
 	ecs::Entity getLabel() const;
 	EntityType::Type getType() const;
+	World& getWorld();
 	
 	ecs::EntityManager::componentTable getComponents(bool force=false);
 

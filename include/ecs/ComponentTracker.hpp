@@ -49,6 +49,7 @@ namespace ecs
 		void touchTarget();
 		bool hasTouchedTarget() const;
 
+		int getNTouching() const;
 		int getPoints() const;
 
 		virtual Component::Category getCategory() const;

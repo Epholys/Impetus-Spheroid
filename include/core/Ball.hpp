@@ -35,23 +35,25 @@ public:
 	     unsigned int type = 0);
 	virtual ~Ball();
 
+	unsigned int getBallType() const;
+	
 	virtual void update(Time dt);
 	virtual void draw(sf::RenderTarget& target,
 	                  sf::RenderStates states) const;
 
-private:
 	/* This function is a dirty hack: it creates ParticleEmitters via Emitter
 	 * with just the correct rate to create a single particle during the
 	 * Emitter::update() call inside this function. The ParticleEmitters are
 	 * then destroyed. 
 	 * */
 	void makeMicroParticles(Time dt, std::shared_ptr<ecs::Projectile> projectileComponent);
-	
+
 public:
 	static const float RADIUS_;
 	static const float MASS_;
 
 protected:
+	unsigned int type_;
 	sf::CircleShape ball_;
 	Vector2f* position_;
 	int trailEmitter_;
