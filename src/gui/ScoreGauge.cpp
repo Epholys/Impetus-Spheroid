@@ -15,14 +15,21 @@ namespace gui
 
 		const sf::Color UNDER_STAGE_COLOR = sf::Color::Red;
 		const sf::Color OVER_STAGE_COLOR = sf::Color::Green;
+
+		const float CEILING_FACTOR = 0.8f;
+		const float CEILING_UPGRADING_FACTOR = 1.5f;
 	}
 	
 	ScoreGauge::ScoreGauge(Vector2f size, float maxValue, float startValue)
 		: Gauge(maxValue, startValue)
 		, stage_(-1.f)
+		, stageView_(Vector2f(size.x, OUTLINE_THICKNESS))
 		, fillingView_(Vector2f(size.x, 0.f))
 		, backgroundView_(size)
 	{
+		stageView_.setPosition(0.f, size.y * (stage_ / maxValue_));
+		stageView_.setFillColor(UNDER_STAGE_COLOR);
+		
 		backgroundView_.setFillColor(BACK_VIEW_COLOR);
 		backgroundView_.setOutlineThickness(OUTLINE_THICKNESS);
 		backgroundView_.setOutlineColor(BACK_VIEW_COLOR);
@@ -47,8 +54,11 @@ namespace gui
 
 	void ScoreGauge::updateValue(float value)
 	{
-		Gauge::updateValue(value);
-		updateFillingView();
+		currentValue_ = value;
+		if(value > maxValue_ * CEILING_FACTOR)
+			updateMaxValue(maxValue_ * CEILING_UPGRADING_FACTOR);
+		else
+			updateFillingView();
 	}
 
 	void ScoreGauge::updateMaxValue(float value)
@@ -59,6 +69,9 @@ namespace gui
 
 	void ScoreGauge::updateFillingView()
 	{
+		stageView_.setPosition(0.f, backgroundView_.getSize().y * ( 1 - stage_ / maxValue_));
+
+		
 		assert(maxValue_);
 		
 		Vector2f backgroundSize (backgroundView_.getSize());
@@ -75,6 +88,7 @@ namespace gui
 
 		target.draw(backgroundView_, states);
 		target.draw(fillingView_, states);
+		target.draw(stageView_, states);
 	}
 
 } // gui::

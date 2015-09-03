@@ -2,6 +2,8 @@
 #define GUI_SCORE_GAUGE_HPP
 
 
+#include <vector>
+
 #include "gui/Gauge.hpp"
 #include "utility/Vector2.hpp"
 #include "utility/utility.hpp"
@@ -28,6 +30,7 @@ namespace gui
 					
 	protected:
 		float stage_;
+		sf::RectangleShape stageView_;
 
 		sf::RectangleShape fillingView_;
 		sf::RectangleShape backgroundView_;
