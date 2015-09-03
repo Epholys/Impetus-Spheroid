@@ -24,8 +24,7 @@ namespace gui
 	}
 	
 	CircleGauge::CircleGauge(float radius, float maxValue, float startValue)
-		: maxValue_(maxValue)
-		, currentValue_(startValue)
+		: Gauge(maxValue, startValue)
 		, fillingView_(sf::TrianglesFan, FILLING_N_POINT)
 		, backgroundView_(radius)
 	{
@@ -40,7 +39,7 @@ namespace gui
 
 	void CircleGauge::updateValue(float value)
 	{
-		currentValue_ = std::min(maxValue_, value);
+		Gauge::updateValue(value);
 		updateFillingView();
 	}
 

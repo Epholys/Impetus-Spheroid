@@ -4,30 +4,28 @@
 
 #include <vector>
 
-#include <SFML/Graphics.hpp>
-
+#include "gui/Gauge.hpp"
 #include "utility/Vector2.hpp"
 #include "utility/utility.hpp"
 
 namespace gui
 {
 
-	class CircleGauge : public sf::Drawable, public sf::Transformable
+	/* Circle jauge tailored for the timer */
+
+	class CircleGauge : public Gauge
 	{
 	public:
 		CircleGauge(float radius, float maxValue, float startValue = 0.f);
 
-		void updateValue(float value);
+		virtual void updateValue(float value);
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	private:
-		void updateFillingView();
+	protected:
+		virtual void updateFillingView();
 		
-	private:
-		float maxValue_;
-		float currentValue_;
-
+	protected:
 		sf::VertexArray fillingView_;
 		sf::CircleShape backgroundView_;
 	};
