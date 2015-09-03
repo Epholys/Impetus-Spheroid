@@ -34,6 +34,10 @@ namespace gui
 		updateFillingView();
 	}
 
+	CircleGauge::~CircleGauge()
+	{
+	}
+
 	
 //-----------------------------------------------------------------------------
 

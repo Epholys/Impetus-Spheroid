@@ -11,12 +11,13 @@
 namespace gui
 {
 
-	/* Circle jauge tailored for the timer */
+	/* Circle gauge tailored for the timer */
 
 	class CircleGauge : public Gauge
 	{
 	public:
 		CircleGauge(float radius, float maxValue, float startValue = 0.f);
+		virtual ~CircleGauge();
 
 		virtual void updateValue(float value);
 

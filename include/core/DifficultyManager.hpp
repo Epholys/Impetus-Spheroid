@@ -16,6 +16,7 @@
 #include "gui/Menu.hpp"
 #include "gui/TransitionDeque.hpp"
 #include "gui/CircleGauge.hpp"
+#include "gui/ScoreGauge.hpp"
 
 class World;
 namespace evt {
@@ -89,6 +90,7 @@ private:
 	int objective_;
 	int ceiling_;
 	sf::Text scoreText_;
+	gui::ScoreGauge scoreGauge_;
 	int coinsPerPointScore_;
 
 	std::deque<sf::Text> indicatorTexts_;
