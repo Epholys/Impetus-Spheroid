@@ -31,10 +31,12 @@ namespace
 	const int BASE_CEILING = 20;
 	const int OBJECTIVE_INCREMENT = 2;
 
-	const Vector2f INDICATOR_POSITION (720.f, 65.f);
+	const Vector2f INDICATOR_POSITION (720.f, 115.f);
 	const Vector2f INDICATOR_SPACE (0.f, 15.f);
 	const Time INDICATOR_DURATION = seconds(1.f);
 	const Time DEQUE_DURATION = milliseconds(200);
+
+	const float TIMER_GAUGE_RADIUS = 30.f;
 }
 
 
@@ -45,7 +47,7 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, phaseNumber_(0)
 	, context_(context)
 	, font_(context.world->getFontRef())
-	, timer_()
+	, timerGauge_(TIMER_GAUGE_RADIUS, PHASE_TIME_.asSeconds(), PHASE_TIME_.asSeconds())
 	, score_(0.f)
 	, objective_(BASE_OBJECTIVE_)
 	, ceiling_(BASE_CEILING)
@@ -63,13 +65,10 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	// , maskGui_(true)
 {
 	const Vector2u WINDOW_SIZE = context_.world->getWindowSize();
-	const Vector2f TIMER_POSITION (WINDOW_SIZE.x - 90.f, 0.f);
-	const Vector2f SCORE_POSITION (WINDOW_SIZE.x - 90.f, 20.f);
+	const Vector2f TIMER_POSITION (WINDOW_SIZE.x - TIMER_GAUGE_RADIUS - 30.f, TIMER_GAUGE_RADIUS + 10.f);
+	const Vector2f SCORE_POSITION (WINDOW_SIZE.x - 90.f, TIMER_GAUGE_RADIUS + 35.f);
 
-	timer_.setFont(font_);
-	timer_.setPosition(TIMER_POSITION);
-	timer_.setString("20.00");
-	timer_.setColor(sf::Color::Black);
+	timerGauge_.setPosition(TIMER_POSITION);
 
 	scoreText_.setFont(font_);
 	scoreText_.setPosition(SCORE_POSITION);
@@ -123,11 +122,7 @@ void DifficultyManager::update(Time dt)
 	}
 
 	Time timerRemaining = PHASE_TIME_ - phaseTime_;
-	std::stringstream ssSeconds;
-	ssSeconds << int(timerRemaining.asSeconds());
-	std::stringstream ssCentiSecs;
-	ssCentiSecs << (timerRemaining.asMilliseconds() / 10) % 100;
-	timer_.setString(ssSeconds.str() + "." + ssCentiSecs.str());
+	timerGauge_.updateValue(timerRemaining.asSeconds());
 }
 
 // Used to forward instruction to the GUI 
@@ -138,7 +133,7 @@ void DifficultyManager::update(Time dt)
 
 void DifficultyManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	target.draw(timer_, states);
+	target.draw(timerGauge_, states);
 	target.draw(scoreText_, states);
 
 	for (const auto& text : indicatorTexts_)

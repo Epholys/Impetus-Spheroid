@@ -15,6 +15,7 @@
 #include "data/DifficultyData.hpp"
 #include "gui/Menu.hpp"
 #include "gui/TransitionDeque.hpp"
+#include "gui/CircleGauge.hpp"
 
 class World;
 namespace evt {
@@ -82,7 +83,7 @@ private:
 	DifficultyContext context_;
 
 	sf::Font& font_;
-	sf::Text timer_;
+	gui::CircleGauge timerGauge_;
 
 	float score_;
 	int objective_;

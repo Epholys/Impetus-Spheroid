@@ -10,6 +10,7 @@ TARGETDIR = ../
 OBJECTS = 	Component.o Menu.o MenuMeta.o Slider.o Button.o \
 		  	TextureGenerator.o \
 			TransitionFunctions.o Transition.o TransitionDeque.o MultiTransition.o\
+			CircleGauge.o
 
 empty :=
 space := $(empty) $(empty)

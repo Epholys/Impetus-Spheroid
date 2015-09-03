@@ -20,7 +20,7 @@ Inventory::Inventory(Vector2u originalSize,
 	initKeyBinding(isAzerty);
 	genPowerUps(powerUpTable_);
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
-	const Vector2f COINS_POSITION (710.f, 40.f);
+	const Vector2f COINS_POSITION (710.f, 85.f);
 	coinsText_.setFont(font_);
 	coinsText_.setPosition(COINS_POSITION);
 	coinsText_.setString(toString(coins_));
