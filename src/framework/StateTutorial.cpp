@@ -62,13 +62,31 @@ bool StateTutorial::handleInput(const sf::Event& event)
 {
 	if(event.type == sf::Event::MouseButtonPressed)
 	{
-		++index_;
+		switch(event.mouseButton.button)
+		{
+		case sf::Mouse::Left:
+		{
+			++index_;
 
-		if(index_ < instructionDatas.size())
+			if(index_ < instructionDatas.size())
+				updateInstruction();
+
+			else
+				requestStackPop();
+
+			break;
+		}
+		case sf::Mouse::Right:
+		{
+			index_ = (index_ != 0) ? index_ - 1 : index_;
+
 			updateInstruction();
 
-		else
-			requestStackPop();
+			break;
+		}
+		default:
+			break;
+		}
 
 		return false;
 	}

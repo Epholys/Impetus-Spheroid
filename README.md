@@ -27,40 +27,24 @@ and you'll have a game freshly installed from source!
 
 ### TODO
 
-* URGENT OPTIMISATION: ecs::EntityManager::getObjectTable()/getComponent()/etc called too many times!
-  * Create operations on objectTable(?)
-  * OR Cache common table as vectors
-  * OR Reduce ecs::EntityManager::getComponent() calls __DONE!__
-  
-
 * Gameplay
   * Tutorial
   	* Full-fledged tutorial for begginers at the first game __NEEDS TESTING__
   * Balancing
   	* Cheaper bonuses _NEEDS TESTING_
-	* Faster base auto-fire __DONE!__
   * Add some indications (objective, points, money, etc)
-  	* Time indication: Big flashy "jauge"
-	* Point indication: above the target
   	* Replace the grey cross-hair by something more visible(?)
 	* More explicit Events: Icons, Other Graphic Effects...
-	  * Gravity Changes
-	  	* Arrows __DONE!__
 	  * Stop Time
-	  	* Slowing balls __DONE!__
-		* Hourglass Icons __DONE!__
 		* Awesome effect like radial blur(?)
-	  * Crazy Cannon __DONE!__
 	* More explicit PowerUps: Icons, Particule Effects, other graphics Effects
   * Make the game more addictive
 	* Rewarding: sound?
   * Add some content
   	* More Events!
 	  * Spinning Target
-	  * Morphing Target
 	  * Crazy/Teleporting(?) Target
 	* More Power-Ups!
-	  * Several ball / shot? OR Fragmentation Balls
 	  * Heavy Balls
 	* More Improvement!
 	  * Improves power-ups?
@@ -70,16 +54,11 @@ and you'll have a game freshly installed from source!
   * Close Menus, restart game with buttons
 
 * Graphics
-  * TargetSun's Highlight more visible __DONE!__
-  * Balls' Trail particles duration longer __DONE!__
-  * Round particles for "Shards" __DONE!__
   
 * Sound (just little sound effects)
 
 * Bugs
   * Auto-adjust the speed of the next balls left bar
-  * Ball lost when LostFocus Event __DONE!__
-  * Crash when CancelEvent is called twice in a execution __DONE!__
 
 * Other
   * Make a credit page
@@ -101,6 +80,8 @@ The function itself is optimized, but it is called to many times...
   * For smooth balltrail: adapt duration and frequency of particles w/ ball's velocity
   * Particles: adapt particle frequency w/ number of balls on screen
   * ECS: Optimize to be more cache-friendly
+  
+
 
 ### Trivia
 * __What are the naming convention?__ I use the [Java naming convention](https://en.wikipedia.org/wiki/Naming_convention_%28programming%29#Java), as I think it makes sense in OOP
