@@ -30,12 +30,7 @@ namespace
 {
 	const int BASE_CEILING = 20;
 	const int OBJECTIVE_INCREMENT = 2;
-
-	const Vector2f INDICATOR_POSITION (720.f, 115.f);
-	const Vector2f INDICATOR_SPACE (0.f, 15.f);
-	const Time INDICATOR_DURATION = seconds(1.f);
-	const Time DEQUE_DURATION = milliseconds(200);
-
+	
 	const float TIMER_GAUGE_RADIUS = 30.f;
 	const Vector2f SCORE_GAUGE_SIZE (15.f, 400.f);
 }
@@ -52,31 +47,24 @@ DifficultyManager::DifficultyManager(DifficultyContext context)
 	, score_(0.f)
 	, objective_(BASE_OBJECTIVE_)
 	, ceiling_(BASE_CEILING)
-	, scoreText_()
-	, scoreGauge_(SCORE_GAUGE_SIZE, BASE_OBJECTIVE_ * 4 / 3.f, 0.f)
+	// , scoreText_()
+	, scoreGauge_(context.world->getFontRef(), SCORE_GAUGE_SIZE, BASE_OBJECTIVE_ * 4 / 3.f, 0.f)
 	, coinsPerPointScore_(context.metaData->improvementValue[ImprovementID::CoinsPerPointScore])
-	, indicatorTexts_()
-	, indicatorDeque_(gui::TransformData(INDICATOR_POSITION),
-	                  gui::TransformData(INDICATOR_SPACE, 0.f, Vector2f()),
-	                  gui::Transition::Linear,
-	                  DEQUE_DURATION)
-	, indicatorAccumulator_()
-	, indicatorDuration_(INDICATOR_DURATION)
 	// , ballCount_()
 	// , diffGui_(nullptr)
 	// , maskGui_(true)
 {
 	const Vector2u WINDOW_SIZE = context_.world->getWindowSize();
 	const Vector2f TIMER_POSITION (WINDOW_SIZE.x - TIMER_GAUGE_RADIUS - 30.f, TIMER_GAUGE_RADIUS + 10.f);
-	const Vector2f SCORE_POSITION (WINDOW_SIZE.x - 90.f, TIMER_GAUGE_RADIUS + 35.f);
-
+	const Vector2f SCORE_POSITION (WINDOW_SIZE.x - 55.f, TIMER_GAUGE_RADIUS + 55.f);
+	const Vector2f GAUGE_POSITION (WINDOW_SIZE.x - 55.f, TIMER_GAUGE_RADIUS + 95.f);
 	timerGauge_.setPosition(TIMER_POSITION);
 
-	scoreGauge_.setPosition(400.f, 100.f);
+	scoreGauge_.setPosition(GAUGE_POSITION);
 	scoreGauge_.updateStage(BASE_OBJECTIVE_);
 
-	scoreText_.setFont(font_);
-	scoreText_.setPosition(SCORE_POSITION);
+	// scoreText_.setFont(font_);
+	// scoreText_.setPosition(SCORE_POSITION);
 	updateScore();
 	
 //	createGui();
@@ -101,22 +89,6 @@ void DifficultyManager::update(Time dt)
 {
 	phaseTime_ += dt;
 
-	updateIndicatorDuration();
-	indicatorDeque_.update(dt);
-	if(!indicatorTexts_.empty())
-	{
-		indicatorAccumulator_ += dt;
-	}
-	if(indicatorAccumulator_ > indicatorDuration_)
-	{
-		indicatorAccumulator_ = Time();
-		if(!indicatorTexts_.empty())
-		{
-			indicatorDeque_.popFront();
-			indicatorTexts_.pop_front();
-		}
-	}	
-
 	updateScore();
 
 	if (phaseTime_ >= PHASE_TIME_)
@@ -139,13 +111,8 @@ void DifficultyManager::update(Time dt)
 void DifficultyManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(timerGauge_, states);
-	target.draw(scoreText_, states);
+	// target.draw(scoreText_, states);
 	target.draw(scoreGauge_, states);
-
-	for (const auto& text : indicatorTexts_)
-	{
-		target.draw(text, states);
-	}
 
 	// Don't forget to draw the GUI if necessary!
 }
@@ -199,8 +166,6 @@ void DifficultyManager::updateScore()
 			// // multiplier. It would have an impact if I decide to go back to the
 			// // old point system.
 			// ++ballCount_[projectileComp->getPoints()];
-
-			updateIndicator(static_cast<int>(round(pointsWon)));
 		}
 	}
 
@@ -212,13 +177,11 @@ void DifficultyManager::updateScore()
 
 	score_ += points;
 
-	std::stringstream ss;
-	ss << int(score_);
-	ss << "/";
-	ss << objective_;
-	scoreText_.setString(ss.str());
-	sf::Color txtCol = (score_ < objective_) ? sf::Color::Red : sf::Color::Green;
-	scoreText_.setColor(txtCol);
+	// std::stringstream ss;
+	// ss << int(score_);
+	// scoreText_.setString(ss.str());
+	// sf::Color txtCol = (score_ < objective_) ? sf::Color::Red : sf::Color::Green;
+	// scoreText_.setColor(txtCol);
 	scoreGauge_.updateValue(score_);
 }
 
@@ -288,24 +251,6 @@ void DifficultyManager::updateObjective()
 
 	scoreGauge_.updateStage(objective_);
 	scoreGauge_.updateMaxValue(objective_ * 4 / 3.f);
-}
-
-void DifficultyManager::updateIndicatorDuration()
-{
-	indicatorDuration_ = INDICATOR_DURATION / std::max(1.f, (2.f * static_cast<int>(indicatorTexts_.size() / 5)));
-	indicatorDeque_.setDuration(std::min(DEQUE_DURATION, indicatorDuration_ / 2.f));
-}
-
-void DifficultyManager::updateIndicator(int points)
-{
-	const unsigned int CHAR_SIZE = 20;
-	std::stringstream ss;
-	ss << "+" << points;
-	sf::Text text (ss.str(), font_, CHAR_SIZE);
-	text.setColor(findColor(points));
-			
-	indicatorTexts_.push_back(text);
-	indicatorDeque_.pushBack(&indicatorTexts_.back());
 }
 
 sf::Color DifficultyManager::findColor(int points)

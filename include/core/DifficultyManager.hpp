@@ -68,8 +68,6 @@ private:
 	void updateDifficulty();
 	void updateScore();
 	void updateObjective();
-	void updateIndicatorDuration();
-	void updateIndicator(int points);
 
 	sf::Color findColor(int points);
 
@@ -89,15 +87,9 @@ private:
 	float score_;
 	int objective_;
 	int ceiling_;
-	sf::Text scoreText_;
+	// sf::Text scoreText_;
 	gui::ScoreGauge scoreGauge_;
 	int coinsPerPointScore_;
-
-	std::deque<sf::Text> indicatorTexts_;
-	gui::TransitionDeque indicatorDeque_;
-	Time indicatorAccumulator_;
-	Time indicatorDuration_;
-	
 
 	// std::map<int, int> ballCount_;
 	

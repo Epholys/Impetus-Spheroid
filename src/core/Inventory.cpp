@@ -20,7 +20,8 @@ Inventory::Inventory(Vector2u originalSize,
 	initKeyBinding(isAzerty);
 	genPowerUps(powerUpTable_);
 	font_.loadFromFile("./media/font/FORCEDSQUARE.ttf");
-	const Vector2f COINS_POSITION (710.f, 85.f);
+	const Vector2f COINS_POSITION (742.f, 90.f);
+	centerOrigin(coinsText_);
 	coinsText_.setFont(font_);
 	coinsText_.setPosition(COINS_POSITION);
 	coinsText_.setString(toString(coins_));
@@ -136,6 +137,7 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	
 	const std::string str = toString(coins_);
 	coinsText_.setString(str);
+	centerOrigin(coinsText_);
 	target.draw(coinsText_, states);
 	
 	const Vector2u POWERUP_ICON_SIZE (20, 20);

@@ -93,6 +93,7 @@ private:
 
 	sf::CircleShape cannonBody_;
 	sf::RectangleShape cannonTube_;
+	sf::CircleShape nextBallPreview_;
 	sf::VertexArray arcPreview_;
 };
 

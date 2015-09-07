@@ -1,3 +1,4 @@
+#include <sstream>
 #include "framework/Assertion.hpp"
 #include "gui/ScoreGauge.hpp"
 
@@ -20,15 +21,20 @@ namespace gui
 		const float CEILING_UPGRADING_FACTOR = 1.5f;
 	}
 	
-	ScoreGauge::ScoreGauge(Vector2f size, float maxValue, float startValue)
+	ScoreGauge::ScoreGauge(sf::Font& font, Vector2f size, float maxValue, float startValue)
 		: Gauge(maxValue, startValue)
 		, stage_(-1.f)
 		, stageView_(Vector2f(size.x, OUTLINE_THICKNESS))
+		, stageText_()
 		, fillingView_(Vector2f(size.x, 0.f))
+		, fillingText_()
 		, backgroundView_(size)
 	{
-		stageView_.setPosition(0.f, size.y * (stage_ / maxValue_));
 		stageView_.setFillColor(UNDER_STAGE_COLOR);
+
+		stageText_.setFont(font);
+		stageText_.setColor(UNDER_STAGE_COLOR);
+		centerOrigin(stageText_);
 		
 		backgroundView_.setFillColor(BACK_VIEW_COLOR);
 		backgroundView_.setOutlineThickness(OUTLINE_THICKNESS);
@@ -36,8 +42,11 @@ namespace gui
 
 		fillingView_.setOutlineThickness(OUTLINE_THICKNESS);
 		fillingView_.setOutlineColor(BACK_VIEW_COLOR);
+
+		fillingText_.setFont(font);
+		centerOrigin(fillingText_);
 		
-		updateFillingView();
+		updateViews();
 	}
 		  
 	ScoreGauge::~ScoreGauge()
@@ -49,7 +58,7 @@ namespace gui
 	void ScoreGauge::updateStage(float value)
 	{
 		stage_ = value;
-		updateFillingView();
+		updateViews();
 	}
 
 	void ScoreGauge::updateValue(float value)
@@ -58,28 +67,45 @@ namespace gui
 		if(value > maxValue_ * CEILING_FACTOR)
 			updateMaxValue(maxValue_ * CEILING_UPGRADING_FACTOR);
 		else
-			updateFillingView();
+			updateViews();
 	}
 
 	void ScoreGauge::updateMaxValue(float value)
 	{
 		Gauge::updateMaxValue(value);
-		updateFillingView();
+		updateViews();
 	}
 
-	void ScoreGauge::updateFillingView()
+	void ScoreGauge::updateViews()
 	{
-		stageView_.setPosition(0.f, backgroundView_.getSize().y * ( 1 - stage_ / maxValue_));
-
+		Vector2f backgroundSize (backgroundView_.getSize());
 		
+		std::stringstream ss;
+		ss << static_cast<int>(stage_);
+		stageText_.setString(ss.str());
+		Vector2f stageTextPosition (- OUTLINE_THICKNESS -
+		                            stageText_.getInverseTransform().transformPoint(stageText_.findCharacterPos(100)).x,
+		                            backgroundSize.y * ( 1 - stage_ / maxValue_) -
+		                            stageText_.getCharacterSize() / 2.f);
+		stageText_.setPosition(stageTextPosition);
+
+		stageView_.setPosition(0.f, backgroundSize.y * ( 1 - stage_ / maxValue_));
+		
+
 		assert(maxValue_);
 		
-		Vector2f backgroundSize (backgroundView_.getSize());
 		fillingView_.setSize(Vector2f(backgroundSize.x,
 		                              backgroundSize.y * (currentValue_ / maxValue_)));
 		fillingView_.setPosition(0.f, backgroundSize.y - fillingView_.getSize().y);
 		sf::Color color = (currentValue_ < stage_) ? UNDER_STAGE_COLOR : OVER_STAGE_COLOR;
 		fillingView_.setFillColor(color);
+
+		ss.str("");
+		ss << static_cast<int>(currentValue_);
+		fillingText_.setString(ss.str());
+		fillingText_.setPosition(fillingView_.getPosition().x - OUTLINE_THICKNESS - fillingText_.getInverseTransform().transformPoint(fillingText_.findCharacterPos(100)).x,
+		                         fillingView_.getPosition().y - fillingText_.getCharacterSize() / 2.f);
+		fillingText_.setColor(color);
 	}				  
 	
 	void ScoreGauge::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -88,7 +114,9 @@ namespace gui
 
 		target.draw(backgroundView_, states);
 		target.draw(fillingView_, states);
+		target.draw(fillingText_, states);
 		target.draw(stageView_, states);
+		target.draw(stageText_, states);
 	}
 
 } // gui::

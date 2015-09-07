@@ -16,7 +16,7 @@ namespace gui
 	class ScoreGauge : public Gauge
 	{
 	public:
-		ScoreGauge(Vector2f size, float maxValue, float startValue = 0.f);
+		ScoreGauge(sf::Font& font, Vector2f size, float maxValue, float startValue = 0.f);
 		virtual ~ScoreGauge();
 
 		virtual void updateStage(float value);
@@ -26,13 +26,15 @@ namespace gui
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	protected:
-		virtual void updateFillingView();
+		virtual void updateViews();
 					
 	protected:
 		float stage_;
 		sf::RectangleShape stageView_;
+		sf::Text stageText_;
 
 		sf::RectangleShape fillingView_;
+		sf::Text fillingText_;
 		sf::RectangleShape backgroundView_;
 	};
 	

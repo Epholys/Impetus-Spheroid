@@ -2,12 +2,17 @@
 #define TARGET_HPP
 
 
+#include <deque>
+
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include "utility/utility.hpp"
 #include "core/Entity.hpp"
+#include "gui/Transition.hpp"
+#include "gui/utility.hpp"
 
 namespace TargetDefault
 {
@@ -35,6 +40,8 @@ public:
 	
 private:
 	void updateObjective();
+	void updateIndicators(Time dt);
+	std::size_t findIndex(int points);
 	void moveToObjective();
 
 protected:
@@ -43,6 +50,15 @@ protected:
 	sf::CircleShape circ_;
 	Vector2f* position_;
 
+	sf::Font& font_;
+	struct IndicatorEntry
+	{
+		sf::Text text;
+		gui::Transition transition;
+		gui::FadeOut<sf::Text> fadeOut;
+	};
+	std::deque<IndicatorEntry> indicators_;
+	
 	// In this class, objective_ is the position where the Target have to go
 	// when touched by a ecs::Projectile.
 	Vector2f objective_;

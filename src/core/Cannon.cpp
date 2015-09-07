@@ -17,6 +17,8 @@ namespace
 namespace
 {
 	const sf::Color CANNON_COLOR (80, 80, 80);
+	const sf::Color CANNON_DEEP_COLOR (60, 60, 60);
+	const sf::Color CANNON_TRANS_COLOR (225, 225, 225, 150);
 	const sf::Color CANNON_OUTLINE_COLOR (120, 120, 120);
 	const float OUTLINE_THICKNESS = 5.f;
 
@@ -47,6 +49,7 @@ Cannon::Cannon(const Vector2f& position, Vector2f ballPosition, World& world, In
 	                   MAX_TRANSITION_DURATION)
 	, cannonBody_()
 	, cannonTube_()
+	, nextBallPreview_()
 	, arcPreview_(sf::TrianglesStrip)
 {
 	assert(ballsPerSecond);
@@ -83,6 +86,13 @@ void Cannon::initView()
 	cannonTube_.setFillColor(CANNON_COLOR);
 	cannonTube_.setOutlineColor(CANNON_OUTLINE_COLOR);
 	cannonTube_.setOutlineThickness(OUTLINE_THICKNESS);
+
+	nextBallPreview_.setRadius(Ball::RADIUS_);
+	centerOrigin(nextBallPreview_);
+	nextBallPreview_.setPosition(position_);
+	nextBallPreview_.setFillColor(ballBuffer_.front().data.color * CANNON_TRANS_COLOR);
+	nextBallPreview_.setOutlineColor(CANNON_DEEP_COLOR);
+	nextBallPreview_.setOutlineThickness(OUTLINE_THICKNESS);
 }
 
 void Cannon::setShootingOrderFunction(std::function<Vector2f()> function)
@@ -204,13 +214,15 @@ void Cannon::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(arcPreview_, states);
 	}
-	target.draw(cannonTube_, states);
-	target.draw(cannonBody_, states);
-	
+		
 	for (const auto& entry : ballBuffer_)
 	{
 		target.draw(entry.shape, states);
 	}
+	
+	target.draw(cannonTube_, states);
+	target.draw(cannonBody_, states);
+	target.draw(nextBallPreview_, states);
 }
 
 
@@ -340,6 +352,8 @@ void Cannon::updateBuffer()
 	entry.shape.setFillColor(entry.data.color);
 	ballBuffer_.push_back(entry);
 	transitionDeque_.pushBack(&(ballBuffer_.back().shape));
+
+	nextBallPreview_.setFillColor(ballBuffer_.front().data.color * CANNON_TRANS_COLOR);
 }
 
 BallData Cannon::randomBallData() const

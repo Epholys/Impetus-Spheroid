@@ -1,6 +1,18 @@
+#include <sstream>
+#include "framework/Assertion.hpp"
 #include "core/Target.hpp"
 #include "core/World.hpp"
 #include "core/PowerUpFunctions.hpp"
+#include "data/BallData.hpp"
+
+
+//-----------------------------------------------------------------------------
+
+namespace
+{
+	auto ballDatas = genBallDatas();
+}
+
 
 //-----------------------------------------------------------------------------
 // *** constructor and destructor: ***
@@ -12,6 +24,8 @@ Target::Target(World& world,
 	, rect_(TargetDefault::SIZE)
 	, circ_(TargetDefault::RADIUS)
 	, position_(nullptr)
+	, font_(world_.getFontRef())
+	, indicators_()
 	, objective_()
 {
 	label_ = ecs::createTarget(ecs_, position, TargetDefault::SIZE);
@@ -62,7 +76,8 @@ void Target::update(Time dt)
 		// sf::Shapes, it would mean I'll have to update every single one of them.
 		setPosition(position_->x, position_->y);
 	}
-
+	
+	updateIndicators(dt);
 	updateObjective();
 	moveToObjective();
 }
@@ -72,7 +87,13 @@ void Target::draw(sf::RenderTarget& target,
 {
 	Entity::draw(target, states);
 
+	for(const auto entry : indicators_)
+	{
+		target.draw(entry.text, states);
+	}
+
 	states.transform *= getTransform();
+
 
 	if(shape_ == ecs::Collidable::Rectangle)
 		target.draw(rect_, states);
@@ -101,7 +122,7 @@ void Target::updateColor()
 	if(targetComp)
 	{
 		auto mult = targetComp->getPointMultiplier();
-		// 50 ios an arbitrary big value, I suppose nobody will have enough
+		// 50 is an arbitrary big value, I suppose nobody will have enough
 		// patience to cumulate so much money.
 		for(int i=0; i<50; ++i)
 		{
@@ -130,13 +151,81 @@ void Target::updateObjective()
 
 	const int Y_MARGIN = 80;
 	int xSize = (shape_ == ecs::Collidable::Rectangle) ? rect_.getSize().x : circ_.getRadius();
-	const int X_MARGIN = 30.f + xSize;
+	const int X_MARGIN = 80.f + xSize;
 	auto windowSize = world_.getWindowSize();
 	int newXPosition = randInt(X_MARGIN, windowSize.x - X_MARGIN);
 	int newYPosition = randInt(Y_MARGIN, windowSize.y - Y_MARGIN);
 
 	objective_ = Vector2f(newXPosition, newYPosition);
 }
+
+void Target::updateIndicators(Time dt)
+{
+	const Vector2f START (getPosition().x -20.f, getPosition().y - TargetDefault::SIZE.y - 5.f);
+	const Vector2f FINISH (START.x, START.y - 50.f);
+	const Time DURATION = seconds(1.f);
+	
+	const auto& collisions = world_.getTrackedCollisions();
+	for(const auto& pair : collisions)
+	{
+		if(pair.second == getLabel())
+		{
+			auto projectileComp =
+				dynCast<ecs::Projectile>(ecs_.getComponent(pair.first,
+				                                           ecs::Component::Projectile));
+			auto targetComp =
+				dynCast<ecs::Target>(ecs_.getComponent(pair.second,
+				                                       ecs::Component::Target));
+			assert(projectileComp && targetComp);
+			float pointsWon = projectileComp->getPoints() * targetComp->getPointMultiplier();
+			std::size_t index = findIndex(pointsWon);
+			const float BASE_SCALE = 0.5f, MAX_SCALE = 2.f;
+			float scale = BASE_SCALE * (1 + index * (MAX_SCALE - BASE_SCALE) / ballDatas.size());
+			
+			std::stringstream ss;
+			ss << "+" << static_cast<int>(pointsWon);
+			sf::Text text (ss.str(), font_);
+			text.setColor(ballDatas[index].color);
+			gui::Transition transition (nullptr,
+			                            gui::Transition::Quadratic,
+			                            gui::TransformData(START, 0.f, Vector2f(scale, scale)),
+			                            gui::TransformData(FINISH, 0.f, Vector2f(scale, scale)),
+			                            DURATION);
+			gui::FadeOut<sf::Text> fadeOut {nullptr, DURATION * 1.5f, Time()};
+			indicators_.push_front({text, transition, fadeOut});
+			indicators_.front().transition.setTransformable(&indicators_.front().text);
+			indicators_.front().fadeOut.pT_ = &indicators_.front().text;
+		}
+	}
+
+	for(auto& entry : indicators_)
+	{
+		entry.transition.update(dt);
+		entry.fadeOut.update(dt);
+	}
+	while(!indicators_.empty()
+	      && indicators_.back().transition.isOver())
+	{
+		indicators_.pop_back();
+	}
+}
+
+
+std::size_t Target::findIndex(int points)
+{
+	std::size_t index = 0;
+	for(; index < ballDatas.size(); ++index)
+	{
+		if(ballDatas[index].point > points)
+		{
+			break;
+		}
+	}
+	index = (index) ? index-1 : index;
+	return index;
+}
+
+
 
 void Target::moveToObjective()
 {
