@@ -102,3 +102,29 @@ The function itself is optimized, but it is called to many times...
   * For smooth balltrail: adapt duration and frequency of particles w/ ball's velocity
   * Particles: adapt particle frequency w/ number of balls on screen
   * ECS: Optimize to be more cache-friendly
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+BLACK HOLE ERROR
+Warning: noted but unhandled ioctl 0x6458 with no size/direction hints.
+==20497==    This could cause spurious value errors to appear.
+==20497==    See README_MISSING_SYSCALL_OR_IOCTL for guidance on writing a proper wrapper.
+ImpetusSpheroid.debug: Target.cpp:179: void Target::updateIndicators(Time): Assertion `projectileComp && targetComp' failed.
+==20497== 
+==20497== Process terminating with default action of signal 6 (SIGABRT)
+==20497==    at 0x5B6C1C7: raise (raise.c:55)
+==20497==    by 0x5B6DE29: abort (abort.c:89)
+==20497==    by 0x5B650BC: __assert_fail_base (assert.c:92)
+==20497==    by 0x5B65171: __assert_fail (assert.c:101)
+==20497==    by 0x45D7C0: Target::updateIndicators(sf::Time) (Target.cpp:179)
+==20497==    by 0x45CDE9: Target::update(sf::Time) (Target.cpp:80)
+==20497==    by 0x463289: World::update(sf::Time) (World.cpp:357)
+==20497==    by 0x496AC4: StateGame::update(sf::Time) (StateGame.cpp:35)
+==20497==    by 0x49F285: StateStack::update(sf::Time) (StateStack.cpp:53)
+==20497==    by 0x48D031: Application::update(sf::Time) (Application.cpp:95)
+==20497==    by 0x48CFE1: Application::run() (Application.cpp:87)
+==20497==    by 0x4A1FD1: main (main.cpp:9)
+
+
+To correct this mistake, see src/core/EventFunctions.cpp:490

@@ -486,7 +486,10 @@ namespace evt
 					float distance = std::sqrt(std::pow(blackHoleDir.x, 2) + std::pow(blackHoleDir.y, 2));
 					if(distance < HORIZON_RADIUS)
 					{
+//-----------------------------------------------------------------------------
+// TODO : CHECK IF THE BLACK HOLE ISN'T A TARGET !
 						toRemove.push_back(massicPair.first);
+ //-----------------------------------------------------------------------------
 					}
 					blackHoleDir.normalize();
 					blackHoleDir *= std::abs(w.getGravityVect().y) * COEFF;
